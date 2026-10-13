@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, ErrorMessage, LoadingState } from './components/UI';
 import KanbanBoard from './components/KanbanBoard';
 import ApplicationForm from './components/ApplicationForm';
-import { createApplication, getApplicationStats, listApplications, updateApplication } from './services/applicationApi';
+import { createApplication, deleteApplication as deleteApplicationRequest, getApplicationStats, listApplications, updateApplication } from './services/applicationApi';
 import './App.css';
 
 const statCards = [
@@ -135,6 +135,13 @@ function App() {
     }
   };
 
+  const removeApplication = async (application) => {
+    await deleteApplicationRequest(application._id);
+    setApplications((current) => current.filter((item) => item._id !== application._id));
+    setCreateSuccess('Application deleted.');
+    refreshStats();
+  };
+
   const hasFilters = Boolean(search.trim() || status);
 
   return (
@@ -263,6 +270,7 @@ function App() {
               setEditingApplication(application);
             }}
             onStatusChange={changeApplicationStatus}
+            onDeleteApplication={removeApplication}
             pendingStatusIds={pendingStatusIds}
             statusErrors={statusErrors}
           />

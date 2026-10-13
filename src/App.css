@@ -654,6 +654,53 @@
   font-size: 10px;
 }
 
+.job-delete-button {
+  display: block;
+  margin: 8px 0 0 auto;
+  padding: 3px 0 0;
+  color: #a64d57;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.job-delete-button:hover {
+  color: #842f3a;
+  text-decoration: underline;
+}
+
+.delete-confirmation {
+  width: min(100%, 440px);
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #ecebf3;
+  border-radius: 15px;
+  box-shadow: 0 20px 60px rgb(31 28 56 / 20%);
+}
+
+.delete-confirmation h2 {
+  margin: 0;
+  color: #29283b;
+  font-size: 19px;
+}
+
+.delete-confirmation > p:not(.eyebrow):not(.form-error) {
+  margin: 10px 0 20px;
+  color: #77768a;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.confirm-delete-button,
+.confirm-delete-button:hover:not(:disabled) {
+  color: #fff;
+  background: #bd4d5a;
+  border-color: #bd4d5a;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

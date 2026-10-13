@@ -1,4 +1,5 @@
-import { EmptyState, ErrorMessage, LoadingState, StatusBadge } from './UI';
+import { useState } from 'react';
+import { Button, EmptyState, ErrorMessage, LoadingState, StatusBadge } from './UI';
 
 const columns = ['Applied', 'Interview', 'Offer', 'Rejected'];
 
@@ -10,7 +11,7 @@ function formatDate(value) {
   });
 }
 
-function JobCard({ application, onSelect, onStatusChange, pending, error }) {
+function JobCard({ application, onSelect, onStatusChange, onRequestDelete, pending, error }) {
   return (
     <article className="job-card">
       <button className="job-card-open" type="button" onClick={() => onSelect(application)} aria-label={`View and edit ${application.jobTitle} at ${application.companyName}`}>
@@ -41,11 +42,31 @@ function JobCard({ application, onSelect, onStatusChange, pending, error }) {
         {pending && <span className="status-saving">Saving…</span>}
       </label>
       {error && <p className="status-update-error" role="alert">{error}</p>}
+      <button className="job-delete-button" type="button" onClick={() => onRequestDelete(application)} aria-label={`Delete ${application.jobTitle} at ${application.companyName}`}>
+        Delete
+      </button>
     </article>
   );
 }
 
-function KanbanBoard({ applications, loading, error, onRetry, noResults, onClearFilters, onSelectApplication, onStatusChange, pendingStatusIds, statusErrors }) {
+function KanbanBoard({ applications, loading, error, onRetry, noResults, onClearFilters, onSelectApplication, onStatusChange, onDeleteApplication, pendingStatusIds, statusErrors }) {
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deletingId, setDeletingId] = useState('');
+  const [deleteError, setDeleteError] = useState('');
+
+  const confirmDelete = async () => {
+    setDeletingId(deleteTarget._id);
+    setDeleteError('');
+    try {
+      await onDeleteApplication(deleteTarget);
+      setDeleteTarget(null);
+    } catch (requestError) {
+      setDeleteError(requestError.message || 'The application could not be deleted.');
+    } finally {
+      setDeletingId('');
+    }
+  };
+
   if (loading) return <LoadingState message="Loading applications…" />;
   if (error) return <ErrorMessage message={error} onRetry={onRetry} />;
   if (noResults) {
@@ -73,6 +94,10 @@ function KanbanBoard({ applications, loading, error, onRetry, noResults, onClear
                         application={application}
                         onSelect={onSelectApplication}
                         onStatusChange={onStatusChange}
+                        onRequestDelete={(application) => {
+                          setDeleteError('');
+                          setDeleteTarget(application);
+                        }}
                         pending={pendingStatusIds.has(application._id)}
                         error={statusErrors[application._id]}
                         key={application._id}
@@ -87,6 +112,29 @@ function KanbanBoard({ applications, loading, error, onRetry, noResults, onClear
           })}
         </div>
       </div>
+      {deleteTarget && (
+        <div className="modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget && !deletingId) setDeleteTarget(null); }}>
+          <section
+            className="delete-confirmation"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="delete-confirmation-title"
+            aria-describedby="delete-confirmation-message"
+            onKeyDown={(event) => { if (event.key === 'Escape' && !deletingId) setDeleteTarget(null); }}
+          >
+            <p className="eyebrow">DELETE APPLICATION</p>
+            <h2 id="delete-confirmation-title">Delete {deleteTarget.companyName}?</h2>
+            <p id="delete-confirmation-message">This will permanently delete the application for {deleteTarget.jobTitle}. This action cannot be undone.</p>
+            {deleteError && <p className="form-error" role="alert">{deleteError}</p>}
+            <div className="form-actions">
+              <Button variant="secondary" autoFocus disabled={Boolean(deletingId)} onClick={() => setDeleteTarget(null)}>Cancel</Button>
+              <Button className="confirm-delete-button" disabled={Boolean(deletingId)} onClick={confirmDelete}>
+                {deletingId ? 'Deleting…' : 'Delete application'}
+              </Button>
+            </div>
+          </section>
+        </div>
+      )}
     </section>
   );
 }
