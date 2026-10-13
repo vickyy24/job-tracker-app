@@ -12,3 +12,8 @@ The API defaults to `http://localhost:5000/api` and allows the frontend at `http
 
 - `npm start` runs the frontend at `http://localhost:3000`.
 - `npm run build` creates the production build in `build/`.
+
+## Release notes
+
+- A local demo needs the API and a reachable MongoDB database. Without them, the dashboard shows an API connection error and application workflows cannot be completed.
+- Authentication is not included in this MVP.
