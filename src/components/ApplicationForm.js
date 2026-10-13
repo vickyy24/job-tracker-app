@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, SelectInput, TextInput } from './UI';
+import { Button, LoadingState, SelectInput, TextInput } from './UI';
 
 const statuses = ['Applied', 'Interview', 'Offer', 'Rejected'];
 
@@ -9,12 +9,12 @@ function localToday() {
   return date.toISOString().slice(0, 10);
 }
 
-function ApplicationForm({ saving, error, onClose, onSubmit }) {
-  const [companyName, setCompanyName] = useState('');
-  const [jobTitle, setJobTitle] = useState('');
-  const [applicationDate, setApplicationDate] = useState(localToday());
-  const [status, setStatus] = useState('Applied');
-  const [notes, setNotes] = useState('');
+function ApplicationForm({ application, loading, saving, error, onClose, onSubmit }) {
+  const [companyName, setCompanyName] = useState(application?.companyName || '');
+  const [jobTitle, setJobTitle] = useState(application?.jobTitle || '');
+  const [applicationDate, setApplicationDate] = useState(application?.applicationDate?.slice(0, 10) || localToday());
+  const [status, setStatus] = useState(application?.status || 'Applied');
+  const [notes, setNotes] = useState(application?.notes || '');
   const [validationError, setValidationError] = useState('');
 
   const submit = (event) => {
@@ -32,12 +32,12 @@ function ApplicationForm({ saving, error, onClose, onSubmit }) {
       <section className="application-modal" role="dialog" aria-modal="true" aria-labelledby="application-form-title">
         <div className="modal-heading">
           <div>
-            <p className="eyebrow">NEW OPPORTUNITY</p>
-            <h2 id="application-form-title">Add a job application</h2>
+            <p className="eyebrow">{application ? 'APPLICATION DETAILS' : 'NEW OPPORTUNITY'}</p>
+            <h2 id="application-form-title">{application ? 'Edit job application' : 'Add a job application'}</h2>
           </div>
           <button className="modal-close" type="button" aria-label="Close form" onClick={onClose} disabled={saving}>×</button>
         </div>
-        <form className="application-form" onSubmit={submit}>
+        {loading ? <LoadingState message="Loading application…" /> : <form className="application-form" onSubmit={submit}>
           <TextInput id="company-name" label="Company name" value={companyName} onChange={(event) => setCompanyName(event.target.value)} required autoFocus />
           <TextInput id="job-title" label="Job title" value={jobTitle} onChange={(event) => setJobTitle(event.target.value)} required />
           <TextInput id="application-date" label="Application date" type="date" value={applicationDate} onChange={(event) => setApplicationDate(event.target.value)} required />
@@ -49,9 +49,9 @@ function ApplicationForm({ saving, error, onClose, onSubmit }) {
           {(validationError || error) && <p className="form-error" role="alert">{validationError || error}</p>}
           <div className="form-actions">
             <Button variant="secondary" onClick={onClose} disabled={saving}>Cancel</Button>
-            <Button type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save application'}</Button>
+            <Button type="submit" disabled={saving}>{saving ? 'Saving…' : (application ? 'Save changes' : 'Save application')}</Button>
           </div>
-        </form>
+        </form>}
       </section>
     </div>
   );

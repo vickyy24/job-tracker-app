@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, ErrorMessage, LoadingState } from './components/UI';
 import KanbanBoard from './components/KanbanBoard';
 import ApplicationForm from './components/ApplicationForm';
-import { createApplication, getApplicationStats, listApplications } from './services/applicationApi';
+import { createApplication, getApplicationStats, listApplications, updateApplication } from './services/applicationApi';
 import './App.css';
 
 const statCards = [
@@ -29,6 +29,9 @@ function App() {
   const [savingApplication, setSavingApplication] = useState(false);
   const [createError, setCreateError] = useState('');
   const [createSuccess, setCreateSuccess] = useState('');
+  const [editingApplication, setEditingApplication] = useState(null);
+  const [savingEdit, setSavingEdit] = useState(false);
+  const [editError, setEditError] = useState('');
   const requestNumber = useRef(0);
 
   const refreshStats = useCallback(() => {
@@ -89,6 +92,22 @@ function App() {
       setCreateError(error.message);
     } finally {
       setSavingApplication(false);
+    }
+  };
+
+  const saveEdit = async (updates) => {
+    setSavingEdit(true);
+    setEditError('');
+    try {
+      await updateApplication(editingApplication._id, updates);
+      setEditingApplication(null);
+      setCreateSuccess('Application updated.');
+      refreshApplications({ search: search.trim(), status, sortBy, order });
+      refreshStats();
+    } catch (error) {
+      setEditError(error.message);
+    } finally {
+      setSavingEdit(false);
     }
   };
 
@@ -214,6 +233,11 @@ function App() {
             onRetry={() => refreshApplications({ search: search.trim(), status, sortBy, order })}
             noResults={hasFilters && applications.length === 0}
             onClearFilters={clearFilters}
+            onSelectApplication={(application) => {
+              setCreateSuccess('');
+              setEditError('');
+              setEditingApplication(application);
+            }}
           />
         </main>
       </div>
@@ -223,6 +247,16 @@ function App() {
           error={createError}
           onClose={() => setShowApplicationForm(false)}
           onSubmit={saveApplication}
+        />
+      )}
+      {editingApplication && (
+        <ApplicationForm
+          key={editingApplication._id}
+          application={editingApplication}
+          saving={savingEdit}
+          error={editError}
+          onClose={() => setEditingApplication(null)}
+          onSubmit={saveEdit}
         />
       )}
     </div>

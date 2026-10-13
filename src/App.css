@@ -587,12 +587,25 @@
 }
 
 .job-card {
+  display: block;
+  width: 100%;
   min-width: 0;
   padding: 14px 13px 12px;
   background: #fff;
   border: 1px solid #e8e7ef;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgb(39 36 70 / 3%);
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.job-card:hover {
+  border-color: #cfc6f2;
+  box-shadow: 0 5px 13px rgb(39 36 70 / 8%);
+  transform: translateY(-1px);
 }
 
 .job-card-heading {

@@ -10,9 +10,9 @@ function formatDate(value) {
   });
 }
 
-function JobCard({ application }) {
+function JobCard({ application, onSelect }) {
   return (
-    <article className="job-card">
+    <button className="job-card" type="button" onClick={() => onSelect(application)} aria-label={`View and edit ${application.jobTitle} at ${application.companyName}`}>
       <div className="job-card-heading">
         <p className="job-company">{application.companyName}</p>
         <StatusBadge status={application.status} />
@@ -25,11 +25,11 @@ function JobCard({ application }) {
         </svg>
         <span>{formatDate(application.applicationDate)}</span>
       </time>
-    </article>
+    </button>
   );
 }
 
-function KanbanBoard({ applications, loading, error, onRetry, noResults, onClearFilters }) {
+function KanbanBoard({ applications, loading, error, onRetry, noResults, onClearFilters, onSelectApplication }) {
   if (loading) return <LoadingState message="Loading applications…" />;
   if (error) return <ErrorMessage message={error} onRetry={onRetry} />;
   if (noResults) {
@@ -53,7 +53,7 @@ function KanbanBoard({ applications, loading, error, onRetry, noResults, onClear
                 <div className="kanban-cards">
                   {statusApplications.length > 0 ? (
                     statusApplications.map((application) => (
-                      <JobCard application={application} key={application._id} />
+                      <JobCard application={application} onSelect={onSelectApplication} key={application._id} />
                     ))
                   ) : (
                     <EmptyState title="No applications" message={`Applications in ${status} will appear here.`} />
