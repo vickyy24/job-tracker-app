@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, ErrorMessage, LoadingState } from './components/UI';
-import { getApplicationStats } from './services/applicationApi';
+import KanbanBoard from './components/KanbanBoard';
+import { getApplicationStats, listApplications } from './services/applicationApi';
 import './App.css';
 
 const statCards = [
@@ -10,10 +11,18 @@ const statCards = [
   { label: 'Rejections', key: 'rejections', tone: 'rose' },
 ];
 
+const statuses = ['Applied', 'Interview', 'Offer', 'Rejected'];
+
 function App() {
   const [stats, setStats] = useState(null);
   const [loadingStats, setLoadingStats] = useState(true);
   const [statsError, setStatsError] = useState('');
+  const [applications, setApplications] = useState([]);
+  const [loadingApplications, setLoadingApplications] = useState(true);
+  const [applicationsError, setApplicationsError] = useState('');
+  const [search, setSearch] = useState('');
+  const [status, setStatus] = useState('');
+  const requestNumber = useRef(0);
 
   const refreshStats = useCallback(() => {
     setLoadingStats(true);
@@ -25,9 +34,42 @@ function App() {
       .finally(() => setLoadingStats(false));
   }, []);
 
+  const refreshApplications = useCallback((filters = {}) => {
+    const requestId = requestNumber.current + 1;
+    requestNumber.current = requestId;
+    setLoadingApplications(true);
+    setApplicationsError('');
+
+    return listApplications(filters)
+      .then((result) => {
+        if (requestId === requestNumber.current) setApplications(result.data);
+      })
+      .catch((error) => {
+        if (requestId === requestNumber.current) setApplicationsError(error.message);
+      })
+      .finally(() => {
+        if (requestId === requestNumber.current) setLoadingApplications(false);
+      });
+  }, []);
+
   useEffect(() => {
     refreshStats();
   }, [refreshStats]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      refreshApplications({ search: search.trim(), status });
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [refreshApplications, search, status]);
+
+  const clearFilters = () => {
+    requestNumber.current += 1;
+    setSearch('');
+    setStatus('');
+  };
+
+  const hasFilters = Boolean(search.trim() || status);
 
   return (
     <div className="app-shell" id="dashboard">
@@ -98,24 +140,41 @@ function App() {
             </div>
           </section>
 
-          <section className="content-placeholder" aria-label="Dashboard content area">
-            <div className="placeholder-heading">
-              <div>
-                <h2>Your job search</h2>
-                <p>Applications and progress at a glance</p>
-              </div>
-              <span className="placeholder-period">Overview</span>
-            </div>
-            <div className="placeholder-body">
-              <span className="placeholder-ring" aria-hidden="true">
-                <svg viewBox="0 0 32 32">
-                  <path d="M16 7v18M7 16h18" />
-                </svg>
-              </span>
-              <p>Your dashboard is ready for your first application.</p>
-              <span>Use “Add Job” to start building your overview.</span>
-            </div>
+          <section className="board-toolbar" aria-label="Search and filter applications">
+            <label className="search-control">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.8" cy="8.8" r="5.8" /><path d="m13.2 13.2 4 4" /></svg>
+              <input
+                type="search"
+                value={search}
+                onChange={(event) => {
+                  requestNumber.current += 1;
+                  setSearch(event.target.value);
+                }}
+                placeholder="Search company or job title"
+                aria-label="Search by company or job title"
+              />
+            </label>
+            <label className="status-filter-control">
+              <span>Status</span>
+              <select value={status} onChange={(event) => {
+                requestNumber.current += 1;
+                setStatus(event.target.value);
+              }} aria-label="Filter by status">
+                <option value="">All statuses</option>
+                {statuses.map((item) => <option key={item} value={item}>{item}</option>)}
+              </select>
+            </label>
+            {hasFilters && <Button className="clear-filters-button" onClick={clearFilters}>Clear filters</Button>}
           </section>
+
+          <KanbanBoard
+            applications={applications}
+            loading={loadingApplications}
+            error={applicationsError}
+            onRetry={() => refreshApplications({ search: search.trim(), status })}
+            noResults={hasFilters && applications.length === 0}
+            onClearFilters={clearFilters}
+          />
         </main>
       </div>
     </div>

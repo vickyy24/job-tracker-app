@@ -284,86 +284,223 @@
   letter-spacing: -0.7px;
 }
 
-.content-placeholder {
-  min-height: 270px;
+.board-section {
   margin-top: 25px;
-  overflow: hidden;
+}
+
+.board-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  margin-bottom: 14px;
+}
+
+.search-control,
+.status-filter-control {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 9px;
+  padding: 0 12px;
   background: #fff;
-  border: 1px solid #ecebf3;
-  border-radius: 15px;
+  border: 1px solid #e8e7ef;
+  border-radius: 9px;
 }
 
-.placeholder-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 77px;
-  padding: 0 24px;
-  border-bottom: 1px solid #f0eff5;
+.search-control {
+  width: min(100%, 350px);
 }
 
-.placeholder-heading h2 {
-  margin: 0;
-  color: #37364a;
-  font-size: 14px;
-  font-weight: 650;
-}
-
-.placeholder-heading p {
-  margin: 5px 0 0;
-  color: #9a99aa;
-  font-size: 11px;
-}
-
-.placeholder-period {
-  padding: 7px 10px;
-  color: #77758a;
-  background: #fbfbfd;
-  border: 1px solid #eeedf3;
-  border-radius: 8px;
-  font-size: 11px;
-}
-
-.placeholder-body {
-  display: flex;
-  min-height: 191px;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  text-align: center;
-}
-
-.placeholder-ring {
-  display: grid;
-  width: 42px;
-  height: 42px;
-  place-items: center;
-  color: #775bd9;
-  background: #f2effd;
-  border: 1px solid #e9e4fa;
-  border-radius: 13px;
-}
-
-.placeholder-ring svg {
-  width: 20px;
-  height: 20px;
+.search-control svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
   fill: none;
-  stroke: currentColor;
+  stroke: #9291a3;
   stroke-linecap: round;
-  stroke-width: 1.8;
+  stroke-width: 1.6;
 }
 
-.placeholder-body p {
-  margin: 14px 0 5px;
-  color: #555368;
-  font-size: 13px;
+.search-control input,
+.status-filter-control select {
+  min-width: 0;
+  color: #39384c;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  font-size: 12px;
+}
+
+.search-control input {
+  width: 100%;
+  outline: 0;
+}
+
+.search-control input::placeholder {
+  color: #a09faf;
+}
+
+.status-filter-control {
+  color: #858497;
+  font-size: 12px;
+}
+
+.status-filter-control select {
+  cursor: pointer;
+}
+
+.search-control:focus-within,
+.status-filter-control:focus-within {
+  border-color: #9d8be7;
+  box-shadow: 0 0 0 3px rgb(157 139 231 / 14%);
+}
+
+.clear-filters-button,
+.no-results-clear {
+  padding: 8px 10px;
+  color: #6b52cb;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
   font-weight: 600;
 }
 
-.placeholder-body > span:last-child {
-  color: #9998a8;
+.no-results-clear {
+  margin-top: 7px;
+}
+
+.kanban-scroll {
+  overflow-x: auto;
+  padding-bottom: 12px;
+  overscroll-behavior-x: contain;
+}
+
+.kanban-board {
+  display: grid;
+  min-width: 1040px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 14px;
+}
+
+.kanban-column {
+  min-width: 0;
+  min-height: 350px;
+  padding: 9px;
+  background: #f1f1f7;
+  border: 1px solid #e9e8f0;
+  border-radius: 13px;
+}
+
+.kanban-column-header {
+  display: flex;
+  min-height: 39px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 9px;
+  padding: 0 11px;
+  border-radius: 8px;
+}
+
+.kanban-column-header h2 {
+  margin: 0;
+  color: #fff;
   font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.kanban-count {
+  display: grid;
+  min-width: 22px;
+  height: 22px;
+  place-items: center;
+  color: #fff;
+  background: rgb(255 255 255 / 20%);
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.kanban-column-applied .kanban-column-header { background: #7756dc; }
+.kanban-column-interview .kanban-column-header { background: #4389d6; }
+.kanban-column-offer .kanban-column-header { background: #32a58c; }
+.kanban-column-rejected .kanban-column-header { background: #ce727e; }
+
+.kanban-cards {
+  display: grid;
+  align-content: start;
+  gap: 9px;
+}
+
+.job-card {
+  min-width: 0;
+  padding: 14px 13px 12px;
+  background: #fff;
+  border: 1px solid #e8e7ef;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgb(39 36 70 / 3%);
+}
+
+.job-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.job-company {
+  overflow: hidden;
+  margin: 0;
+  color: #666579;
+  font-size: 12px;
+  font-weight: 550;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.job-card h3 {
+  margin: 9px 0 13px;
+  color: #302f43;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.job-date {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #8d8c9d;
+  font-size: 10px;
+}
+
+.job-date svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.kanban-cards .ui-empty {
+  min-height: 150px;
+  padding: 16px 10px;
+}
+
+.kanban-cards .ui-empty h2 {
+  font-size: 12px;
+}
+
+.kanban-cards .ui-empty p {
+  font-size: 10px;
 }
 
 a:focus-visible,
@@ -472,12 +609,18 @@ button:focus-visible {
     font-size: 24px;
   }
 
-  .content-placeholder {
+  .board-section {
     margin-top: 18px;
   }
 
-  .placeholder-heading {
-    padding: 0 17px;
+  .board-toolbar {
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 18px;
+  }
+
+  .search-control {
+    width: 100%;
   }
 }
 
