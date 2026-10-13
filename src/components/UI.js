@@ -1,4 +1,68 @@
+import { useEffect, useRef } from 'react';
 import './ui.css';
+
+export function Modal({ children, className, role = 'dialog', labelledBy, describedBy, onClose, closeDisabled = false }) {
+  const dialogRef = useRef(null);
+  const onCloseRef = useRef(onClose);
+  const closeDisabledRef = useRef(closeDisabled);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  useEffect(() => {
+    closeDisabledRef.current = closeDisabled;
+  }, [closeDisabled]);
+
+  useEffect(() => {
+    const previousFocus = document.activeElement;
+    const dialog = dialogRef.current;
+    const focusable = () => dialog.querySelectorAll('button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])');
+    focusable()[0]?.focus();
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape' && !closeDisabledRef.current) {
+        event.preventDefault();
+        onCloseRef.current();
+      }
+      if (event.key !== 'Tab') return;
+      const items = focusable();
+      if (!items.length) {
+        event.preventDefault();
+        dialog.focus();
+      } else if (event.shiftKey && document.activeElement === items[0]) {
+        event.preventDefault();
+        items[items.length - 1].focus();
+      } else if (!event.shiftKey && document.activeElement === items[items.length - 1]) {
+        event.preventDefault();
+        items[0].focus();
+      }
+    };
+
+    dialog.addEventListener('keydown', handleKeyDown);
+    return () => {
+      dialog.removeEventListener('keydown', handleKeyDown);
+      if (previousFocus?.isConnected) previousFocus.focus();
+      else document.querySelector('[data-dialog-focus-fallback]')?.focus();
+    };
+  }, []);
+
+  return (
+    <div className="modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget && !closeDisabled) onCloseRef.current(); }}>
+      <section
+        ref={dialogRef}
+        className={className}
+        role={role}
+        aria-modal="true"
+        aria-labelledby={labelledBy}
+        aria-describedby={describedBy}
+        tabIndex="-1"
+      >
+        {children}
+      </section>
+    </div>
+  );
+}
 
 export function Button({ children, variant = 'primary', className = '', type = 'button', ...props }) {
   return (

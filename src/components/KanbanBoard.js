@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, EmptyState, ErrorMessage, LoadingState, StatusBadge } from './UI';
+import { Button, EmptyState, ErrorMessage, LoadingState, Modal, StatusBadge } from './UI';
 
 const columns = ['Applied', 'Interview', 'Offer', 'Rejected'];
 
@@ -41,8 +41,8 @@ function JobCard({ application, onSelect, onStatusChange, onRequestDelete, pendi
         </select>
         {pending && <span className="status-saving">Saving…</span>}
       </label>
-      {error && <p className="status-update-error" role="alert">{error}</p>}
-      <button className="job-delete-button" type="button" onClick={() => onRequestDelete(application)} aria-label={`Delete ${application.jobTitle} at ${application.companyName}`}>
+      {error && <p className="form-error status-update-error" role="alert">{error}</p>}
+      <button className="job-delete-button" type="button" disabled={pending} onClick={() => onRequestDelete(application)} aria-label={`Delete ${application.jobTitle} at ${application.companyName}`}>
         Delete
       </button>
     </article>
@@ -113,27 +113,25 @@ function KanbanBoard({ applications, loading, error, onRetry, noResults, onClear
         </div>
       </div>
       {deleteTarget && (
-        <div className="modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget && !deletingId) setDeleteTarget(null); }}>
-          <section
+        <Modal
             className="delete-confirmation"
             role="alertdialog"
-            aria-modal="true"
-            aria-labelledby="delete-confirmation-title"
-            aria-describedby="delete-confirmation-message"
-            onKeyDown={(event) => { if (event.key === 'Escape' && !deletingId) setDeleteTarget(null); }}
+            labelledBy="delete-confirmation-title"
+            describedBy="delete-confirmation-message"
+            onClose={() => setDeleteTarget(null)}
+            closeDisabled={Boolean(deletingId)}
           >
             <p className="eyebrow">DELETE APPLICATION</p>
             <h2 id="delete-confirmation-title">Delete {deleteTarget.companyName}?</h2>
             <p id="delete-confirmation-message">This will permanently delete the application for {deleteTarget.jobTitle}. This action cannot be undone.</p>
             {deleteError && <p className="form-error" role="alert">{deleteError}</p>}
             <div className="form-actions">
-              <Button variant="secondary" autoFocus disabled={Boolean(deletingId)} onClick={() => setDeleteTarget(null)}>Cancel</Button>
+              <Button variant="secondary" disabled={Boolean(deletingId)} onClick={() => setDeleteTarget(null)}>Cancel</Button>
               <Button className="confirm-delete-button" disabled={Boolean(deletingId)} onClick={confirmDelete}>
                 {deletingId ? 'Deleting…' : 'Delete application'}
               </Button>
             </div>
-          </section>
-        </div>
+        </Modal>
       )}
     </section>
   );

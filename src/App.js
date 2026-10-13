@@ -190,7 +190,7 @@ function App() {
           <div className="page-heading">
             <div>
               <p className="eyebrow">YOUR OVERVIEW</p>
-              <h1>Dashboard</h1>
+              <h1 tabIndex="-1" data-dialog-focus-fallback>Dashboard</h1>
               <p className="page-description">A calmer way to keep your job search moving.</p>
             </div>
             <div className="today-chip">

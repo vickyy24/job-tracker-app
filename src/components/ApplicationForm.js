@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, LoadingState, SelectInput, TextInput } from './UI';
+import { Button, LoadingState, Modal, SelectInput, TextInput } from './UI';
 
 const statuses = ['Applied', 'Interview', 'Offer', 'Rejected'];
 
@@ -15,21 +15,28 @@ function ApplicationForm({ application, loading, saving, error, onClose, onSubmi
   const [applicationDate, setApplicationDate] = useState(application?.applicationDate?.slice(0, 10) || localToday());
   const [status, setStatus] = useState(application?.status || 'Applied');
   const [notes, setNotes] = useState(application?.notes || '');
-  const [validationError, setValidationError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
+
+  const changeField = (field, setter, value) => {
+    setter(value);
+    setFieldErrors((current) => ({ ...current, [field]: '' }));
+  };
 
   const submit = (event) => {
     event.preventDefault();
-    if (!companyName.trim() || !jobTitle.trim()) {
-      setValidationError('Company name and job title are required.');
+    const errors = {};
+    if (!companyName.trim()) errors.companyName = 'Company name is required.';
+    if (!jobTitle.trim()) errors.jobTitle = 'Job title is required.';
+    if (!applicationDate) errors.applicationDate = 'Application date is required.';
+    setFieldErrors(errors);
+    if (Object.keys(errors).length) {
       return;
     }
-    setValidationError('');
     onSubmit({ companyName: companyName.trim(), jobTitle: jobTitle.trim(), applicationDate, status, notes });
   };
 
   return (
-    <div className="modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget && !saving) onClose(); }}>
-      <section className="application-modal" role="dialog" aria-modal="true" aria-labelledby="application-form-title">
+      <Modal className="application-modal" labelledBy="application-form-title" onClose={onClose} closeDisabled={saving}>
         <div className="modal-heading">
           <div>
             <p className="eyebrow">{application ? 'APPLICATION DETAILS' : 'NEW OPPORTUNITY'}</p>
@@ -37,23 +44,22 @@ function ApplicationForm({ application, loading, saving, error, onClose, onSubmi
           </div>
           <button className="modal-close" type="button" aria-label="Close form" onClick={onClose} disabled={saving}>×</button>
         </div>
-        {loading ? <LoadingState message="Loading application…" /> : <form className="application-form" onSubmit={submit}>
-          <TextInput id="company-name" label="Company name" value={companyName} onChange={(event) => setCompanyName(event.target.value)} required autoFocus />
-          <TextInput id="job-title" label="Job title" value={jobTitle} onChange={(event) => setJobTitle(event.target.value)} required />
-          <TextInput id="application-date" label="Application date" type="date" value={applicationDate} onChange={(event) => setApplicationDate(event.target.value)} required />
-          <SelectInput id="application-status" label="Status" value={status} onChange={(event) => setStatus(event.target.value)}>
+        {loading ? <LoadingState message="Loading application…" /> : <form className="application-form" onSubmit={submit} noValidate>
+          <TextInput id="company-name" label="Company name" value={companyName} onChange={(event) => changeField('companyName', setCompanyName, event.target.value)} error={fieldErrors.companyName} required aria-required="true" disabled={saving} />
+          <TextInput id="job-title" label="Job title" value={jobTitle} onChange={(event) => changeField('jobTitle', setJobTitle, event.target.value)} error={fieldErrors.jobTitle} required aria-required="true" disabled={saving} />
+          <TextInput id="application-date" label="Application date" type="date" value={applicationDate} onChange={(event) => changeField('applicationDate', setApplicationDate, event.target.value)} error={fieldErrors.applicationDate} required aria-required="true" disabled={saving} />
+          <SelectInput id="application-status" label="Status" value={status} onChange={(event) => setStatus(event.target.value)} disabled={saving}>
             {statuses.map((item) => <option key={item} value={item}>{item}</option>)}
           </SelectInput>
           <label className="notes-field" htmlFor="application-notes">Notes <span>Optional</span></label>
-          <textarea id="application-notes" value={notes} onChange={(event) => setNotes(event.target.value)} rows="3" />
-          {(validationError || error) && <p className="form-error" role="alert">{validationError || error}</p>}
+          <textarea id="application-notes" value={notes} onChange={(event) => setNotes(event.target.value)} rows="3" disabled={saving} />
+          {error && <p className="form-error" role="alert">{error}</p>}
           <div className="form-actions">
             <Button variant="secondary" onClick={onClose} disabled={saving}>Cancel</Button>
             <Button type="submit" disabled={saving}>{saving ? 'Saving…' : (application ? 'Save changes' : 'Save application')}</Button>
           </div>
         </form>}
-      </section>
-    </div>
+      </Modal>
   );
 }
 
