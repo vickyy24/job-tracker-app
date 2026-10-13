@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, ErrorMessage, LoadingState } from './components/UI';
 import KanbanBoard from './components/KanbanBoard';
-import { getApplicationStats, listApplications } from './services/applicationApi';
+import ApplicationForm from './components/ApplicationForm';
+import { createApplication, getApplicationStats, listApplications } from './services/applicationApi';
 import './App.css';
 
 const statCards = [
@@ -24,6 +25,10 @@ function App() {
   const [status, setStatus] = useState('');
   const [sortBy, setSortBy] = useState('applicationDate');
   const [order, setOrder] = useState('desc');
+  const [showApplicationForm, setShowApplicationForm] = useState(false);
+  const [savingApplication, setSavingApplication] = useState(false);
+  const [createError, setCreateError] = useState('');
+  const [createSuccess, setCreateSuccess] = useState('');
   const requestNumber = useRef(0);
 
   const refreshStats = useCallback(() => {
@@ -71,6 +76,22 @@ function App() {
     setStatus('');
   };
 
+  const saveApplication = async (application) => {
+    setSavingApplication(true);
+    setCreateError('');
+    try {
+      await createApplication(application);
+      setShowApplicationForm(false);
+      setCreateSuccess('Application added.');
+      refreshApplications({ search: search.trim(), status, sortBy, order });
+      refreshStats();
+    } catch (error) {
+      setCreateError(error.message);
+    } finally {
+      setSavingApplication(false);
+    }
+  };
+
   const hasFilters = Boolean(search.trim() || status);
 
   return (
@@ -105,7 +126,11 @@ function App() {
             <span className="topbar-label">Workspace</span>
             <span className="topbar-title">Job Tracker</span>
           </div>
-          <Button className="add-job-button">
+          <Button className="add-job-button" onClick={() => {
+            setCreateError('');
+            setCreateSuccess('');
+            setShowApplicationForm(true);
+          }}>
             <span className="plus-icon" aria-hidden="true">+</span>
             <span>Add Job</span>
           </Button>
@@ -180,6 +205,8 @@ function App() {
             {hasFilters && <Button className="clear-filters-button" onClick={clearFilters}>Clear filters</Button>}
           </section>
 
+          {createSuccess && <p className="success-message" role="status">{createSuccess}</p>}
+
           <KanbanBoard
             applications={applications}
             loading={loadingApplications}
@@ -190,6 +217,14 @@ function App() {
           />
         </main>
       </div>
+      {showApplicationForm && (
+        <ApplicationForm
+          saving={savingApplication}
+          error={createError}
+          onClose={() => setShowApplicationForm(false)}
+          onSubmit={saveApplication}
+        />
+      )}
     </div>
   );
 }

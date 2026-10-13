@@ -400,6 +400,127 @@
   margin-top: 7px;
 }
 
+.success-message {
+  margin: 0 0 12px;
+  color: #247e70;
+  font-size: 13px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  z-index: 10;
+  inset: 0;
+  display: grid;
+  overflow-y: auto;
+  place-items: center;
+  padding: 24px;
+  background: rgb(34 32 52 / 42%);
+}
+
+.application-modal {
+  width: min(100%, 560px);
+  padding: 25px;
+  background: #fff;
+  border: 1px solid #ecebf3;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgb(31 28 56 / 20%);
+}
+
+.modal-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.modal-heading .eyebrow {
+  margin-bottom: 7px;
+}
+
+.modal-heading h2 {
+  margin: 0;
+  color: #29283b;
+  font-size: 20px;
+  letter-spacing: -0.4px;
+}
+
+.modal-close {
+  width: 34px;
+  height: 34px;
+  color: #77768a;
+  background: #f7f6fa;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 23px;
+  line-height: 1;
+}
+
+.modal-close:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.application-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.notes-field,
+.application-form textarea,
+.form-error,
+.form-actions {
+  grid-column: 1 / -1;
+}
+
+.notes-field {
+  margin-bottom: -9px;
+  color: #4d4c60;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.notes-field span {
+  margin-left: 5px;
+  color: #9695a8;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.application-form textarea {
+  width: 100%;
+  min-height: 82px;
+  resize: vertical;
+  padding: 10px 11px;
+  color: #343348;
+  background: #fff;
+  border: 1px solid #e4e3ec;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 13px;
+}
+
+.application-form textarea:focus-visible {
+  border-color: #8068dc;
+  outline: 3px solid #e8e2fb;
+  outline-offset: 1px;
+}
+
+.form-error {
+  margin: 0;
+  color: #b73e4b;
+  font-size: 12px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 2px;
+}
+
 .kanban-scroll {
   overflow-x: auto;
   padding-bottom: 12px;
@@ -654,6 +775,24 @@ button:focus-visible {
   .sort-control {
     flex-wrap: wrap;
     padding: 8px 10px;
+  }
+
+  .modal-backdrop {
+    align-items: start;
+    padding: 14px;
+  }
+
+  .application-modal {
+    margin: auto 0;
+    padding: 20px 17px;
+  }
+
+  .application-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .application-form > * {
+    grid-column: 1;
   }
 }
 
