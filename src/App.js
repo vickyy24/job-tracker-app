@@ -32,6 +32,8 @@ function App() {
   const [editingApplication, setEditingApplication] = useState(null);
   const [savingEdit, setSavingEdit] = useState(false);
   const [editError, setEditError] = useState('');
+  const [pendingStatusIds, setPendingStatusIds] = useState(() => new Set());
+  const [statusErrors, setStatusErrors] = useState({});
   const requestNumber = useRef(0);
 
   const refreshStats = useCallback(() => {
@@ -108,6 +110,28 @@ function App() {
       setEditError(error.message);
     } finally {
       setSavingEdit(false);
+    }
+  };
+
+  const changeApplicationStatus = async (application, nextStatus) => {
+    const id = application._id;
+    setPendingStatusIds((current) => new Set(current).add(id));
+    setStatusErrors((current) => ({ ...current, [id]: '' }));
+    try {
+      await updateApplication(id, { status: nextStatus });
+      setApplications((current) => current
+        .map((item) => item._id === id ? { ...item, status: nextStatus } : item)
+        .filter((item) => !status || item.status === status));
+      setCreateSuccess('Application status updated.');
+      refreshStats();
+    } catch (error) {
+      setStatusErrors((current) => ({ ...current, [id]: error.message }));
+    } finally {
+      setPendingStatusIds((current) => {
+        const next = new Set(current);
+        next.delete(id);
+        return next;
+      });
     }
   };
 
@@ -238,6 +262,9 @@ function App() {
               setEditError('');
               setEditingApplication(application);
             }}
+            onStatusChange={changeApplicationStatus}
+            pendingStatusIds={pendingStatusIds}
+            statusErrors={statusErrors}
           />
         </main>
       </div>

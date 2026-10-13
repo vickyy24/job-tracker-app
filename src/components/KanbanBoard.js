@@ -10,26 +10,42 @@ function formatDate(value) {
   });
 }
 
-function JobCard({ application, onSelect }) {
+function JobCard({ application, onSelect, onStatusChange, pending, error }) {
   return (
-    <button className="job-card" type="button" onClick={() => onSelect(application)} aria-label={`View and edit ${application.jobTitle} at ${application.companyName}`}>
-      <div className="job-card-heading">
-        <p className="job-company">{application.companyName}</p>
-        <StatusBadge status={application.status} />
-      </div>
-      <h3>{application.jobTitle}</h3>
-      <time className="job-date" dateTime={application.applicationDate}>
-        <svg viewBox="0 0 20 20" aria-hidden="true">
-          <rect x="3.5" y="5" width="13" height="11.5" rx="2" />
-          <path d="M6.5 3.5v3M13.5 3.5v3M3.5 8.5h13" />
-        </svg>
-        <span>{formatDate(application.applicationDate)}</span>
-      </time>
-    </button>
+    <article className="job-card">
+      <button className="job-card-open" type="button" onClick={() => onSelect(application)} aria-label={`View and edit ${application.jobTitle} at ${application.companyName}`}>
+        <div className="job-card-heading">
+          <p className="job-company">{application.companyName}</p>
+          <StatusBadge status={application.status} />
+        </div>
+        <h3>{application.jobTitle}</h3>
+        <time className="job-date" dateTime={application.applicationDate}>
+          <svg viewBox="0 0 20 20" aria-hidden="true">
+            <rect x="3.5" y="5" width="13" height="11.5" rx="2" />
+            <path d="M6.5 3.5v3M13.5 3.5v3M3.5 8.5h13" />
+          </svg>
+          <span>{formatDate(application.applicationDate)}</span>
+        </time>
+      </button>
+      <label className="job-status-control">
+        <span className="visually-hidden">Change status for {application.jobTitle} at {application.companyName}</span>
+        <select
+          value={application.status}
+          disabled={pending}
+          onChange={(event) => onStatusChange(application, event.target.value)}
+          aria-label={`Change status for ${application.jobTitle} at ${application.companyName}`}
+          aria-busy={pending}
+        >
+          {columns.map((status) => <option key={status} value={status}>{status}</option>)}
+        </select>
+        {pending && <span className="status-saving">Saving…</span>}
+      </label>
+      {error && <p className="status-update-error" role="alert">{error}</p>}
+    </article>
   );
 }
 
-function KanbanBoard({ applications, loading, error, onRetry, noResults, onClearFilters, onSelectApplication }) {
+function KanbanBoard({ applications, loading, error, onRetry, noResults, onClearFilters, onSelectApplication, onStatusChange, pendingStatusIds, statusErrors }) {
   if (loading) return <LoadingState message="Loading applications…" />;
   if (error) return <ErrorMessage message={error} onRetry={onRetry} />;
   if (noResults) {
@@ -53,7 +69,14 @@ function KanbanBoard({ applications, loading, error, onRetry, noResults, onClear
                 <div className="kanban-cards">
                   {statusApplications.length > 0 ? (
                     statusApplications.map((application) => (
-                      <JobCard application={application} onSelect={onSelectApplication} key={application._id} />
+                      <JobCard
+                        application={application}
+                        onSelect={onSelectApplication}
+                        onStatusChange={onStatusChange}
+                        pending={pendingStatusIds.has(application._id)}
+                        error={statusErrors[application._id]}
+                        key={application._id}
+                      />
                     ))
                   ) : (
                     <EmptyState title="No applications" message={`Applications in ${status} will appear here.`} />

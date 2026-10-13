@@ -596,16 +596,71 @@
   border-radius: 10px;
   box-shadow: 0 2px 5px rgb(39 36 70 / 3%);
   color: inherit;
-  cursor: pointer;
   font: inherit;
-  text-align: left;
-  transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
 }
 
 .job-card:hover {
   border-color: #cfc6f2;
   box-shadow: 0 5px 13px rgb(39 36 70 / 8%);
-  transform: translateY(-1px);
+}
+
+.job-card-open {
+  display: block;
+  width: 100%;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.job-status-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 9px;
+  border-top: 1px solid #f0eff5;
+}
+
+.job-status-control select {
+  min-width: 0;
+  min-height: 29px;
+  padding: 0 8px;
+  color: #68677a;
+  background: #faf9fc;
+  border: 1px solid #eeedf3;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+}
+
+.job-status-control select:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.status-saving {
+  color: #8c79d2;
+  font-size: 10px;
+}
+
+.status-update-error {
+  margin: 7px 0 0;
+  color: #b73e4b;
+  font-size: 10px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }
 
 .job-card-heading {
