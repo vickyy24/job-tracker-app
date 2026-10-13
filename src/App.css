@@ -308,6 +308,19 @@
   border-radius: 9px;
 }
 
+.sort-control {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  color: #858497;
+  background: #fff;
+  border: 1px solid #e8e7ef;
+  border-radius: 9px;
+  font-size: 12px;
+}
+
 .search-control {
   width: min(100%, 350px);
 }
@@ -350,8 +363,23 @@
   cursor: pointer;
 }
 
+.sort-control select {
+  min-width: 0;
+  color: #39384c;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+}
+
 .search-control:focus-within,
 .status-filter-control:focus-within {
+  border-color: #9d8be7;
+  box-shadow: 0 0 0 3px rgb(157 139 231 / 14%);
+}
+
+.sort-control:focus-within {
   border-color: #9d8be7;
   box-shadow: 0 0 0 3px rgb(157 139 231 / 14%);
 }
@@ -621,6 +649,11 @@ button:focus-visible {
 
   .search-control {
     width: 100%;
+  }
+
+  .sort-control {
+    flex-wrap: wrap;
+    padding: 8px 10px;
   }
 }
 

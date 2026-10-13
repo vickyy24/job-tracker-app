@@ -22,6 +22,8 @@ function App() {
   const [applicationsError, setApplicationsError] = useState('');
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
+  const [sortBy, setSortBy] = useState('applicationDate');
+  const [order, setOrder] = useState('desc');
   const requestNumber = useRef(0);
 
   const refreshStats = useCallback(() => {
@@ -58,10 +60,10 @@ function App() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      refreshApplications({ search: search.trim(), status });
+      refreshApplications({ search: search.trim(), status, sortBy, order });
     }, 300);
     return () => clearTimeout(timer);
-  }, [refreshApplications, search, status]);
+  }, [refreshApplications, search, status, sortBy, order]);
 
   const clearFilters = () => {
     requestNumber.current += 1;
@@ -164,6 +166,17 @@ function App() {
                 {statuses.map((item) => <option key={item} value={item}>{item}</option>)}
               </select>
             </label>
+            <label className="sort-control">
+              <span>Sort by</span>
+              <select value={sortBy} onChange={(event) => setSortBy(event.target.value)} aria-label="Sort applications by">
+                <option value="applicationDate">Application date</option>
+                <option value="companyName">Company name</option>
+              </select>
+              <select value={order} onChange={(event) => setOrder(event.target.value)} aria-label="Sort direction">
+                <option value="desc">Descending</option>
+                <option value="asc">Ascending</option>
+              </select>
+            </label>
             {hasFilters && <Button className="clear-filters-button" onClick={clearFilters}>Clear filters</Button>}
           </section>
 
@@ -171,7 +184,7 @@ function App() {
             applications={applications}
             loading={loadingApplications}
             error={applicationsError}
-            onRetry={() => refreshApplications({ search: search.trim(), status })}
+            onRetry={() => refreshApplications({ search: search.trim(), status, sortBy, order })}
             noResults={hasFilters && applications.length === 0}
             onClearFilters={clearFilters}
           />
