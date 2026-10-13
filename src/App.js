@@ -1,6 +1,34 @@
+import { useCallback, useEffect, useState } from 'react';
+import { Button, ErrorMessage, LoadingState } from './components/UI';
+import { getApplicationStats } from './services/applicationApi';
 import './App.css';
 
+const statCards = [
+  { label: 'Total Applications', key: 'totalApplications', tone: 'purple' },
+  { label: 'Interviews', key: 'interviews', tone: 'blue' },
+  { label: 'Offers', key: 'offers', tone: 'green' },
+  { label: 'Rejections', key: 'rejections', tone: 'rose' },
+];
+
 function App() {
+  const [stats, setStats] = useState(null);
+  const [loadingStats, setLoadingStats] = useState(true);
+  const [statsError, setStatsError] = useState('');
+
+  const refreshStats = useCallback(() => {
+    setLoadingStats(true);
+    setStatsError('');
+
+    return getApplicationStats()
+      .then(setStats)
+      .catch((error) => setStatsError(error.message))
+      .finally(() => setLoadingStats(false));
+  }, []);
+
+  useEffect(() => {
+    refreshStats();
+  }, [refreshStats]);
+
   return (
     <div className="app-shell" id="dashboard">
       <aside className="sidebar">
@@ -33,10 +61,10 @@ function App() {
             <span className="topbar-label">Workspace</span>
             <span className="topbar-title">Job Tracker</span>
           </div>
-          <button className="add-job-button" type="button">
+          <Button className="add-job-button">
             <span className="plus-icon" aria-hidden="true">+</span>
             <span>Add Job</span>
-          </button>
+          </Button>
         </header>
 
         <main className="dashboard-main">
@@ -52,23 +80,21 @@ function App() {
             </div>
           </div>
 
-          <section className="welcome-panel" aria-labelledby="welcome-title">
-            <div className="welcome-copy">
-              <p className="eyebrow">JOB SEARCH WORKSPACE</p>
-              <h2 id="welcome-title">Every opportunity, thoughtfully organized.</h2>
-              <p>Your applications, conversations, and next steps will live here.</p>
-            </div>
-            <div className="welcome-art" aria-hidden="true">
-              <div className="art-orbit art-orbit-one" />
-              <div className="art-orbit art-orbit-two" />
-              <div className="art-card art-card-back" />
-              <div className="art-card art-card-front">
-                <span className="art-card-mark" />
-                <span className="art-card-line art-card-line-long" />
-                <span className="art-card-line" />
-                <span className="art-card-pill" />
-              </div>
-              <span className="art-sparkle">✦</span>
+          <section className="stats-section" aria-label="Application statistics" aria-busy={loadingStats}>
+            {loadingStats && <LoadingState message="Loading your application stats…" />}
+            {statsError && <ErrorMessage message={statsError} onRetry={refreshStats} />}
+            <div className="stats-grid">
+              {statCards.map((card) => (
+                <article className="stat-card" key={card.key}>
+                  <div className="stat-card-heading">
+                    <span className="stat-label">{card.label}</span>
+                    <span className={`stat-mark stat-mark-${card.tone}`} aria-hidden="true" />
+                  </div>
+                  <p className="stat-value">
+                    {loadingStats || statsError ? '—' : (stats?.[card.key] ?? 0)}
+                  </p>
+                </article>
+              ))}
             </div>
           </section>
 
