@@ -525,6 +525,7 @@
   overflow-x: auto;
   padding-bottom: 12px;
   overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .kanban-board {
@@ -641,6 +642,12 @@
 .job-status-control select:disabled {
   cursor: wait;
   opacity: 0.65;
+}
+
+.job-status-control select:focus-visible {
+  border-color: #8068dc;
+  outline: 3px solid #e8e2fb;
+  outline-offset: 2px;
 }
 
 .status-saving {
@@ -773,6 +780,13 @@ button:focus-visible {
   outline-offset: 3px;
 }
 
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #b4a5ee;
+  outline-offset: 2px;
+}
+
 @media (max-width: 900px) {
   .sidebar {
     flex-basis: 218px;
@@ -788,6 +802,14 @@ button:focus-visible {
 
   .stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .board-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .search-control {
+    flex: 1 1 260px;
   }
 }
 
@@ -885,6 +907,7 @@ button:focus-visible {
 
   .search-control {
     width: 100%;
+    flex-basis: 100%;
   }
 
   .sort-control {
@@ -900,6 +923,18 @@ button:focus-visible {
   .application-modal {
     margin: auto 0;
     padding: 20px 17px;
+  }
+
+  .delete-confirmation {
+    padding: 20px 17px;
+  }
+
+  .delete-confirmation .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .delete-confirmation .form-actions .ui-button {
+    width: 100%;
   }
 
   .application-form {
