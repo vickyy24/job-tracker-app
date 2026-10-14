@@ -141,7 +141,6 @@
   border: 2px solid #e5e0f6;
   border-top-color: #7355db;
   border-radius: 50%;
-  animation: ui-spin 700ms linear infinite;
 }
 
 .ui-empty {
@@ -174,12 +173,3 @@
   border-radius: 10px;
 }
 
-@keyframes ui-spin {
-  to { transform: rotate(360deg); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ui-spinner {
-    animation-duration: 2s;
-  }
-}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Icon from './Icon';
 import { EmptyState, ErrorMessage, LoadingState } from './UI';
 
@@ -12,20 +12,15 @@ function formatDate(value) {
   });
 }
 
-function JobCard({ application, onSelect, onStatusChange, onRequestDelete, pending, error, onDragStart, onDragEnd, dragging }) {
+function JobCard({ application, onSelect, onStatusChange, onRequestDelete, pending, error, onPointerDown, suppressClick }) {
   return (
     <article
-      className={`job-card ${dragging ? 'job-card-dragging' : ''}`}
-      draggable={!pending}
-      onDragStart={(event) => {
-        event.dataTransfer.effectAllowed = 'move';
-        event.dataTransfer.setData('text/plain', application._id);
-        onDragStart(application._id);
-      }}
-      onDragEnd={onDragEnd}
+      className="job-card"
+      onPointerDown={(event) => onPointerDown(event, application)}
+      onClickCapture={(event) => { if (suppressClick()) { event.preventDefault(); event.stopPropagation(); } }}
       aria-label={`${application.companyName}, ${application.jobTitle}. Drag to change status.`}
     >
-      <div className="job-card-open">
+      <button className="job-card-open" type="button" onClick={() => onSelect(application)} aria-label={`View details for ${application.jobTitle} at ${application.companyName}`}>
         <p className="job-company">{application.companyName}</p>
         <h3>{application.jobTitle}</h3>
         {application.salary && <p className="job-salary">{application.salary}</p>}
@@ -36,9 +31,8 @@ function JobCard({ application, onSelect, onStatusChange, onRequestDelete, pendi
             <span>{formatDate(application.applicationDate)}</span>
           </time>
         </div>
-      </div>
+      </button>
       <div className="job-card-actions">
-        <button className="job-edit-button" type="button" disabled={pending} onClick={() => onSelect(application)} aria-label={`Edit ${application.jobTitle} at ${application.companyName}`}>Edit</button>
         <label className="job-status-control">
           <span className="visually-hidden">Change status for {application.jobTitle} at {application.companyName}</span>
           <select
@@ -63,19 +57,63 @@ function JobCard({ application, onSelect, onStatusChange, onRequestDelete, pendi
 
 function KanbanBoard({ applications, loading, error, onRetry, noResults, onClearFilters, onSelectApplication, onAddApplication, onFilterStatus, onStatusChange, onDeleteApplication, pendingStatusIds, statusErrors }) {
   const [openMenu, setOpenMenu] = useState('');
-  const [draggedId, setDraggedId] = useState('');
   const [dropTarget, setDropTarget] = useState('');
+  const movedCardClick = useRef(false);
+  const dragRef = useRef(null);
+  const latestDragHandlers = useRef(null);
+  latestDragHandlers.current = { applications, onStatusChange, pendingStatusIds };
 
-  const handleDrop = (event, status) => {
-    event.preventDefault();
-    const id = event.dataTransfer.getData('text/plain') || draggedId;
-    const application = applications.find((item) => item._id === id);
-    if (application && application.status !== status && !pendingStatusIds.has(id)) {
-      onStatusChange(application, status);
-    }
-    setDraggedId('');
-    setDropTarget('');
+  const handlePointerDown = (event, application) => {
+    if (pendingStatusIds.has(application._id) || event.button !== 0 || event.target.closest('select, input, textarea, a, button:not(.job-card-open)')) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    dragRef.current = { id: application._id, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, left: rect.left, top: rect.top, width: rect.width, element: event.currentTarget, originalStyle: event.currentTarget.style.cssText, active: false, dropStatus: '' };
   };
+
+  useEffect(() => {
+    const handlePointerMove = (event) => {
+      const drag = dragRef.current;
+      if (!drag || event.pointerId !== drag.pointerId) return;
+      if (!drag.active && Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) <= 4) return;
+      event.preventDefault();
+      if (!drag.active) {
+        drag.active = true;
+        drag.element.classList.add('job-card-moving');
+        Object.assign(drag.element.style, { position: 'fixed', left: `${drag.left}px`, top: `${drag.top}px`, width: `${drag.width}px`, margin: '0', zIndex: '1000', pointerEvents: 'none', transition: 'none', transform: `translate3d(${event.clientX - drag.startX}px, ${event.clientY - drag.startY}px, 0)`, willChange: 'transform' });
+      } else {
+        drag.element.style.transform = `translate3d(${event.clientX - drag.startX}px, ${event.clientY - drag.startY}px, 0)`;
+      }
+      const column = document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-kanban-status]');
+      drag.dropStatus = column?.dataset.kanbanStatus || '';
+      setDropTarget((current) => current === drag.dropStatus ? current : drag.dropStatus);
+    };
+    const finishDrag = (event, shouldDrop) => {
+      const drag = dragRef.current;
+      if (!drag || event.pointerId !== drag.pointerId) return;
+      dragRef.current = null;
+      if (drag.active) {
+        const column = document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-kanban-status]');
+        const status = column?.dataset.kanbanStatus || drag.dropStatus;
+        drag.element.style.cssText = drag.originalStyle;
+        drag.element.classList.remove('job-card-moving');
+        movedCardClick.current = true;
+        const { applications: currentApplications, onStatusChange: changeStatus, pendingStatusIds: currentPendingIds } = latestDragHandlers.current;
+        const application = currentApplications.find((item) => item._id === drag.id);
+        if (shouldDrop && application && status && application.status !== status && !currentPendingIds.has(application._id)) changeStatus(application, status);
+        window.setTimeout(() => { movedCardClick.current = false; }, 250);
+      }
+      setDropTarget('');
+    };
+    const handlePointerUp = (event) => finishDrag(event, true);
+    const handlePointerCancel = (event) => finishDrag(event, false);
+    window.addEventListener('pointermove', handlePointerMove, { passive: false });
+    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener('pointercancel', handlePointerCancel);
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+      window.removeEventListener('pointercancel', handlePointerCancel);
+    };
+  }, []);
 
   if (loading) return <LoadingState message="Loading applications…" />;
   if (noResults) {
@@ -85,8 +123,8 @@ function KanbanBoard({ applications, loading, error, onRetry, noResults, onClear
   return (
     <section className="board-section" aria-label="Applications by status">
       {error && <ErrorMessage message={error} onRetry={onRetry} />}
-      <div className="kanban-scroll">
-        <div className="kanban-board">
+      <div className="kanban-scroll max-[760px]:h-[calc(100vh-220px)] max-[760px]:min-h-[360px]">
+        <div className="kanban-board max-[1100px]:grid-cols-[repeat(4,270px)] max-[1100px]:w-max max-[1100px]:min-w-0 max-[760px]:grid-cols-[repeat(4,260px)]">
           {columns.map((status) => {
             const statusApplications = applications.filter((application) => application.status === status);
             const statusClass = status.toLowerCase();
@@ -94,14 +132,12 @@ function KanbanBoard({ applications, loading, error, onRetry, noResults, onClear
             return (
               <section
                 className={`kanban-column kanban-column-${statusClass} ${dropTarget === status ? 'kanban-column-drop-target' : ''}`}
+                data-kanban-status={status}
                 key={status}
                 aria-label={`${status} applications`}
-                onDragOver={(event) => { event.preventDefault(); event.dataTransfer.dropEffect = 'move'; setDropTarget(status); }}
-                onDragLeave={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setDropTarget(''); }}
-                onDrop={(event) => handleDrop(event, status)}
               >
                 <header className="kanban-column-header">
-                  <span className="column-heading"><span className={`status-dot status-dot-${statusClass}`} aria-hidden="true"/><h2>{status === 'Interview' ? 'Interviewing' : status}</h2></span>
+                  <span className="column-heading"><Icon name={statusClass === 'interview' ? 'interviews' : statusClass} size={14} className="column-status-icon"/><h2>{status === 'Interview' ? 'Interviewing' : status}</h2></span>
                   <div className="column-heading-actions"><span className="kanban-count">{error ? '—' : statusApplications.length}</span><button type="button" className="column-settings" aria-label={`${status} column options`} aria-expanded={openMenu === status} title={`${status} column options`} onClick={() => setOpenMenu((current) => current === status ? '' : status)}>⋯</button>{openMenu === status && <div className="column-menu"><button onClick={() => { onAddApplication(status); setOpenMenu(''); }}>Add job here</button><button onClick={() => { onFilterStatus(status); setOpenMenu(''); }}>Filter this status</button></div>}</div>
                 </header>
                 <div className="kanban-cards">
@@ -116,9 +152,8 @@ function KanbanBoard({ applications, loading, error, onRetry, noResults, onClear
                         onRequestDelete={onDeleteApplication}
                         pending={pendingStatusIds.has(application._id)}
                         error={statusErrors[application._id]}
-                        dragging={draggedId === application._id}
-                        onDragStart={setDraggedId}
-                        onDragEnd={() => { setDraggedId(''); setDropTarget(''); }}
+                        onPointerDown={handlePointerDown}
+                        suppressClick={() => movedCardClick.current}
                         key={application._id}
                       />
                     ))

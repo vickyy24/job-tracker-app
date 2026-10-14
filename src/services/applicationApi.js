@@ -59,3 +59,4 @@ export function deleteApplication(id) {
     method: 'DELETE',
   });
 }
+

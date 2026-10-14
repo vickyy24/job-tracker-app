@@ -1,15 +1,15 @@
-import { Button, ErrorMessage, LoadingState } from './UI';
+import { useState } from 'react';
+import { Button, ErrorMessage, LoadingState, Modal } from './UI';
 import Icon from './Icon';
+import { Bar, CartesianGrid, Cell, ComposedChart, Legend, Line, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 const STATUSES = ['Applied', 'Interview', 'Offer', 'Rejected'];
-const STATUS_COLORS = { Applied: '#7047eb', Interview: '#2584e8', Offer: '#239b75', Rejected: '#cf5a6a' };
+const STATUS_COLORS = { Applied: '#ff773b', Interview: '#3478f6', Offer: '#8467f7', Rejected: '#e05268' };
 const STAT_CARDS = [
-  { label: 'Total tracked jobs', key: 'totalApplications', tone: 'purple' },
-  { label: 'Applied', key: 'applied', tone: 'purple' },
-  { label: 'Interviews', key: 'interviews', tone: 'blue' },
-  { label: 'Offers', key: 'offers', tone: 'green' },
-  { label: 'Rejections', key: 'rejections', tone: 'rose' },
-  { label: 'Added today (UTC)', key: 'applicationsToday', tone: 'blue' },
+  { label: 'Total applications', key: 'totalApplications', tone: 'amber', icon: 'assets' },
+  { label: 'Interviews', key: 'interviews', tone: 'teal', icon: 'interviews' },
+  { label: 'Offers', key: 'offers', tone: 'green', icon: 'offer' },
+  { label: 'Rejections', key: 'rejections', tone: 'rose', icon: 'rejected' },
 ];
 
 function metricValue(stats, key) {
@@ -17,58 +17,95 @@ function metricValue(stats, key) {
   return stats?.[key] ?? 0;
 }
 
-export function Overview({ stats, loading, error, onRetry, applications, loadingApplications, applicationsError, onRetryApplications, onSelectApplication, onOpenBoard, onAdd }) {
-  return <section className="page-content dashboard-page">
+function ChartTooltip({ active, payload, label }) {
+  if (!active || !payload?.length) return null;
+  const item = payload[0];
+  const title = item.payload?.status || label;
+  const count = Number(item.value) || 0;
+  if (item.payload?.status) return <div className="chart-tooltip"><strong>{title}</strong><span>{count} {count === 1 ? 'application' : 'applications'} · {item.payload.percent}%</span></div>;
+  if (item.dataKey !== 'count') return null;
+  return <div className="chart-tooltip"><strong>{title}</strong><span>{count} {count === 1 ? 'application' : 'applications'}</span><span>{item.payload?.cumulative || 0} total in range</span></div>;
+}
+
+export function Overview({ stats, loading, error, onRetry, applications, loadingApplications, applicationsError, onRetryApplications, onSelectApplication, onEditApplication, onStatusChange, onDeleteApplication, pendingIds, search, onSearchChange, status, onStatusFilter, sortBy, onSortByChange, order, onOrderChange, onClearFilters, onOpenBoard, onAdd }) {
+  const [chartRange, setChartRange] = useState(6);
+  return <section className="page-content dashboard-page max-[1100px]:[&_.stats-grid]:grid-cols-3 max-[760px]:[&_.stats-grid]:grid-cols-2 max-[760px]:[&_.stat-card]:min-h-[68px] max-[760px]:[&_.stat-card]:p-[10px]">
     <div className="page-heading"><div><p className="eyebrow">YOUR OVERVIEW</p><h1>Dashboard</h1><p>Track your pipeline and keep the next step in view.</p></div><Button variant="secondary" onClick={onOpenBoard}>Open board</Button></div>
     <StatsGrid stats={stats} loading={loading} error={error} onRetry={onRetry}/>
-    <div className="dashboard-insights"><StatusChart stats={stats} loading={loading} error={error}/><MonthlyChart stats={stats} loading={loading} error={error}/></div>
-    <section className="overview-recent"><header><div><p className="eyebrow">RECENT APPLICATIONS</p><h2>Latest in your pipeline</h2><small>Today’s goal counts applications created today, using UTC.</small></div><Button variant="secondary" onClick={onAdd}>+ Add job</Button></header>
-      {loadingApplications ? <LoadingState message="Loading recent applications…"/> : applicationsError ? <ErrorMessage message={applicationsError} onRetry={onRetryApplications}/> : applications.length ? <div className="recent-list">{applications.map((item) => <button key={item._id} onClick={() => onSelectApplication(item)}><span><strong>{item.companyName}</strong><small>{item.jobTitle}</small></span><span className={`status-pill status-${item.status.toLowerCase()}`}>{item.status === 'Interview' ? 'Interviewing' : item.status}</span><time>{new Date(item.applicationDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</time></button>)}</div> : <div className="dashboard-empty"><span className="feature-icon"><Icon name="board" size={20}/></span><h3>No applications yet</h3><p>Add the first job and your real application metrics will appear here.</p><Button onClick={onAdd}>Add your first job</Button></div>}
+    <div className="dashboard-insights"><MonthlyChart stats={stats} loading={loading} error={error} range={chartRange} onRangeChange={setChartRange}/><StatusChart stats={stats} loading={loading} error={error} range={chartRange} onRangeChange={setChartRange}/></div>
+    <section className="overview-recent"><header><div><p className="eyebrow">APPLICATIONS</p><h2>All applications</h2></div><Button onClick={onAdd}><span className="plus-icon">+</span> Add job</Button></header>
+      <div className="dashboard-filters max-[760px]:flex-wrap" aria-label="Filter and sort applications"><label className="search-control max-[760px]:flex-[1_1_100%]"><Icon name="search" size={16}/><input type="search" value={search} onChange={(event) => onSearchChange(event.target.value)} placeholder="Search company or job title…" aria-label="Search by company or job title"/></label><select className="status-filter max-[760px]:flex-1" value={status} onChange={(event) => onStatusFilter(event.target.value)} aria-label="Filter applications by status"><option value="">All statuses</option>{STATUSES.map((item) => <option key={item}>{item}</option>)}</select><label className="sort-control max-[760px]:flex-1"><span>Sort by</span><select value={sortBy} onChange={(event) => onSortByChange(event.target.value)} aria-label="Sort applications by"><option value="applicationDate">Application date</option><option value="createdAt">Created date</option><option value="companyName">Company name</option><option value="jobTitle">Job title</option></select></label><select className="direction-select max-[760px]:flex-1" value={order} onChange={(event) => onOrderChange(event.target.value)} aria-label="Sort direction"><option value="desc">Descending</option><option value="asc">Ascending</option></select>{Boolean(search.trim() || status) && <button className="clear-filters-button" onClick={onClearFilters}>Clear filters</button>}</div>
+      <ApplicationList applications={applications} loading={loadingApplications} error={applicationsError} onRetry={onRetryApplications} onSelect={onSelectApplication} onEdit={onEditApplication} onStatusChange={onStatusChange} onDelete={onDeleteApplication} pendingIds={pendingIds}/>
     </section>
   </section>;
 }
 
 export function StatsGrid({ stats, loading, error, onRetry }) {
-  return <><div className="stats-grid">{STAT_CARDS.map((card) => <article className="stat-card" key={card.key}><div className="stat-card-heading"><span className="stat-label">{card.label}</span><span className={`stat-mark stat-mark-${card.tone}`}/></div><p className="stat-value">{loading || error ? '—' : metricValue(stats, card.key)}</p></article>)}</div>{error && <ErrorMessage message={error} onRetry={onRetry}/>}</>;
+  return <><div className="stats-grid">{STAT_CARDS.map((card) => <article className={`stat-card stat-card-${card.tone}`} key={card.key}><div className="stat-card-heading"><span className="stat-label">{card.label}</span><Icon name={card.icon} className="stat-icon" size={21}/></div><p className="stat-value">{loading || error ? '—' : metricValue(stats, card.key)}</p></article>)}</div>{error && <ErrorMessage message={error} onRetry={onRetry}/>}</>;
 }
 
-function StatusChart({ stats, loading, error }) {
-  const total = stats?.totalApplications || 0;
-  const values = STATUSES.map((status) => ({ status, count: metricValue(stats, status === 'Interview' ? 'interviews' : status === 'Offer' ? 'offers' : status === 'Rejected' ? 'rejections' : 'applied') }));
+function ChartRangeSelect({ range, onRangeChange, label }) {
+  return <select className="chart-period-select" value={range} onChange={(event) => onRangeChange(Number(event.target.value))} aria-label={`Filter ${label} by date`}><option value={6}>Last 6 months</option><option value={12}>Last 12 months</option></select>;
+}
+
+function StatusChart({ stats, loading, error, range, onRangeChange }) {
+  const counts = stats?.applicationsByStatusByRange?.[range] || {};
+  const total = Object.values(counts).reduce((sum, count) => sum + (Number(count) || 0), 0);
+  const values = STATUSES.map((key) => ({ status: key === 'Interview' ? 'Interviewing' : key, count: Number(counts[key]) || 0, percent: total ? Math.round((counts[key] || 0) / total * 100) : 0, color: STATUS_COLORS[key] }));
+  const populatedValues = values.filter((entry) => entry.count > 0);
   return <section className="chart-card" aria-label="Applications by status">
-    <header><div><p className="eyebrow">PIPELINE</p><h2>Applications by status</h2></div><span className="chart-total">{loading || error ? '—' : total} total</span></header>
-    {loading ? <LoadingState message="Loading status totals…"/> : error ? <p className="chart-message">Status breakdown unavailable.</p> : total === 0 ? <p className="chart-message">Status distribution will appear when you add applications.</p> : <div className="status-chart">{values.map(({ status, count }) => <div className="status-chart-row" key={status}><div><span className="status-dot" style={{ backgroundColor: STATUS_COLORS[status] }}/><span>{status === 'Interview' ? 'Interviewing' : status}</span><strong>{count}</strong></div><div className="bar-track"><span style={{ width: `${count ? Math.max(3, count / total * 100) : 0}%`, backgroundColor: STATUS_COLORS[status] }}/></div></div>)}</div>}
+    <header><div><p className="eyebrow">PIPELINE</p><h2>Status breakdown</h2></div><ChartRangeSelect range={range} onRangeChange={onRangeChange} label="status breakdown"/></header>
+    {loading ? <LoadingState message="Loading status totals…"/> : error ? <p className="chart-message">Status breakdown unavailable.</p> : total === 0 ? <p className="chart-message">No applications in the last {range} months. Add a job to see your pipeline.</p> : <div className="status-chart max-[760px]:grid-cols-1"><div className="recharts-pie-wrap max-[760px]:h-[220px]" role="img" aria-label={`Status breakdown for the last ${range} months: ${values.map(({ status, count }) => `${status} ${count}`).join(', ')}`}><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={populatedValues} dataKey="count" nameKey="status" innerRadius="64%" outerRadius="91%" paddingAngle={3} stroke="var(--surface)" strokeWidth={3} isAnimationActive>{populatedValues.map((entry) => <Cell key={entry.status} fill={entry.color}/>)}</Pie><Tooltip shared={false} content={<ChartTooltip/>} wrapperStyle={{ pointerEvents: 'none', zIndex: 5 }}/></PieChart></ResponsiveContainer><div className="donut-center"><small>LAST {range} MONTHS</small><strong>{total}</strong><span>tracked</span></div></div><div className="status-legend">{values.map(({ status, count, percent, color }) => <div className="status-legend-item" key={status}><span className="status-dot" style={{ backgroundColor: color }}/><span>{status}</span><strong>{count} <small>({percent}%)</small></strong></div>)}</div></div>}
   </section>;
 }
 
-function MonthlyChart({ stats, loading, error }) {
+function MonthlyChart({ stats, loading, error, range, onRangeChange }) {
   const now = new Date();
-  const months = Array.from({ length: 6 }, (_, index) => {
-    const date = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 5 + index, 1));
+  const months = Array.from({ length: range }, (_, index) => {
+    const date = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - range + 1 + index, 1));
     const found = stats?.applicationsByMonth?.find((item) => item.year === date.getUTCFullYear() && item.month === date.getUTCMonth() + 1);
-    return { label: date.toLocaleDateString(undefined, { month: 'short', timeZone: 'UTC' }), count: found?.count || 0 };
+    const count = found?.count || 0;
+    return { label: date.toLocaleDateString(undefined, { month: 'short', timeZone: 'UTC' }), count };
   });
-  const max = Math.max(...months.map((month) => month.count), 1);
-  const points = months.map((month, index) => `${25 + index * 54},${110 - month.count / max * 78}`).join(' ');
+  let runningTotal = 0;
+  months.forEach((month) => { runningTotal += month.count; month.cumulative = runningTotal; });
   const total = months.reduce((sum, month) => sum + month.count, 0);
   return <section className="chart-card" aria-label="Applications created by month">
-    <header><div><p className="eyebrow">ACTIVITY</p><h2>Applications over time</h2></div><span className="chart-total">Last 6 months</span></header>
-    {loading ? <LoadingState message="Loading activity…"/> : error ? <p className="chart-message">Application history unavailable.</p> : total === 0 ? <p className="chart-message">Monthly activity will appear when applications are created.</p> : <div className="monthly-chart"><svg viewBox="0 0 320 145" role="img" aria-label={`Applications created in the last six months: ${months.map((month) => `${month.label} ${month.count}`).join(', ')}`}><line x1="18" y1="110" x2="302" y2="110" className="chart-axis"/><polyline points={points} className="chart-line"/>{months.map((month, index) => <g key={month.label}><circle cx={25 + index * 54} cy={110 - month.count / max * 78} r="3.5" className="chart-point"/><text x={25 + index * 54} y="132" textAnchor="middle">{month.label}</text></g>)}</svg></div>}
+    <header><div><p className="eyebrow">ACTIVITY</p><h2>Applications over time</h2></div><ChartRangeSelect range={range} onRangeChange={onRangeChange} label="applications over time"/></header>
+    {loading ? <LoadingState message="Loading activity…"/> : error ? <p className="chart-message">Application history unavailable.</p> : total === 0 ? <p className="chart-message">No applications in this period yet. Add a job to see activity.</p> : <div className="monthly-chart" role="img" aria-label={`Applications created in the last ${range} months: ${months.map((month) => `${month.label} ${month.count}`).join(', ')}`}><ResponsiveContainer width="100%" height="100%"><ComposedChart data={months} margin={{ top: 12, right: 10, bottom: 0, left: -18 }}><CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="3 5"/><XAxis dataKey="label" tick={{ fill: 'var(--muted)', fontSize: 11 }} axisLine={false} tickLine={false}/><YAxis yAxisId="count" allowDecimals={false} width={34} tick={{ fill: 'var(--muted)', fontSize: 11 }} axisLine={false} tickLine={false}/><YAxis yAxisId="cumulative" orientation="right" hide/><Tooltip shared={false} cursor={false} content={<ChartTooltip/>} wrapperStyle={{ pointerEvents: 'none', zIndex: 5 }}/><Legend verticalAlign="bottom" height={28} iconType="circle" wrapperStyle={{ color: 'var(--subtle)', fontSize: 11 }}/><Bar yAxisId="count" dataKey="count" name="Applications" fill="#ff8042" radius={[5, 5, 0, 0]} activeBar={{ fill: '#e7672d' }} maxBarSize={range === 6 ? 34 : 22}/><Line yAxisId="cumulative" type="monotone" dataKey="cumulative" name="Running total" stroke="#8068f8" strokeWidth={3} dot={false} activeDot={{ r: 5, stroke: 'var(--surface)', strokeWidth: 2 }} isAnimationActive/></ComposedChart></ResponsiveContainer></div>}
   </section>;
 }
 
 export function AssetsPage({ onBoard }) {
-  return <section className="page-content"><div className="page-heading"><div><p className="eyebrow">JOB SEARCH MATERIALS</p><h1>Assets</h1><p>Keep helpful resources close to your application workflow.</p></div></div><div className="feature-empty"><span className="feature-icon"><Icon name="assets" size={22}/></span><h2>Resource library isn’t connected yet</h2><p>The current API stores job applications only. No upload controls are shown until the backend supports documents.</p><Button variant="secondary" onClick={onBoard}>Go to board</Button></div></section>;
+  return <section className="page-content"><div className="page-heading"><div><p className="eyebrow">JOB SEARCH MATERIALS</p><h1>Assets</h1><p>Keep helpful resources close to your application workflow.</p></div></div><div className="feature-empty"><span className="feature-icon"><Icon name="assets" size={22}/></span><h2>Resource library isn’t connected yet</h2><p>The current API stores job applications only. File uploads and document storage are not enabled.</p><Button variant="secondary" onClick={onBoard}>Go to board</Button></div></section>;
+}
+
+export function ApplicationDetails({ application, onClose, onEdit }) {
+  const date = new Date(application.applicationDate).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+  return <Modal className="application-modal application-details-modal" labelledBy="application-details-title" onClose={onClose}>
+    <div className="application-details-content">
+      <div className="modal-heading"><div><p className="eyebrow">JOB APPLICATION</p><h2 id="application-details-title">{application.companyName}</h2><p className="details-job-title">{application.jobTitle}</p></div><button className="modal-close" type="button" aria-label="Close details" title="Close" onClick={onClose}><Icon name="close" size={16}/></button></div>
+      <div className="application-details-grid">
+        <div className="application-detail"><span>Status</span><strong className={`details-status details-status-${application.status.toLowerCase()}`}>{application.status === 'Interview' ? 'Interviewing' : application.status}</strong></div>
+        <div className="application-detail"><span>Application date</span><strong>{date}</strong></div>
+        {application.salary && <div className="application-detail"><span>Salary</span><strong>{application.salary}</strong></div>}
+        {application.location && <div className="application-detail"><span>Location</span><strong>{application.location}</strong></div>}
+      </div>
+      <section className="application-details-notes"><h3>Notes</h3><p>{application.notes?.trim() || 'No notes added.'}</p></section>
+    </div>
+    <div className="form-actions"><Button variant="secondary" onClick={onClose}>Close</Button><Button onClick={() => onEdit(application)}><Icon name="pencil" size={15}/> Edit application</Button></div>
+  </Modal>;
 }
 
 export function SettingsPage({ workspace, onWorkspaceChange, dailyGoal, onDailyGoalChange }) {
   return <section className="page-content settings-page"><div className="page-heading"><div><p className="eyebrow">PREFERENCES</p><h1>Settings</h1><p>Personalize your job-tracking workspace.</p></div></div>
-    <section className="settings-card"><h2>Workspace</h2><label className="settings-field">Workspace title<input value={workspace} maxLength={50} onChange={(event) => onWorkspaceChange(event.target.value || 'Job Tracker')}/></label><label className="settings-field">Daily application goal<input type="number" min="1" max="99" value={dailyGoal} onChange={(event) => onDailyGoalChange(Math.min(99, Math.max(1, Number(event.target.value) || 1)))}/><small>Counts records created today in UTC.</small></label></section>
+    <section className="settings-card"><h2>Workspace</h2><label className="settings-field">Workspace title<input value={workspace} maxLength={50} onChange={(event) => onWorkspaceChange(event.target.value || 'Job Tracker')}/></label></section>
+    <section className="settings-card"><h2>Daily goal</h2><label className="settings-field">Applications per day<input type="number" min="1" max="100" step="1" value={dailyGoal} onChange={(event) => { const value = Number(event.target.value); if (Number.isInteger(value) && value >= 1 && value <= 100) onDailyGoalChange(value); }}/><small>Counts applications created today using UTC. Your goal is saved in this browser.</small></label></section>
   </section>;
 }
 
-export function ApplicationList({ applications, loading, error, onRetry, onSelect, onStatusChange, onDelete, pendingIds }) {
+export function ApplicationList({ applications, loading, error, onRetry, onSelect, onEdit, onStatusChange, onDelete, pendingIds }) {
   if (loading) return <LoadingState message="Loading applications…"/>;
   if (error) return <ErrorMessage message={error} onRetry={onRetry}/>;
-  return <div className="application-table-wrap"><table className="application-table"><thead><tr><th>Company</th><th>Job title</th><th>Applied</th><th>Status</th><th>Actions</th></tr></thead><tbody>{applications.map((item) => <tr key={item._id}><td><button className="table-link" onClick={() => onSelect(item)}>{item.companyName}</button></td><td>{item.jobTitle}</td><td>{new Date(item.applicationDate).toLocaleDateString()}</td><td><select aria-label={`Change status for ${item.companyName}`} value={item.status} disabled={pendingIds.has(item._id)} onChange={(event) => onStatusChange(item, event.target.value)}>{STATUSES.map((value) => <option key={value}>{value}</option>)}</select></td><td><button className="table-action" onClick={() => onSelect(item)}>Edit</button><button className="table-action danger" onClick={() => onDelete(item)}>Delete</button></td></tr>)}</tbody></table>{!applications.length && <div className="table-empty">No applications match your current filters.</div>}</div>;
+  return <div className="application-table-wrap"><table className="application-table"><thead><tr><th>Company</th><th>Job title</th><th>Applied</th><th>Status</th><th>Actions</th></tr></thead><tbody>{applications.map((item) => <tr key={item._id}><td><button className="table-link" onClick={() => onSelect(item)}>{item.companyName}</button></td><td>{item.jobTitle}</td><td>{new Date(item.applicationDate).toLocaleDateString()}</td><td><select aria-label={`Change status for ${item.companyName}`} value={item.status} disabled={pendingIds.has(item._id)} onChange={(event) => onStatusChange(item, event.target.value)}>{STATUSES.map((value) => <option key={value}>{value}</option>)}</select></td><td><button className="table-action" onClick={() => onEdit(item)}>Edit</button><button className="table-action danger" onClick={() => onDelete(item)}>Delete</button></td></tr>)}</tbody></table>{!applications.length && <div className="table-empty">No applications match your current filters.</div>}</div>;
 }

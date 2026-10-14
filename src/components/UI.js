@@ -112,7 +112,7 @@ export function StatusBadge({ status }) {
 export function LoadingState({ message = 'Loading…' }) {
   return (
     <div className="ui-loading" role="status" aria-live="polite">
-      <span className="ui-spinner" aria-hidden="true" />
+      <span className="ui-spinner animate-spin motion-reduce:animate-none" aria-hidden="true" />
       <span>{message}</span>
     </div>
   );

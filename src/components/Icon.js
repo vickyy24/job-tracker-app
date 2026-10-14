@@ -10,6 +10,10 @@ import {
   MapPin,
   Monitor,
   Moon,
+  CircleX,
+  FileCheck2,
+  Trophy,
+  UsersRound,
   PanelLeftClose,
   PanelLeftOpen,
   Pencil,
@@ -40,6 +44,10 @@ const icons = {
   collapse: PanelLeftClose,
   expand: PanelLeftOpen,
   monitor: Monitor,
+  interviews: UsersRound,
+  offer: Trophy,
+  rejected: CircleX,
+  applied: FileCheck2,
 };
 
 function Icon({ name, size = 18, className }) {
