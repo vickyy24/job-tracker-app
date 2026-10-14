@@ -16,23 +16,35 @@ Charts use application dates. Daily activity covers the last 7 days, weekly acti
 
 ## Product Screenshots
 
-The screenshots below show the dashboard, application board, assets, and settings. Sample applications are stored in MongoDB through the API seeder and are not bundled with this frontend. Hover over a status segment to view its count and percentage, or select a segment to filter the application list.
+The screenshots below show the dashboard, application board, assets, settings, and application forms at laptop size. Sample applications are stored in MongoDB through the API seeder and are not bundled with this frontend. Hover over a status segment to view its count and percentage, or select a segment to filter the application list.
 
 ### Dashboard
 
-![Job Tracker dashboard with percentage labels on the status chart and counts on the activity chart](screenshots/01-dashboard.png)
+![Job Tracker dashboard with percentage labels on the status chart and counts on the activity chart](screenshots/01-dashboard.jpg)
 
 ### Board
 
-![Job Tracker board with all application companies across the four statuses](screenshots/02-board.png)
+![Job Tracker board with all application companies across the four statuses](screenshots/02-board.jpg)
 
 ### Assets
 
-![Job Tracker Assets page](screenshots/03-assets.png)
+![Job Tracker Assets page](screenshots/03-assets.jpg)
 
 ### Settings
 
-![Job Tracker settings page](screenshots/04-settings.png)
+![Job Tracker settings page](screenshots/04-settings.jpg)
+
+### Add application form
+
+![Job Tracker add application form](screenshots/05-add-application.jpg)
+
+### Edit application form
+
+![Job Tracker edit application form](screenshots/06-edit-application.jpg)
+
+### Workspace form
+
+![Job Tracker workspace title form](screenshots/07-workspace-form.jpg)
 
 ## Run locally
 
