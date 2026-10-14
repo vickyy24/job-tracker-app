@@ -485,6 +485,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   font-size: 12px;
 }
 
+.status-filter:hover,
+.sort-control:hover,
+.direction-select:hover,
+.chart-period-select:hover,
+.application-table select:hover,
+.job-status-control select:hover:not(:disabled) {
+  border-color: #b8b8c5;
+}
+
 .status-filter {
   min-width: 120px;
 }
@@ -931,16 +940,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   min-width: 94px;
   height: 32px;
   padding: 0 25px 0 10px;
-  border: 1px solid transparent;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 7px;
   font-size: 11px;
   font-weight: 650;
   cursor: pointer;
   transition: color .15s ease, background-color .15s ease, border-color .15s ease;
-}
-
-.job-status-control select:hover:not(:disabled) {
-  border-color: currentColor;
 }
 
 .job-status-control select:focus,
@@ -952,46 +959,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .job-status-control select:disabled {
   cursor: wait;
   opacity: .7;
-}
-
-.job-status-control .status-applied {
-  color: #6745ca;
-  background-color: #f1ecff;
-}
-
-.job-status-control .status-interview {
-  color: #267cc4;
-  background-color: #eaf5ff;
-}
-
-.job-status-control .status-offer {
-  color: #23805f;
-  background-color: #e9f7f0;
-}
-
-.job-status-control .status-rejected {
-  color: #b04e5b;
-  background-color: #fff0f1;
-}
-
-.app-shell[data-theme='dark'] .job-status-control .status-applied {
-  color: #c4b2ff;
-  background-color: #332a4e;
-}
-
-.app-shell[data-theme='dark'] .job-status-control .status-interview {
-  color: #a5d4ff;
-  background-color: #20384e;
-}
-
-.app-shell[data-theme='dark'] .job-status-control .status-offer {
-  color: #9ee0c6;
-  background-color: #203a31;
-}
-
-.app-shell[data-theme='dark'] .job-status-control .status-rejected {
-  color: #ffb3bc;
-  background-color: #492b30;
 }
 
 .job-edit-button {
@@ -2022,7 +1989,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .chart-period-select:hover {
-  border-color: #cfc2f7;
+  border-color: #b8b8c5;
 }
 
 .chart-total {
