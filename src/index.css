@@ -2705,35 +2705,36 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   }
 
   .app-shell .workspace-title strong {
-    font-size: 12px;
+    font-size: 14px;
     white-space: nowrap;
   }
 
   .app-shell .workspace-title .icon-button {
     flex: none;
-    width: 18px;
-    height: 18px;
+    width: 21px;
+    height: 21px;
   }
 
   .app-shell .topbar-actions {
     flex: none;
     gap: 5px;
+    margin-left: auto;
   }
 
   .app-shell .daily-goal {
     box-sizing: border-box;
     flex: none;
-    gap: 4px;
-    height: 31px;
-    padding: 3px 6px;
-    font-size: 8px;
+    gap: 5px;
+    height: 36px;
+    padding: 6px 8px;
+    font-size: 10px;
     white-space: nowrap;
   }
 
   .app-shell .daily-goal > span,
   .app-shell .daily-goal strong {
     white-space: nowrap;
-    font-size: 8px;
+    font-size: 10px;
   }
 
   .app-shell .daily-goal > svg {
@@ -2743,14 +2744,18 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   }
 
   .app-shell .daily-goal .goal-track {
-    width: 27px;
+    width: 40px;
     flex: none;
   }
 
   .app-shell .topbar-theme-toggle {
-    width: 31px;
-    height: 31px;
+    width: 36px;
+    height: 36px;
     flex: none;
+  }
+
+  .app-shell .topbar {
+    padding-right: 10px;
   }
 
   .app-shell .board-toolbar {
