@@ -32,6 +32,9 @@ function App() {
   const [loadingStats, setLoadingStats] = useState(true);
   const [statsError, setStatsError] = useState('');
   const [applications, setApplications] = useState([]);
+  const [chartApplications, setChartApplications] = useState([]);
+  const [loadingChartApplications, setLoadingChartApplications] = useState(true);
+  const [chartApplicationsError, setChartApplicationsError] = useState('');
   const [loadingApplications, setLoadingApplications] = useState(true);
   const [applicationsError, setApplicationsError] = useState('');
   const [search, setSearch] = useState('');
@@ -98,19 +101,27 @@ function App() {
       .catch((error) => { if (requestId === requestNumber.current) setApplicationsError(error.message); })
       .finally(() => { if (requestId === requestNumber.current) setLoadingApplications(false); });
   }, []);
+  const refreshChartApplications = useCallback(() => {
+    setLoadingChartApplications(true); setChartApplicationsError('');
+    return listApplications({ sortBy: 'applicationDate', order: 'desc' })
+      .then((result) => setChartApplications(result.data))
+      .catch((error) => setChartApplicationsError(error.message))
+      .finally(() => setLoadingChartApplications(false));
+  }, []);
   const currentFilters = () => ({ search: search.trim(), status, sortBy, order });
   useEffect(() => { refreshStats(); }, [refreshStats]);
+  useEffect(() => { refreshChartApplications(); }, [refreshChartApplications]);
   useEffect(() => { const timer = setTimeout(() => refreshApplications({ search: search.trim(), status, sortBy, order }), 250); return () => clearTimeout(timer); }, [search, status, sortBy, order, refreshApplications]);
   const clearFilters = () => { requestNumber.current += 1; setSearch(''); setStatus(''); };
 
   const saveApplication = async (application) => {
     setSaving(true); setFormError('');
-    try { await createApplication(application); setShowForm(false); refreshApplications(currentFilters()); refreshStats(); }
+    try { await createApplication(application); setShowForm(false); refreshApplications(currentFilters()); refreshChartApplications(); refreshStats(); }
     catch (error) { setFormError(error.message); } finally { setSaving(false); }
   };
   const saveEdit = async (updates) => {
     setSaving(true); setEditError('');
-    try { await updateApplication(editing._id, updates); setEditing(null); refreshApplications(currentFilters()); refreshStats(); }
+    try { await updateApplication(editing._id, updates); setEditing(null); refreshApplications(currentFilters()); refreshChartApplications(); refreshStats(); }
     catch (error) { setEditError(error.message); } finally { setSaving(false); }
   };
   const changeStatus = async (application, nextStatus) => {
@@ -121,7 +132,7 @@ function App() {
       .filter((item) => !status || item.status === status));
     try {
       await updateApplication(application._id, { status: nextStatus });
-      refreshStats();
+      refreshChartApplications(); refreshStats();
     } catch (error) {
       setApplications(previousApplications);
       setStatusErrors((current) => ({ ...current, [application._id]: error.message }));
@@ -130,7 +141,7 @@ function App() {
   };
   const confirmDelete = async () => {
     setDeleting(true); setDeleteError('');
-    try { await deleteApplicationRequest(deleteTarget._id); setApplications((current) => current.filter((item) => item._id !== deleteTarget._id)); setDeleteTarget(null); refreshStats(); }
+    try { await deleteApplicationRequest(deleteTarget._id); setApplications((current) => current.filter((item) => item._id !== deleteTarget._id)); setDeleteTarget(null); refreshChartApplications(); refreshStats(); }
     catch (error) { setDeleteError(error.message); } finally { setDeleting(false); }
   };
   const openCreate = (selectedStatus = 'Applied') => { setNewStatus(selectedStatus); setFormError(''); setShowForm(true); };
@@ -172,7 +183,7 @@ function App() {
           {viewMode === 'board' ? <KanbanBoard applications={applications} loading={loadingApplications} error={applicationsError} onRetry={() => refreshApplications(currentFilters())} noResults={Boolean(search.trim() || status) && applications.length === 0 && !applicationsError} onClearFilters={clearFilters} onSelectApplication={openDetails} onAddApplication={openCreate} onFilterStatus={(nextStatus) => setStatus(nextStatus)} onStatusChange={changeStatus} onDeleteApplication={(item) => { setDeleteTarget(item); setDeleteError(''); }} pendingStatusIds={pendingIds} statusErrors={statusErrors}/>
             : <ApplicationList applications={applications} loading={loadingApplications} error={applicationsError} onRetry={() => refreshApplications(currentFilters())} onSelect={openDetails} onEdit={openEdit} onStatusChange={changeStatus} onDelete={(item) => { setDeleteTarget(item); setDeleteError(''); }} pendingIds={pendingIds}/>}
         </>}
-        {page === 'dashboard' && <Overview stats={stats} loading={loadingStats} error={statsError} onRetry={refreshStats} applications={applications} loadingApplications={loadingApplications} applicationsError={applicationsError} onRetryApplications={() => refreshApplications(currentFilters())} onSelectApplication={openDetails} onEditApplication={openEdit} onStatusChange={changeStatus} onDeleteApplication={(item) => { setDeleteTarget(item); setDeleteError(''); }} pendingIds={pendingIds} search={search} onSearchChange={(value) => { requestNumber.current += 1; setSearch(value); }} status={status} onStatusFilter={(value) => { requestNumber.current += 1; setStatus(value); }} sortBy={sortBy} onSortByChange={setSortBy} order={order} onOrderChange={setOrder} onClearFilters={clearFilters} onOpenBoard={() => navigate('board')} onAdd={() => openCreate()}/>}
+        {page === 'dashboard' && <Overview stats={stats} loading={loadingStats} error={statsError} onRetry={refreshStats} applications={applications} chartApplications={chartApplications} loadingChartApplications={loadingChartApplications} chartApplicationsError={chartApplicationsError} onRetryChartApplications={refreshChartApplications} loadingApplications={loadingApplications} applicationsError={applicationsError} onRetryApplications={() => refreshApplications(currentFilters())} onSelectApplication={openDetails} onEditApplication={openEdit} onStatusChange={changeStatus} onDeleteApplication={(item) => { setDeleteTarget(item); setDeleteError(''); }} pendingIds={pendingIds} search={search} onSearchChange={(value) => { requestNumber.current += 1; setSearch(value); }} status={status} onStatusFilter={(value) => { requestNumber.current += 1; setStatus(value); }} sortBy={sortBy} onSortByChange={setSortBy} order={order} onOrderChange={setOrder} onClearFilters={clearFilters} onOpenBoard={() => navigate('board')} onAdd={() => openCreate()}/>}
         {page === 'assets' && <AssetsPage onBoard={() => navigate('board')}/>}
         {page === 'settings' && <SettingsPage workspace={workspace} onWorkspaceChange={setWorkspace} dailyGoal={dailyGoal} onDailyGoalChange={setDailyGoal}/>}
         {!['dashboard', 'board', 'assets', 'settings'].includes(page) && <Overview stats={stats} loading={loadingStats} error={statsError} onRetry={refreshStats} applications={applications} loadingApplications={loadingApplications} applicationsError={applicationsError} onRetryApplications={() => refreshApplications(currentFilters())} onSelectApplication={openDetails} onEditApplication={openEdit} onStatusChange={changeStatus} onDeleteApplication={(item) => { setDeleteTarget(item); setDeleteError(''); }} pendingIds={pendingIds} search={search} onSearchChange={setSearch} status={status} onStatusFilter={setStatus} sortBy={sortBy} onSortByChange={setSortBy} order={order} onOrderChange={setOrder} onClearFilters={clearFilters} onOpenBoard={() => navigate('board')} onAdd={() => openCreate()}/>}

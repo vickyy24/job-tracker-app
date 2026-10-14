@@ -1,21 +1,72 @@
-# Job Tracker Frontend
+# Job Tracker
 
-<img width="1919" height="966" alt="image" src="https://github.com/user-attachments/assets/937f72db-be08-43b2-980d-c3c3a8ff6a0d" />
+A personal job search dashboard with a searchable application list, Kanban board, status pipeline, and monthly activity chart. The React frontend stores application records through the [Job Tracker API](https://github.com/vickyy24/job-tracker-api), which persists them in MongoDB.
 
-## Run locally with the API
+## Features
 
-1. Start MongoDB.
-2. In `job-tracker-api`, install dependencies, copy `.env.example` to `.env`, set `MONGODB_URI` if needed, and run `npm start`.
-3. In this directory, install dependencies, copy `.env.example` to `.env.local`, and run `npm start`.
+- Create, view, edit, search, sort, filter, and delete job applications.
+- Track applications through Applied, Interview, Offer, and Rejected statuses in a Kanban board or table.
+- See application totals, a status breakdown, and monthly application activity on the dashboard.
+- Choose a six- or twelve-month activity view, and an all-time or current-year status view.
+- Set a daily application goal and choose a light or dark theme. These preferences are saved in the current browser.
+- Record company, job title, salary or stipend, location, application date, status, and notes.
 
-The API defaults to `http://localhost:5000/api` and allows the frontend at `http://localhost:3000`. Set `REACT_APP_API_BASE_URL` in `.env.local` if the API uses another URL. Restart the frontend after changing environment values.
+Charts use application dates and include the current calendar month. The daily goal counts records created today in UTC. Charts use the complete application list, independently of search and status filters on the board.
 
-## Available commands
+## Run locally
 
-- `npm start` runs the frontend at `http://localhost:3000`.
-- `npm run build` creates the production build in `build/`.
+Requirements: Node.js and a reachable MongoDB database.
 
-## Release notes
+1. Clone the [API repository](https://github.com/vickyy24/job-tracker-api), open its folder, install dependencies, and configure `MONGODB_URI` in `.env` using its `.env.example` file.
 
-- A local demo needs the API and a reachable MongoDB database. Without them, the dashboard shows an API connection error and application workflows cannot be completed.
-- Authentication is not included in this MVP.
+   ```sh
+   npm install
+   ```
+
+2. From the API folder, optionally load a few fictional applications to preview chart changes across months and statuses:
+
+   ```sh
+   npm run seed:demo
+   ```
+
+   The seeder is safe to rerun. It adds up to five sample applications dated May through September 2026, skips sample companies already present, and marks records with the `Demo ·` prefix. Remove them by deleting applications with that prefix in the app or MongoDB.
+
+3. Start the API in its folder:
+
+   ```sh
+   npm start
+   ```
+
+4. Clone this frontend repository into a separate folder, install dependencies, and start the app:
+
+   ```sh
+   npm install
+   npm start
+   ```
+
+5. Open [http://localhost:3000](http://localhost:3000). By default, the frontend connects to `http://localhost:5000/api`.
+
+To use a different API URL, create `.env.local` in this folder and set `REACT_APP_API_BASE_URL`, then restart the frontend:
+
+```env
+REACT_APP_API_BASE_URL=http://localhost:5000/api
+```
+
+## Commands
+
+- `npm start` starts the React development server and Tailwind stylesheet watcher.
+- `npm run build` creates an optimized production build in `build/`.
+- `npm test` runs the React Scripts test runner.
+
+## Project structure
+
+- `src/App.js` manages application data, navigation, and modal flows.
+- `src/components/` contains the dashboard, application forms, shared UI, and Kanban board.
+- `src/services/applicationApi.js` contains the HTTP client for the API.
+- `src/index.css` contains app styling and Tailwind directives.
+
+## Data and limitations
+
+- Application records are stored by the API in MongoDB. Do not put database credentials in this frontend repository.
+- Authentication, multi-user workspaces, and synchronized preferences are not included.
+- Assets currently describes the resource library feature; uploads and document storage are not available.

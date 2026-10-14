@@ -689,7 +689,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .kanban-column-applied .kanban-column-header {
-  background: #7047eb;
+  background: #c87912;
 }
 
 .kanban-column-interview .kanban-column-header {
@@ -704,7 +704,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   background: #cf5a6a;
 }
 
-.kanban-column-applied .job-card { --job-accent: #7047eb; }
+.kanban-column-applied .job-card { --job-accent: #c87912; }
 .kanban-column-interview .job-card { --job-accent: #2584e8; }
 .kanban-column-offer .job-card { --job-accent: #239b75; }
 .kanban-column-rejected .job-card { --job-accent: #cf5a6a; }
@@ -1634,8 +1634,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .status-applied {
-  color: #6745ca;
-  background: #f1ecff;
+  color: #98590b;
+  background: #fff2d8;
 }
 
 .status-interview {
@@ -1964,26 +1964,25 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 .dashboard-insights {
   display: grid;
-  grid-template-columns: minmax(0,1.45fr) minmax(320px,1fr);
-  gap: 14px;
+  grid-template-columns: minmax(0,1.35fr) minmax(330px,1fr);
+  gap: 16px;
   margin: 0 0 12px;
 }
 
 .chart-card {
   min-width: 0;
-  min-height: 322px;
-  padding: 17px;
+  min-height: 350px;
+  padding: 20px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 9px;
-  box-shadow: var(--shadow);
-  transition: transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+  border-radius: 16px;
+  box-shadow: 0 8px 26px rgba(33, 30, 55, .055);
+  transition: border-color .18s ease,box-shadow .18s ease;
 }
 
 .chart-card:hover {
-  transform: translateY(-2px);
   border-color: #d6cafa;
-  box-shadow: 0 8px 20px rgba(36,35,51,.09);
+  box-shadow: 0 12px 30px rgba(33, 30, 55, .085);
 }
 
 .chart-card>header {
@@ -2000,8 +1999,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 .chart-card h2 {
   margin: 0;
-  font-size: 14px;
-  font-weight: 650;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+
+.chart-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
 }
 
 .chart-period-select {
@@ -2020,26 +2026,28 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .chart-total {
-  padding: 4px 7px;
-  color: var(--subtle);
-  background: var(--surface-muted);
-  border-radius: 5px;
-  font-size: 10px;
+  padding: 6px 10px;
+  color: var(--purple);
+  background: var(--purple-soft);
+  border: 1px solid color-mix(in srgb, var(--purple) 12%, transparent);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 650;
   white-space: nowrap;
 }
 
 .status-chart {
   display: grid;
-  grid-template-columns: minmax(150px,1fr) minmax(130px,.9fr);
+  grid-template-columns: minmax(150px,1fr) minmax(145px,.95fr);
   align-items: center;
-  gap: 14px;
-  min-height: 245px;
+  gap: 10px;
+  min-height: 270px;
 }
 
 .recharts-pie-wrap {
   position: relative;
-  width: min(100%, 250px);
-  height: 245px;
+  width: min(100%, 260px);
+  height: 260px;
   margin: auto;
 }
 
@@ -2054,13 +2062,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 .donut-center small {
   color: var(--muted);
-  font-size: 9px;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
 }
 
 .donut-center strong {
   color: var(--purple);
-  font-size: 29px;
+  font-size: 34px;
   line-height: 1.15;
 }
 
@@ -2098,19 +2107,20 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 .status-legend {
   display: grid;
-  gap: 15px;
+  gap: 13px;
 }
 
 .status-legend-item {
-  display: flex;
+  display: grid;
+  grid-template-columns: 9px 1fr auto;
   align-items: center;
-  gap: 7px;
+  column-gap: 8px;
+  row-gap: 7px;
   color: var(--subtle);
   font-size: 12px;
 }
 
 .status-legend-item strong {
-  margin-left: auto;
   color: var(--text);
   font-size: 12px;
   white-space: nowrap;
@@ -2122,9 +2132,24 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   font-weight: 500;
 }
 
+.status-legend-track {
+  grid-column: 2 / 4;
+  display: block;
+  height: 5px;
+  overflow: hidden;
+  background: var(--surface-muted);
+  border-radius: 999px;
+}
+
+.status-legend-track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+}
+
 .monthly-chart {
-  height: 260px;
-  padding: 4px 1px 0;
+  height: 285px;
+  padding: 8px 2px 0;
 }
 
 .chart-message {
@@ -2185,8 +2210,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .app-shell[data-theme='dark'] .status-applied {
-  color: #c4b2ff;
-  background: #332a4e;
+  color: #ffd18a;
+  background: #493719;
 }
 
 .app-shell[data-theme='dark'] .status-interview {
