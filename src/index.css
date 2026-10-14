@@ -2705,7 +2705,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   }
 
   .app-shell .workspace-title strong {
-    font-size: 14px;
+    font-size: 15px;
+    line-height: 1;
     white-space: nowrap;
   }
 
@@ -2752,6 +2753,22 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     width: 36px;
     height: 36px;
     flex: none;
+  }
+
+  .app-shell .dashboard-page .page-heading {
+    min-width: 0;
+    gap: 8px;
+  }
+
+  .app-shell .dashboard-page .page-heading > .ui-button {
+    box-sizing: border-box;
+    flex: none;
+    width: auto;
+    min-width: max-content;
+    min-height: 34px;
+    padding: 0 9px;
+    font-size: 10px;
+    white-space: nowrap;
   }
 
   .app-shell .topbar {
