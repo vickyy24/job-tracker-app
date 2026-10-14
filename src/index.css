@@ -2698,6 +2698,79 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 @media (max-width: 760px) {
+  /* A collapsed desktop rail must become a full mobile drawer. */
+  .app-shell.sidebar-collapsed {
+    --sidebar-width: 220px;
+  }
+
+  .app-shell.sidebar-collapsed .sidebar {
+    align-items: stretch;
+    padding: 18px 13px 14px;
+  }
+
+  .app-shell.sidebar-collapsed .sidebar-heading {
+    justify-content: space-between;
+    gap: 0;
+  }
+
+  .app-shell.sidebar-collapsed .brand {
+    flex: initial;
+    justify-content: flex-start;
+    min-width: auto;
+    padding: 0 8px;
+  }
+
+  .app-shell.sidebar-collapsed .sidebar-collapse {
+    display: grid;
+    width: 28px;
+  }
+
+  .app-shell.sidebar-collapsed .brand-name,
+  .app-shell.sidebar-collapsed .sidebar-tagline > span:last-child {
+    display: inline;
+  }
+
+  .app-shell.sidebar-collapsed .nav-link > span {
+    display: block;
+    flex: 1;
+  }
+
+  .app-shell.sidebar-collapsed .nav-chevron {
+    display: block;
+  }
+
+  .app-shell.sidebar-collapsed .nav-sublink {
+    display: flex;
+  }
+
+  .app-shell.sidebar-collapsed .profile-copy {
+    display: grid;
+    flex: initial;
+  }
+
+  .app-shell.sidebar-collapsed .primary-nav {
+    width: auto;
+  }
+
+  .app-shell.sidebar-collapsed .nav-link {
+    justify-content: flex-start;
+    padding: 0 10px;
+  }
+
+  .app-shell.sidebar-collapsed .profile-row {
+    justify-content: flex-start;
+    gap: 9px;
+    padding: 11px 4px;
+  }
+
+  .app-shell.sidebar-collapsed .profile-row button {
+    width: auto;
+  }
+
+  .app-shell.sidebar-collapsed .sidebar-tagline {
+    justify-content: flex-start;
+  }
+
   .app-shell .workspace-title,
   .app-shell .workspace-title > div {
     min-width: 0;
