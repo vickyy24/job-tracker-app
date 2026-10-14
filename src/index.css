@@ -1839,6 +1839,31 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   color: #b24f5b;
 }
 
+.dashboard-page .application-table .table-action {
+  margin-right: 6px;
+  padding: 5px 9px;
+  color: #fff;
+  background: #7650de;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  transition: background-color .16s ease, transform .16s ease;
+}
+
+.dashboard-page .application-table .table-action:hover {
+  background: #6240c4;
+  transform: translateY(-1px);
+}
+
+.dashboard-page .application-table .table-action.danger {
+  color: #fff;
+  background: #d94b5b;
+}
+
+.dashboard-page .application-table .table-action.danger:hover {
+  background: #bd3447;
+}
+
 .application-table-status {
   color: var(--subtle);
   font-size: 11px;
@@ -2536,7 +2561,9 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   }
 
   .dashboard-page .application-table .table-action {
-    margin-right: 4px;
+    margin-right: 3px;
+    padding: 4px 6px;
+    font-size: 9px;
   }
 
   /* Keep the Board page search and filters in a single compact row. */
