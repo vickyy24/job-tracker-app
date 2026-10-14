@@ -155,11 +155,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   text-align: left;
   text-decoration: none;
   cursor: pointer;
+  transition: color .16s ease, background-color .16s ease, box-shadow .16s ease;
 }
 
-.nav-link:hover,.nav-sublink:hover {
-  color: var(--purple);
-  background: var(--surface-muted);
+.nav-link:hover:not(.nav-link-active),.nav-sublink:hover {
+  color: var(--purple-dark);
+  background: var(--purple-soft);
+  box-shadow: inset 3px 0 0 var(--purple);
 }
 
 .nav-link-active {
