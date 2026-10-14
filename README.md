@@ -14,13 +14,13 @@ A personal job search dashboard with a searchable application list, Kanban board
 
 Charts use application dates. Daily activity covers the last 7 days, weekly activity covers the last 8 weeks, and monthly activity covers the last 6 months. The daily goal counts records created today in UTC. Chart totals are calculated from the full application history; the status chart can also apply its selected status to the application list.
 
-## Full-screen app screenshots
+## Product Screenshots
 
-These captures show the dashboard, board, assets, and settings screens. Demo applications are stored in MongoDB through the API seeder; they are not bundled in this frontend repository. Hover a status segment in the dashboard pie chart to see its count and percentage, or select a segment to filter the application list.
+The screenshots below show the dashboard, application board, assets, and settings. Sample applications are stored in MongoDB through the API seeder and are not bundled with this frontend. Hover over a status segment to view its count and percentage, or select a segment to filter the application list.
 
 ### Dashboard
 
-![Job Tracker dashboard with status breakdown and monthly application chart](screenshots/01-dashboard.png)
+![Job Tracker dashboard with percentage labels on the status chart and counts on the activity chart](screenshots/01-dashboard.png)
 
 ### Board
 
