@@ -3053,6 +3053,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 .auth-form { display: grid; gap: 17px; }
 
+.auth-name-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
 .auth-field {
   display: grid;
   gap: 7px;
@@ -3082,6 +3088,50 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   box-shadow: 0 0 0 3px rgba(128, 99, 229, .15);
 }
 
+.auth-password-control {
+  position: relative;
+}
+
+.auth-password-control input {
+  padding-right: 44px;
+}
+
+.auth-password-control input:focus-visible {
+  position: relative;
+  z-index: 1;
+}
+
+.auth-password-toggle {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  right: 5px;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  padding: 0;
+  color: #77758a;
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.auth-password-toggle:hover:not(:disabled) {
+  color: #6848d5;
+  background: #f3efff;
+}
+
+.auth-password-toggle:focus-visible {
+  color: #6848d5;
+  outline: 2px solid #8063e5;
+  outline-offset: 1px;
+}
+
+.auth-password-toggle:disabled { cursor: not-allowed; opacity: .55; }
+
 .auth-field input:disabled { background: #f8f7fb; }
 
 .auth-help { margin: -10px 0 0; color: #858296; font-size: 11px; line-height: 1.5; }
@@ -3102,6 +3152,35 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 .auth-submit:hover:not(:disabled) { filter: brightness(.96); }
 .auth-submit:disabled { cursor: wait; opacity: .65; }
+
+.auth-secondary {
+  min-height: 42px;
+  color: #6848d5;
+  background: #f6f3ff;
+  border: 1px solid #e1d9fb;
+  border-radius: 9px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.auth-secondary:hover:not(:disabled) { background: #eee8ff; border-color: #cfc1fa; }
+.auth-secondary:disabled { cursor: wait; opacity: .65; }
+
+.auth-back-link {
+  justify-self: center;
+  padding: 2px 4px;
+  color: #77758a;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+}
+
+.auth-back-link:hover:not(:disabled) { color: #6848d5; text-decoration: underline; }
+.auth-back-link:disabled { cursor: wait; opacity: .65; }
 
 .auth-switch {
   margin: 21px 0 0;
@@ -3171,4 +3250,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 @media (prefers-reduced-motion: reduce) {
   .auth-field input { transition: none; }
   .auth-spinner { animation: none; }
+}
+
+@media (max-width: 380px) {
+  .auth-name-fields { grid-template-columns: minmax(0, 1fr); }
 }
