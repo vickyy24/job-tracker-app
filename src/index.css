@@ -163,9 +163,19 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .nav-link-active {
-  color: var(--purple);
-  background: var(--purple-soft);
-  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(110deg, #7650f6 0%, #8a5cf6 48%, #a45cf2 100%);
+  box-shadow: 0 5px 14px rgba(111, 72, 226, .24), inset 0 1px 0 rgba(255, 255, 255, .2);
+  font-weight: 650;
+}
+
+.nav-link-active:hover {
+  color: #fff;
+  background: linear-gradient(110deg, #6d47ed 0%, #8251ef 48%, #9b50eb 100%);
+}
+
+.nav-link-active svg {
+  color: currentColor;
 }
 
 .nav-link > span {
@@ -2085,6 +2095,31 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   row-gap: 7px;
   color: var(--subtle);
   font-size: 12px;
+}
+
+.status-legend-filter {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: opacity .16s ease;
+}
+
+.status-legend-filter:hover strong,
+.status-legend-filter:focus-visible strong {
+  color: var(--text);
+}
+
+.status-legend-filter:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.status-legend-filter.is-muted {
+  opacity: .42;
 }
 
 .status-legend-item strong {
