@@ -1839,14 +1839,9 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   color: #b24f5b;
 }
 
-.application-table select {
-  height: 27px;
-  padding: 0 6px;
-  color: var(--text);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  font-size: 10px;
+.application-table-status {
+  color: var(--subtle);
+  font-size: 11px;
 }
 
 .table-empty {
