@@ -5,6 +5,8 @@ import ApplicationForm from './components/ApplicationForm';
 import { ApplicationDetails, ApplicationList, AssetsPage, Overview, SettingsPage } from './components/AppPages';
 import Icon from './components/Icon';
 import { createApplication, deleteApplication as deleteApplicationRequest, getApplicationStats, listApplications, updateApplication } from './services/applicationApi';
+import { useAuth } from './auth/AuthContext';
+import LoginPage from './auth/LoginPage';
 
 
 const STATUSES = ['Applied', 'Interview', 'Offer', 'Rejected'];
@@ -16,7 +18,8 @@ function readRoute() {
   return route;
 }
 
-function App() {
+function WorkspaceApp() {
+  const { user, logout } = useAuth();
   const [page, setPage] = useState(readRoute);
   const [themeMode, setThemeMode] = useState('light');
   const theme = themeMode;
@@ -151,7 +154,7 @@ function App() {
         {assetsExpanded && <button className="nav-sublink" type="button" onClick={() => navigate('assets')}>Saved resources</button>}
       </nav>
       <div className="sidebar-bottom">
-        <div className="profile-row"><span className="profile-avatar">J</span><span className="profile-copy"><strong>Job Tracker</strong><small>Personal workspace</small></span><button type="button" aria-label="Open settings" title="Settings" onClick={() => navigate('settings')}><Icon name="settings" size={16}/></button></div>
+        <div className="profile-row"><span className="profile-avatar">{user?.email?.[0]?.toUpperCase() || 'J'}</span><span className="profile-copy"><strong>{user?.email || 'Job Tracker'}</strong><small>Personal workspace</small></span><button className="profile-settings-button" type="button" aria-label="Open settings" title="Settings" onClick={() => navigate('settings')}><Icon name="settings" size={16}/></button><button className="profile-logout-button" type="button" aria-label="Sign out" title="Sign out" onClick={logout}><Icon name="logout" size={16}/></button></div>
         <p className="sidebar-tagline"><span className="footer-dot"/><span>Keep your job search moving</span></p>
       </div>
     </aside>
@@ -186,6 +189,21 @@ function App() {
     {deleteTarget && <Modal className="delete-confirmation" role="alertdialog" labelledBy="delete-title" describedBy="delete-description" onClose={() => !deleting && setDeleteTarget(null)} closeDisabled={deleting}><p className="eyebrow">DELETE APPLICATION</p><h2 id="delete-title">Delete {deleteTarget.companyName}?</h2><p id="delete-description">This will permanently delete the application for {deleteTarget.jobTitle}.</p>{deleteError && <p className="form-error" role="alert">{deleteError}</p>}<div className="form-actions"><Button variant="secondary" disabled={deleting} onClick={() => setDeleteTarget(null)}>Cancel</Button><Button className="confirm-delete-button" disabled={deleting} onClick={confirmDelete}>{deleting ? 'Deleting…' : 'Delete application'}</Button></div></Modal>}
     {workspaceEditOpen && <Modal className="application-modal" labelledBy="workspace-edit-title" onClose={() => setWorkspaceEditOpen(false)}><div className="modal-heading"><div><p className="eyebrow">WORKSPACE</p><h2 id="workspace-edit-title">Edit workspace title</h2></div><button className="modal-close" type="button" aria-label="Close" onClick={() => setWorkspaceEditOpen(false)}>×</button></div><form className="application-form" onSubmit={(event) => { event.preventDefault(); if (!workspaceDraft.trim()) { setWorkspaceError('Enter a workspace title.'); return; } setWorkspace(workspaceDraft.trim()); setWorkspaceEditOpen(false); }}><label className="settings-field">Title<input autoFocus value={workspaceDraft} maxLength={50} onChange={(event) => { setWorkspaceDraft(event.target.value); setWorkspaceError(''); }}/></label>{workspaceError && <p className="form-error" role="alert">{workspaceError}</p>}<div className="form-actions"><Button variant="secondary" onClick={() => setWorkspaceEditOpen(false)}>Cancel</Button><Button type="submit">Save title</Button></div></form></Modal>}
   </div>;
+}
+
+function App() {
+  const { status } = useAuth();
+  useEffect(() => {
+    if (status !== 'restoring' && status !== 'authenticated'
+      && !['/login', '/register', '/sign-in', '/sign-up'].includes(window.location.pathname)) {
+      window.history.replaceState({}, '', '/login');
+    }
+  }, [status]);
+  if (status === 'restoring') {
+    return <main className="auth-page"><div className="auth-panel auth-restoring" role="status"><span className="auth-spinner" aria-hidden="true"/><p>Restoring your secure session…</p></div></main>;
+  }
+  if (status !== 'authenticated') return <LoginPage key={status}/>;
+  return <WorkspaceApp/>;
 }
 
 export default App;
