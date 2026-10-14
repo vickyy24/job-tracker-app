@@ -4,8 +4,7 @@ import KanbanBoard from './components/KanbanBoard';
 import ApplicationForm from './components/ApplicationForm';
 import { ApplicationDetails, ApplicationList, AssetsPage, Overview, SettingsPage } from './components/AppPages';
 import Icon from './components/Icon';
-import AuthGate from './components/AuthGate';
-import { createApplication, deleteApplication as deleteApplicationRequest, getApplicationStats, getAuthSession, listApplications, logout as logoutRequest, updateApplication } from './services/applicationApi';
+import { createApplication, deleteApplication as deleteApplicationRequest, getApplicationStats, listApplications, updateApplication } from './services/applicationApi';
 
 
 const STATUSES = ['Applied', 'Interview', 'Offer', 'Rejected'];
@@ -20,7 +19,6 @@ function readRoute() {
 function App() {
   const [page, setPage] = useState(readRoute);
   const [themeMode, setThemeMode] = useState('light');
-  const [authStatus, setAuthStatus] = useState('checking');
   const theme = themeMode;
   const [workspace, setWorkspace] = useState('Job Hunt 2025');
   const [dailyGoal, setDailyGoal] = useState(5);
@@ -57,13 +55,6 @@ function App() {
   const [workspaceDraft, setWorkspaceDraft] = useState(workspace);
   const [workspaceError, setWorkspaceError] = useState('');
   const requestNumber = useRef(0);
-
-  useEffect(() => {
-    const handleUnauthorized = () => setAuthStatus('unauthenticated');
-    window.addEventListener('jobtracker:unauthorized', handleUnauthorized);
-    getAuthSession().then(() => setAuthStatus('authenticated')).catch(() => setAuthStatus('unauthenticated'));
-    return () => window.removeEventListener('jobtracker:unauthorized', handleUnauthorized);
-  }, []);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -109,9 +100,9 @@ function App() {
       .finally(() => setLoadingChartApplications(false));
   }, []);
   const currentFilters = () => ({ search: search.trim(), status, sortBy, order });
-  useEffect(() => { if (authStatus === 'authenticated') refreshStats(); }, [authStatus, refreshStats]);
-  useEffect(() => { if (authStatus === 'authenticated') refreshChartApplications(); }, [authStatus, refreshChartApplications]);
-  useEffect(() => { if (authStatus !== 'authenticated') return undefined; const timer = setTimeout(() => refreshApplications({ search: search.trim(), status, sortBy, order }), 250); return () => clearTimeout(timer); }, [authStatus, search, status, sortBy, order, refreshApplications]);
+  useEffect(() => { refreshStats(); }, [refreshStats]);
+  useEffect(() => { refreshChartApplications(); }, [refreshChartApplications]);
+  useEffect(() => { const timer = setTimeout(() => refreshApplications({ search: search.trim(), status, sortBy, order }), 250); return () => clearTimeout(timer); }, [search, status, sortBy, order, refreshApplications]);
   const clearFilters = () => { requestNumber.current += 1; setSearch(''); setStatus(''); };
 
   const saveApplication = async (application) => {
@@ -147,12 +138,7 @@ function App() {
   const openCreate = (selectedStatus = 'Applied') => { setNewStatus(selectedStatus); setFormError(''); setShowForm(true); };
   const openDetails = (application) => setViewing(application);
   const openEdit = (application) => { setViewing(null); setEditError(''); setEditing(application); };
-  const signOut = async () => { try { await logoutRequest(); } finally { setAuthStatus('unauthenticated'); } };
   const navItems = [ ['dashboard', 'Dashboard'], ['board', 'Board'] ];
-
-  if (authStatus !== 'authenticated') {
-    return <AuthGate checking={authStatus === 'checking'} onAuthenticated={() => setAuthStatus('authenticated')}/>;
-  }
 
   return <div className={`app-shell ${sidebarCollapsed ? 'sidebar-collapsed' : ''} max-[1100px]:[&_.stats-grid]:gap-2 max-[760px]:[--sidebar-width:220px] max-[760px]:[&_.dashboard-insights]:grid-cols-1 max-[760px]:[&_.chart-card]:min-h-[205px] max-[760px]:[&_.profile-copy]:grid max-[760px]:[&.sidebar-collapsed_.sidebar]:items-stretch max-[760px]:[&.sidebar-collapsed_.sidebar]:px-[13px] max-[760px]:[&.sidebar-collapsed_.sidebar-collapse]:hidden max-[760px]:[&.sidebar-collapsed_.sidebar-heading]:flex-row max-[760px]:[&.sidebar-collapsed_.brand]:justify-start max-[760px]:[&.sidebar-collapsed_.brand]:px-2 max-[760px]:[&.sidebar-collapsed_.brand-name]:block max-[760px]:[&.sidebar-collapsed_.nav-link>span]:block max-[760px]:[&.sidebar-collapsed_.nav-chevron]:block max-[760px]:[&.sidebar-collapsed_.nav-sublink]:block max-[760px]:[&.sidebar-collapsed_.profile-copy]:grid max-[760px]:[&.sidebar-collapsed_.sidebar-tagline>span:last-child]:block max-[760px]:[&.sidebar-collapsed_.primary-nav]:w-auto max-[760px]:[&.sidebar-collapsed_.nav-link]:justify-start max-[760px]:[&.sidebar-collapsed_.nav-link]:px-[10px] max-[760px]:[&.sidebar-collapsed_.profile-row]:justify-start max-[760px]:[&.sidebar-collapsed_.profile-row]:gap-[9px] max-[760px]:[&.sidebar-collapsed_.profile-row]:py-[11px] max-[760px]:[&.sidebar-collapsed_.profile-row]:px-1 max-[760px]:[&.sidebar-collapsed_.profile-row_button]:w-7 max-[760px]:[&.sidebar-collapsed_.sidebar-tagline]:justify-start max-[390px]:[&_.stats-grid]:gap-[7px] max-[390px]:[&_.stat-label]:text-[11px] max-[390px]:[&_.page-heading]:items-start max-[390px]:[&_.page-heading]:gap-[10px] max-[760px]:[&_.page-heading_h1]:text-[22px] max-[390px]:[&_.page-heading_h1]:text-[20px] max-[390px]:[&_.page-heading_.ui-button]:px-2 max-[390px]:[&_.page-heading_.ui-button]:text-[10px] max-[390px]:[&_.appearance-options]:flex-wrap motion-reduce:[&_*]:scroll-auto motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:transition-none`} data-theme={theme}>
     <button className="mobile-menu-button max-[760px]:fixed max-[760px]:z-[7] max-[760px]:top-[13px] max-[760px]:left-3 max-[760px]:grid max-[760px]:place-items-center max-[760px]:w-[34px] max-[760px]:h-[34px] max-[760px]:rounded-[7px]" type="button" onClick={() => setMobileNavOpen((value) => !value)} aria-label="Toggle navigation" aria-expanded={mobileNavOpen}><Icon name="list"/></button>
@@ -172,7 +158,7 @@ function App() {
     <div className="main-area max-[760px]:ml-0">
       <header className="topbar max-[1100px]:px-4 max-[760px]:h-[58px] max-[760px]:py-0 max-[760px]:pr-[10px] max-[760px]:pl-[54px]">
         <div className="workspace-title"><div><strong>{workspace}</strong><button className="icon-button" aria-label="Edit workspace title" onClick={() => { setWorkspaceDraft(workspace); setWorkspaceError(''); setWorkspaceEditOpen(true); }}><Icon name="pencil" size={15}/></button></div></div>
-        <div className="topbar-actions max-[760px]:gap-[6px] max-[390px]:ml-auto"><div className="daily-goal" aria-label={`Daily application goal: ${loadingStats ? 'loading' : stats?.applicationsToday ?? 0} of ${dailyGoal} applications created today (UTC)`}><Icon name="goal" size={16}/><span>Daily Goal</span><span className="goal-track" aria-hidden="true"><i style={{ width: `${Math.min(100, ((stats?.applicationsToday || 0) / dailyGoal) * 100)}%` }}/></span><strong>{loadingStats ? '—' : stats?.applicationsToday ?? 0}/{dailyGoal}</strong></div><button className="topbar-logout" type="button" onClick={signOut}>Sign out</button><button className="topbar-theme-toggle" type="button" onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`} aria-pressed={themeMode === 'dark'} title={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`}><Icon name={themeMode === 'dark' ? 'moon' : 'sun'} size={17}/></button></div>
+        <div className="topbar-actions max-[760px]:gap-[6px] max-[390px]:ml-auto"><div className="daily-goal" aria-label={`Daily application goal: ${loadingStats ? 'loading' : stats?.applicationsToday ?? 0} of ${dailyGoal} applications created today (UTC)`}><Icon name="goal" size={16}/><span>Daily Goal</span><span className="goal-track" aria-hidden="true"><i style={{ width: `${Math.min(100, ((stats?.applicationsToday || 0) / dailyGoal) * 100)}%` }}/></span><strong>{loadingStats ? '—' : stats?.applicationsToday ?? 0}/{dailyGoal}</strong></div><button className="topbar-theme-toggle" type="button" onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`} aria-pressed={themeMode === 'dark'} title={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`}><Icon name={themeMode === 'dark' ? 'moon' : 'sun'} size={17}/></button></div>
       </header>
       <main className="dashboard-main max-[1100px]:py-3 max-[1100px]:px-[14px] max-[760px]:py-3 max-[760px]:px-[10px] max-[390px]:pr-2 max-[390px]:pl-2">
         {page === 'board' && <>
