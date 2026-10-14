@@ -579,33 +579,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 .stat-card {
   min-width: 0;
-  min-height: 78px;
-  padding: 12px 14px;
+  min-height: 116px;
+  padding: 16px 18px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 9px;
-  box-shadow: 0 4px 12px rgba(29,26,62,.08);
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(29,26,62,.055);
   transition: transform .18s ease,box-shadow .18s ease,filter .18s ease;
-}
-
-.stat-card-amber {
-  background: linear-gradient(135deg, #c47b12, #995a07);
-  border-color: transparent;
-}
-
-.stat-card-teal {
-  background: linear-gradient(135deg, #0f8b87, #066b68);
-  border-color: transparent;
-}
-
-.stat-card-green {
-  background: linear-gradient(135deg, #108456, #08633f);
-  border-color: transparent;
-}
-
-.stat-card-rose {
-  background: linear-gradient(135deg, #cf4f61, #a93245);
-  border-color: transparent;
 }
 
 .stat-card:hover {
@@ -614,15 +594,20 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   box-shadow: 0 10px 22px rgba(29,26,62,.17);
 }
 
-.stat-card-amber .stat-label,
-.stat-card-teal .stat-label,
-.stat-card-green .stat-label,
-.stat-card-rose .stat-label,
-.stat-card-amber .stat-value,
-.stat-card-teal .stat-value,
-.stat-card-green .stat-value,
-.stat-card-rose .stat-value {
-  color: #fff;
+.stat-card-amber {
+  border-color: #f7dfc4;
+}
+
+.stat-card-teal {
+  border-color: #c7edee;
+}
+
+.stat-card-green {
+  border-color: #ccebdc;
+}
+
+.stat-card-rose {
+  border-color: #f3d4dc;
 }
 
 .stat-card-heading {
@@ -635,11 +620,35 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .stat-label {
   color: var(--subtle);
   font-size: 12px;
+  font-weight: 500;
 }
 
 .stat-icon {
-  color: rgba(255,255,255,.92);
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  color: #fff;
+  border-radius: 14px;
+  box-shadow: 0 7px 16px rgba(53, 66, 120, .18);
   transition: transform .18s ease;
+}
+
+.stat-card-amber .stat-icon {
+  background: linear-gradient(145deg, #ff9f1c, #f97316);
+}
+
+.stat-card-teal .stat-icon {
+  background: linear-gradient(145deg, #06b6d4, #0284c7);
+}
+
+.stat-card-green .stat-icon {
+  background: linear-gradient(145deg, #818cf8, #4f46e5);
+}
+
+.stat-card-rose .stat-icon {
+  background: linear-gradient(145deg, #3b82f6, #4f46e5);
 }
 
 .stat-card:hover .stat-icon {
@@ -2023,8 +2032,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 .recharts-pie-wrap {
   position: relative;
-  width: min(100%, 260px);
-  height: 260px;
+  width: min(100%, 280px);
+  height: 280px;
   margin: auto;
 }
 
@@ -2252,6 +2261,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 /* Keep page content usable between compact phones and wide desktop screens. */
 @media (max-width: 1100px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .dashboard-insights {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -2262,6 +2275,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 @media (max-width: 760px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .sidebar {
     z-index: 6;
   }
@@ -2284,6 +2301,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   .status-chart {
     grid-template-columns: minmax(0, 1fr);
     gap: 4px;
+  }
+
+  .recharts-pie-wrap {
+    width: min(100%, 260px);
+    height: 260px;
   }
 
   .status-legend {
@@ -2352,8 +2374,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   }
 
   .recharts-pie-wrap {
-    width: min(100%, 230px);
-    height: 230px;
+    width: min(100%, 250px);
+    height: 250px;
   }
 
   .appearance-options {
