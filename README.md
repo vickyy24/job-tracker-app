@@ -7,7 +7,7 @@ A personal job search dashboard with a searchable application list, Kanban board
 - Create, view, edit, search, sort, filter, and delete job applications.
 - Track applications through Applied, Interview, Offer, and Rejected statuses in a Kanban board or table.
 - See application totals, a status breakdown, and monthly application activity on the dashboard.
-- Choose a six- or twelve-month activity view, and an all-time or current-year status view.
+- Compare all applications with the active pipeline in the status breakdown, and choose a six- or twelve-month activity view for the monthly chart.
 - Set a daily application goal and choose a light or dark theme. These preferences are saved in the current browser.
 - Record company, job title, salary or stipend, location, application date, status, and notes.
 

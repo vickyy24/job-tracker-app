@@ -29,11 +29,11 @@ function ChartTooltip({ active, payload, label }) {
 
 export function Overview({ stats, loading, error, onRetry, applications, chartApplications, loadingChartApplications, chartApplicationsError, onRetryChartApplications, loadingApplications, applicationsError, onRetryApplications, onSelectApplication, onEditApplication, onStatusChange, onDeleteApplication, pendingIds, search, onSearchChange, status, onStatusFilter, sortBy, onSortByChange, order, onOrderChange, onClearFilters, onOpenBoard, onAdd }) {
   const [chartRange, setChartRange] = useState(6);
-  const [statusRange, setStatusRange] = useState('all');
+  const [statusScope, setStatusScope] = useState('all');
   return <section className="page-content dashboard-page max-[1100px]:[&_.stats-grid]:grid-cols-3 max-[760px]:[&_.stats-grid]:grid-cols-2 max-[760px]:[&_.stat-card]:min-h-[68px] max-[760px]:[&_.stat-card]:p-[10px]">
     <div className="page-heading"><div><p className="eyebrow">YOUR OVERVIEW</p><h1>Dashboard</h1><p>Track your pipeline and keep the next step in view.</p></div><Button variant="secondary" onClick={onOpenBoard}>Open board</Button></div>
     <StatsGrid stats={stats} loading={loading} error={error} onRetry={onRetry}/>
-    <div className="dashboard-insights"><StatusChart applications={chartApplications} loading={loadingChartApplications} error={chartApplicationsError} onRetry={onRetryChartApplications} range={statusRange} onRangeChange={setStatusRange}/><MonthlyChart applications={chartApplications} loading={loadingChartApplications} error={chartApplicationsError} onRetry={onRetryChartApplications} range={chartRange} onRangeChange={setChartRange}/></div>
+    <div className="dashboard-insights"><StatusChart applications={chartApplications} loading={loadingChartApplications} error={chartApplicationsError} onRetry={onRetryChartApplications} scope={statusScope} onScopeChange={setStatusScope}/><MonthlyChart applications={chartApplications} loading={loadingChartApplications} error={chartApplicationsError} onRetry={onRetryChartApplications} range={chartRange} onRangeChange={setChartRange}/></div>
     <section className="overview-recent"><header><div><p className="eyebrow">APPLICATIONS</p><h2>All applications</h2></div><Button onClick={onAdd}><span className="plus-icon">+</span> Add job</Button></header>
       <div className="dashboard-filters max-[760px]:flex-wrap" aria-label="Filter and sort applications"><label className="search-control max-[760px]:flex-[1_1_100%]"><Icon name="search" size={16}/><input type="search" value={search} onChange={(event) => onSearchChange(event.target.value)} placeholder="Search company or job title…" aria-label="Search by company or job title"/></label><select className="status-filter max-[760px]:flex-1" value={status} onChange={(event) => onStatusFilter(event.target.value)} aria-label="Filter applications by status"><option value="">All statuses</option>{STATUSES.map((item) => <option key={item}>{item}</option>)}</select><label className="sort-control max-[760px]:flex-1"><span>Sort by</span><select value={sortBy} onChange={(event) => onSortByChange(event.target.value)} aria-label="Sort applications by"><option value="applicationDate">Application date</option><option value="createdAt">Created date</option><option value="companyName">Company name</option><option value="jobTitle">Job title</option></select></label><select className="direction-select max-[760px]:flex-1" value={order} onChange={(event) => onOrderChange(event.target.value)} aria-label="Sort direction"><option value="desc">Descending</option><option value="asc">Ascending</option></select>{Boolean(search.trim() || status) && <button className="clear-filters-button" onClick={onClearFilters}>Clear filters</button>}</div>
       <ApplicationList applications={applications} loading={loadingApplications} error={applicationsError} onRetry={onRetryApplications} onSelect={onSelectApplication} onEdit={onEditApplication} onStatusChange={onStatusChange} onDelete={onDeleteApplication} pendingIds={pendingIds}/>
@@ -49,8 +49,8 @@ function ChartRangeSelect({ range, onRangeChange, label }) {
   return <select className="chart-period-select" value={range} onChange={(event) => onRangeChange(Number(event.target.value))} aria-label={`Filter ${label} by date`}><option value={6}>Last 6 months</option><option value={12}>Last 12 months</option></select>;
 }
 
-function StatusRangeSelect({ range, onRangeChange }) {
-  return <select className="chart-period-select" value={range} onChange={(event) => onRangeChange(event.target.value)} aria-label="Filter status breakdown by application date"><option value="all">All time</option><option value="year">This year</option></select>;
+function StatusScopeSelect({ scope, onScopeChange }) {
+  return <select className="chart-period-select" value={scope} onChange={(event) => onScopeChange(event.target.value)} aria-label="Filter status breakdown by application pipeline"><option value="all">All applications</option><option value="active">Active pipeline</option></select>;
 }
 
 function getRangeData(applications = [], range) {
@@ -63,14 +63,8 @@ function getRangeData(applications = [], range) {
   });
 }
 
-function StatusChart({ applications, loading, error, onRetry, range, onRangeChange }) {
-  const yearStart = new Date(Date.UTC(new Date().getUTCFullYear(), 0, 1));
-  const visibleApplications = range === 'all'
-    ? applications || []
-    : (applications || []).filter((application) => {
-      const date = new Date(application.applicationDate);
-      return !Number.isNaN(date.getTime()) && date >= yearStart && date <= new Date();
-    });
+function StatusChart({ applications, loading, error, onRetry, scope, onScopeChange }) {
+  const visibleApplications = (applications || []).filter((application) => scope === 'all' || application.status !== 'Rejected');
   const counts = visibleApplications.reduce((result, application) => {
     if (STATUSES.includes(application.status)) result[application.status] += 1;
     return result;
@@ -82,8 +76,8 @@ function StatusChart({ applications, loading, error, onRetry, range, onRangeChan
   });
   const populatedValues = values.filter((entry) => entry.count > 0);
   return <section className="chart-card" aria-label="Applications by status">
-    <header><div><p className="eyebrow">PIPELINE</p><h2>Status breakdown</h2></div><div className="chart-header-actions"><span className="chart-total">{total} {range === 'all' ? 'total' : 'this year'}</span><StatusRangeSelect range={range} onRangeChange={onRangeChange}/></div></header>
-    {loading ? <LoadingState message="Loading status totals…"/> : error ? <div><p className="chart-message">Status breakdown unavailable.</p><Button variant="secondary" onClick={onRetry}>Retry</Button></div> : total === 0 ? <p className="chart-message">No applications {range === 'all' ? 'yet' : 'this year'}. Add a job to see your pipeline.</p> : <div className="status-chart max-[760px]:grid-cols-1"><div className="recharts-pie-wrap max-[760px]:h-[220px]" role="img" aria-label={`Status breakdown ${range === 'all' ? 'for all time' : 'this year'}: ${values.map(({ status, count }) => `${status} ${count}`).join(', ')}`}><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={populatedValues} dataKey="count" nameKey="status" innerRadius="64%" outerRadius="91%" paddingAngle={3} stroke="var(--surface)" strokeWidth={3} isAnimationActive>{populatedValues.map((entry) => <Cell key={entry.status} fill={entry.color}/>)}</Pie><Tooltip shared={false} content={<ChartTooltip/>} wrapperStyle={{ pointerEvents: 'none', zIndex: 5 }}/></PieChart></ResponsiveContainer><div className="donut-center"><small>{range === 'all' ? 'ALL TIME' : 'THIS YEAR'}</small><strong>{total}</strong><span>tracked</span></div></div><div className="status-legend">{values.map(({ status, count, percent, color }) => <div className="status-legend-item" key={status}><span className="status-dot" style={{ backgroundColor: color }}/><span>{status}</span><strong>{count} <small>({percent}%)</small></strong><span className="status-legend-track"><i style={{ width: `${percent}%`, backgroundColor: color }}/></span></div>)}</div></div>}
+    <header><div><p className="eyebrow">PIPELINE</p><h2>Status breakdown</h2></div><div className="chart-header-actions"><span className="chart-total">{total} {scope === 'all' ? 'total' : 'active'}</span><StatusScopeSelect scope={scope} onScopeChange={onScopeChange}/></div></header>
+    {loading ? <LoadingState message="Loading status totals…"/> : error ? <div><p className="chart-message">Status breakdown unavailable.</p><Button variant="secondary" onClick={onRetry}>Retry</Button></div> : total === 0 ? <p className="chart-message">No {scope === 'all' ? 'applications' : 'active applications'} yet. Add a job to see your pipeline.</p> : <div className="status-chart max-[760px]:grid-cols-1"><div className="recharts-pie-wrap max-[760px]:h-[220px]" role="img" aria-label={`Status breakdown for ${scope === 'all' ? 'all applications' : 'the active pipeline'}: ${values.map(({ status, count }) => `${status} ${count}`).join(', ')}`}><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={populatedValues} dataKey="count" nameKey="status" innerRadius="64%" outerRadius="91%" paddingAngle={3} stroke="var(--surface)" strokeWidth={3} isAnimationActive>{populatedValues.map((entry) => <Cell key={entry.status} fill={entry.color}/>)}</Pie><Tooltip shared={false} content={<ChartTooltip/>} wrapperStyle={{ pointerEvents: 'none', zIndex: 5 }}/></PieChart></ResponsiveContainer><div className="donut-center"><small>{scope === 'all' ? 'ALL APPLICATIONS' : 'ACTIVE PIPELINE'}</small><strong>{total}</strong><span>tracked</span></div></div><div className="status-legend">{values.map(({ status, count, percent, color }) => <div className="status-legend-item" key={status}><span className="status-dot" style={{ backgroundColor: color }}/><span>{status}</span><strong>{count} <small>({percent}%)</small></strong><span className="status-legend-track"><i style={{ width: `${percent}%`, backgroundColor: color }}/></span></div>)}</div></div>}
   </section>;
 }
 
