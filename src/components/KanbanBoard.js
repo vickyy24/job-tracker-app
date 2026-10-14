@@ -36,6 +36,7 @@ function JobCard({ application, onSelect, onStatusChange, onRequestDelete, pendi
         <label className="job-status-control">
           <span className="visually-hidden">Change status for {application.jobTitle} at {application.companyName}</span>
           <select
+            className={`job-status-select status-${application.status.toLowerCase()}`}
             value={application.status}
             disabled={pending}
             onChange={(event) => onStatusChange(application, event.target.value)}
@@ -66,7 +67,21 @@ function KanbanBoard({ applications, loading, error, onRetry, noResults, onClear
   const handlePointerDown = (event, application) => {
     if (pendingStatusIds.has(application._id) || event.button !== 0 || event.target.closest('select, input, textarea, a, button:not(.job-card-open)')) return;
     const rect = event.currentTarget.getBoundingClientRect();
-    dragRef.current = { id: application._id, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, left: rect.left, top: rect.top, width: rect.width, element: event.currentTarget, originalStyle: event.currentTarget.style.cssText, active: false, dropStatus: '' };
+    dragRef.current = {
+      id: application._id,
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      left: rect.left,
+      top: rect.top,
+      width: rect.width,
+      height: rect.height,
+      element: event.currentTarget,
+      overlay: null,
+      originalVisibility: event.currentTarget.style.visibility,
+      active: false,
+      dropStatus: '',
+    };
   };
 
   useEffect(() => {
@@ -77,11 +92,35 @@ function KanbanBoard({ applications, loading, error, onRetry, noResults, onClear
       event.preventDefault();
       if (!drag.active) {
         drag.active = true;
-        drag.element.classList.add('job-card-moving');
-        Object.assign(drag.element.style, { position: 'fixed', left: `${drag.left}px`, top: `${drag.top}px`, width: `${drag.width}px`, margin: '0', zIndex: '1000', pointerEvents: 'none', transition: 'none', transform: `translate3d(${event.clientX - drag.startX}px, ${event.clientY - drag.startY}px, 0)`, willChange: 'transform' });
-      } else {
-        drag.element.style.transform = `translate3d(${event.clientX - drag.startX}px, ${event.clientY - drag.startY}px, 0)`;
+        const overlay = drag.element.cloneNode(true);
+        const cardStyle = window.getComputedStyle(drag.element);
+        Object.assign(overlay.style, {
+          position: 'fixed',
+          left: `${drag.left}px`,
+          top: `${drag.top}px`,
+          width: `${drag.width}px`,
+          height: `${drag.height}px`,
+          margin: '0',
+          zIndex: '10000',
+          pointerEvents: 'none',
+          transition: 'none',
+          transform: 'translate3d(0, 0, 0)',
+          willChange: 'transform',
+          opacity: '1',
+          filter: 'none',
+          background: cardStyle.backgroundColor,
+          borderTopColor: cardStyle.borderTopColor,
+          borderRightColor: cardStyle.borderRightColor,
+          borderBottomColor: cardStyle.borderBottomColor,
+          borderLeftColor: cardStyle.borderLeftColor,
+          boxShadow: '0 10px 28px rgba(35, 28, 68, .22)',
+        });
+        overlay.classList.add('job-card-moving');
+        document.body.appendChild(overlay);
+        drag.overlay = overlay;
+        drag.element.style.visibility = 'hidden';
       }
+      drag.overlay.style.transform = `translate3d(${event.clientX - drag.startX}px, ${event.clientY - drag.startY}px, 0)`;
       const column = document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-kanban-status]');
       drag.dropStatus = column?.dataset.kanbanStatus || '';
       setDropTarget((current) => current === drag.dropStatus ? current : drag.dropStatus);
@@ -93,8 +132,8 @@ function KanbanBoard({ applications, loading, error, onRetry, noResults, onClear
       if (drag.active) {
         const column = document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-kanban-status]');
         const status = column?.dataset.kanbanStatus || drag.dropStatus;
-        drag.element.style.cssText = drag.originalStyle;
-        drag.element.classList.remove('job-card-moving');
+        drag.overlay?.remove();
+        drag.element.style.visibility = drag.originalVisibility;
         movedCardClick.current = true;
         const { applications: currentApplications, onStatusChange: changeStatus, pendingStatusIds: currentPendingIds } = latestDragHandlers.current;
         const application = currentApplications.find((item) => item._id === drag.id);

@@ -115,11 +115,17 @@ function App() {
   };
   const changeStatus = async (application, nextStatus) => {
     setPendingIds((current) => new Set(current).add(application._id)); setStatusErrors((current) => ({ ...current, [application._id]: '' }));
+    const previousApplications = applications;
+    setApplications((current) => current
+      .map((item) => item._id === application._id ? { ...item, status: nextStatus } : item)
+      .filter((item) => !status || item.status === status));
     try {
       await updateApplication(application._id, { status: nextStatus });
-      setApplications((current) => current.map((item) => item._id === application._id ? { ...item, status: nextStatus } : item).filter((item) => !status || item.status === status));
       refreshStats();
-    } catch (error) { setStatusErrors((current) => ({ ...current, [application._id]: error.message })); }
+    } catch (error) {
+      setApplications(previousApplications);
+      setStatusErrors((current) => ({ ...current, [application._id]: error.message }));
+    }
     finally { setPendingIds((current) => { const next = new Set(current); next.delete(application._id); return next; }); }
   };
   const confirmDelete = async () => {
@@ -150,7 +156,7 @@ function App() {
     <div className="main-area max-[760px]:ml-0">
       <header className="topbar max-[1100px]:px-4 max-[760px]:h-[58px] max-[760px]:py-0 max-[760px]:pr-[10px] max-[760px]:pl-[54px]">
         <div className="workspace-title"><div><strong>{workspace}</strong><button className="icon-button" aria-label="Edit workspace title" onClick={() => { setWorkspaceDraft(workspace); setWorkspaceError(''); setWorkspaceEditOpen(true); }}><Icon name="pencil" size={15}/></button></div></div>
-        <div className="topbar-actions max-[760px]:gap-[6px] max-[390px]:ml-auto"><div className="daily-goal" aria-label={`Daily application goal: ${loadingStats ? 'loading' : stats?.applicationsToday ?? 0} of ${dailyGoal} applications created today (UTC)`}><Icon name="goal" size={16}/><span>Daily Goal</span><span className="goal-track" aria-hidden="true"><i style={{ width: `${Math.min(100, ((stats?.applicationsToday || 0) / dailyGoal) * 100)}%` }}/></span><strong>{loadingStats ? '—' : stats?.applicationsToday ?? 0}/{dailyGoal}</strong></div><button className="topbar-theme-toggle" type="button" onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`} aria-pressed={themeMode === 'dark'} title={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`}><Icon name={themeMode === 'dark' ? 'sun' : 'moon'} size={17}/></button></div>
+        <div className="topbar-actions max-[760px]:gap-[6px] max-[390px]:ml-auto"><div className="daily-goal" aria-label={`Daily application goal: ${loadingStats ? 'loading' : stats?.applicationsToday ?? 0} of ${dailyGoal} applications created today (UTC)`}><Icon name="goal" size={16}/><span>Daily Goal</span><span className="goal-track" aria-hidden="true"><i style={{ width: `${Math.min(100, ((stats?.applicationsToday || 0) / dailyGoal) * 100)}%` }}/></span><strong>{loadingStats ? '—' : stats?.applicationsToday ?? 0}/{dailyGoal}</strong></div><button className="topbar-theme-toggle" type="button" onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`} aria-pressed={themeMode === 'dark'} title={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`}><Icon name={themeMode === 'dark' ? 'moon' : 'sun'} size={17}/></button></div>
       </header>
       <main className="dashboard-main max-[1100px]:py-3 max-[1100px]:px-[14px] max-[760px]:py-3 max-[760px]:px-[10px] max-[390px]:pr-2 max-[390px]:pl-2">
         {page === 'board' && <>

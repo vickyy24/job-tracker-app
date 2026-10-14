@@ -317,27 +317,18 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   border: 1px solid var(--border);
   border-radius: 9px;
   cursor: pointer;
-  transition: color .18s,background .18s,border-color .18s,box-shadow .18s,transform .18s;
+  transition: color .18s,background .18s,border-color .18s;
 }
 
 .topbar-theme-toggle:hover {
   color: var(--purple);
   background: var(--purple-soft);
   border-color: #d7c9ff;
-  box-shadow: 0 3px 10px rgba(112,71,235,.14);
-  transform: translateY(-1px);
 }
 
 .topbar-theme-toggle:active {
-  transform: scale(.94);
-}
-
-.topbar-theme-toggle svg {
-  transition: transform .24s ease;
-}
-
-.topbar-theme-toggle:hover svg {
-  transform: rotate(-18deg) scale(1.12);
+  color: var(--purple);
+  background: var(--purple-soft);
 }
 
 .daily-goal {
@@ -421,12 +412,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   color: #fff;
   background: linear-gradient(135deg, #8c6af2, #6846d8);
   border-color: #704ce1;
-  box-shadow: 0 5px 12px rgba(112, 71, 235, .22);
-  transform: translateY(-1px);
 }
 
 .ui-button-secondary:active:not(:disabled) {
-  transform: translateY(0) scale(.98);
+  color: #fff;
+  background: linear-gradient(135deg, #8c6af2, #6846d8);
 }
 
 .ui-button-secondary:focus-visible {
@@ -937,13 +927,71 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .job-status-control select {
-  max-width: 130px;
-  height: 26px;
-  color: var(--subtle);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 5px;
+  max-width: 140px;
+  min-width: 94px;
+  height: 32px;
+  padding: 0 25px 0 10px;
+  border: 1px solid transparent;
+  border-radius: 7px;
   font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: color .15s ease, background-color .15s ease, border-color .15s ease;
+}
+
+.job-status-control select:hover:not(:disabled) {
+  border-color: currentColor;
+}
+
+.job-status-control select:focus,
+.job-status-control select:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.job-status-control select:disabled {
+  cursor: wait;
+  opacity: .7;
+}
+
+.job-status-control .status-applied {
+  color: #6745ca;
+  background-color: #f1ecff;
+}
+
+.job-status-control .status-interview {
+  color: #267cc4;
+  background-color: #eaf5ff;
+}
+
+.job-status-control .status-offer {
+  color: #23805f;
+  background-color: #e9f7f0;
+}
+
+.job-status-control .status-rejected {
+  color: #b04e5b;
+  background-color: #fff0f1;
+}
+
+.app-shell[data-theme='dark'] .job-status-control .status-applied {
+  color: #c4b2ff;
+  background-color: #332a4e;
+}
+
+.app-shell[data-theme='dark'] .job-status-control .status-interview {
+  color: #a5d4ff;
+  background-color: #20384e;
+}
+
+.app-shell[data-theme='dark'] .job-status-control .status-offer {
+  color: #9ee0c6;
+  background-color: #203a31;
+}
+
+.app-shell[data-theme='dark'] .job-status-control .status-rejected {
+  color: #ffb3bc;
+  background-color: #492b30;
 }
 
 .job-edit-button {
@@ -1249,19 +1297,18 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   border-radius: 11px;
   box-shadow: 0 2px 7px rgba(43, 34, 80, .09);
   cursor: pointer;
-  transition: color .16s,background .16s,border-color .16s,transform .16s,box-shadow .16s;
+  transition: color .16s,background .16s,border-color .16s;
 }
 
 .modal-close:hover:not(:disabled) {
   color: #fff;
   background: linear-gradient(135deg, #f07884, #d6445b);
   border-color: #cf3f56;
-  box-shadow: 0 5px 12px rgba(207, 63, 86, .25);
-  transform: rotate(90deg) scale(1.04);
 }
 
 .modal-close:active:not(:disabled) {
-  transform: rotate(90deg) scale(.96);
+  color: #fff;
+  background: linear-gradient(135deg, #f07884, #d6445b);
 }
 
 .modal-close:focus-visible {

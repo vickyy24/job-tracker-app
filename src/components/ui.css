@@ -37,7 +37,37 @@
 }
 
 .ui-button-secondary:hover:not(:disabled) {
-  background: #eee9fc;
+  color: #fff;
+  background: linear-gradient(135deg, #8c6af2, #6846d8);
+  border-color: #704ce1;
+  box-shadow: 0 2px 6px rgba(77, 55, 143, .08);
+  transform: none;
+}
+
+.ui-button-secondary:active:not(:disabled) {
+  color: #fff;
+  background: linear-gradient(135deg, #8c6af2, #6846d8);
+  transform: none;
+}
+
+.ui-button-secondary:focus-visible {
+  outline: 2px solid #8c6af2;
+  outline-offset: 2px;
+}
+
+.modal-close {
+  color: #c93d55;
+  background: #fff1f2;
+  border-color: #f3cbd1;
+  transform: none;
+}
+
+.modal-close:hover:not(:disabled),
+.modal-close:active:not(:disabled) {
+  color: #fff;
+  background: linear-gradient(135deg, #ee6875, #c93d55);
+  border-color: #c93d55;
+  transform: none;
 }
 
 .ui-field {
