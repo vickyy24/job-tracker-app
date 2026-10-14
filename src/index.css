@@ -2670,4 +2670,138 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   }
 }
 
+@media (max-width: 760px) {
+  .app-shell .workspace-title,
+  .app-shell .workspace-title > div {
+    min-width: 0;
+    flex-wrap: nowrap;
+  }
+
+  .app-shell .workspace-title strong {
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .app-shell .workspace-title .icon-button {
+    flex: none;
+    width: 18px;
+    height: 18px;
+  }
+
+  .app-shell .topbar-actions {
+    flex: none;
+    gap: 5px;
+  }
+
+  .app-shell .daily-goal {
+    flex: none;
+    gap: 4px;
+    padding: 5px 7px;
+    font-size: 9px;
+    white-space: nowrap;
+  }
+
+  .app-shell .daily-goal > span,
+  .app-shell .daily-goal strong {
+    white-space: nowrap;
+    font-size: 9px;
+  }
+
+  .app-shell .daily-goal > svg {
+    width: 13px;
+    height: 13px;
+    flex: none;
+  }
+
+  .app-shell .daily-goal .goal-track {
+    width: 34px;
+    flex: none;
+  }
+
+  .app-shell .topbar-theme-toggle {
+    width: 31px;
+    height: 31px;
+    flex: none;
+  }
+
+  .app-shell .board-toolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, .95fr) minmax(0, 1.25fr) minmax(0, .9fr) minmax(54px, .85fr);
+    align-items: center;
+    gap: 5px;
+    min-width: 0;
+    margin-bottom: 9px;
+    position: relative;
+  }
+
+  .app-shell .board-toolbar .search-control,
+  .app-shell .board-toolbar .status-filter,
+  .app-shell .board-toolbar .sort-control,
+  .app-shell .board-toolbar .direction-select {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    height: 30px;
+    flex: initial;
+    padding: 0 5px;
+    font-size: 9px;
+  }
+
+  .app-shell .board-toolbar .search-control {
+    gap: 4px;
+    padding: 0 6px;
+  }
+
+  .app-shell .board-toolbar .search-control svg {
+    width: 12px;
+    min-width: 12px;
+  }
+
+  .app-shell .board-toolbar .search-control input {
+    min-width: 0;
+    font-size: 9px;
+  }
+
+  .app-shell .board-toolbar .sort-control {
+    gap: 0;
+    padding-right: 4px;
+  }
+
+  .app-shell .board-toolbar .sort-control > span {
+    display: none;
+  }
+
+  .app-shell .board-toolbar .sort-control select {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    overflow: hidden;
+    font-size: 9px;
+    text-overflow: ellipsis;
+  }
+
+  .app-shell .board-toolbar .view-toggle {
+    box-sizing: border-box;
+    justify-content: center;
+    width: 100%;
+    min-width: 0;
+    height: 30px;
+    padding: 2px;
+  }
+
+  .app-shell .board-toolbar .view-toggle button {
+    width: 23px;
+    height: 24px;
+  }
+
+  .app-shell .board-toolbar .clear-filters-button {
+    position: absolute;
+    top: calc(100% + 1px);
+    right: 0;
+    padding: 2px 4px;
+    font-size: 9px;
+  }
+}
+
 
