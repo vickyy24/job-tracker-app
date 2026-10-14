@@ -184,6 +184,8 @@ export default function LoginPage() {
       return;
     }
     setBusy(true);
+    // A failed sign-in should never leave a revealed password sitting on screen.
+    if (!registering) setPasswordVisible(false);
     try {
       const result = await authenticate({ ...(registering ? { firstName: normalizedFirstName, lastName: normalizedLastName } : { rememberMe }), email: normalizedEmail, password }, mode);
       if (registering) {
@@ -192,7 +194,13 @@ export default function LoginPage() {
         setFeedback(result.message || 'Check your email for a verification code.');
       }
     }
-    catch (requestError) { setError(requestError.message); }
+    catch (requestError) {
+      setError(requestError.message);
+      if (!registering) {
+        setPassword('');
+        setPasswordVisible(false);
+      }
+    }
     finally { setBusy(false); }
   };
 
