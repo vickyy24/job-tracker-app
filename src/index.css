@@ -2533,4 +2533,54 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   }
 }
 
+/* Keep the app navigation reachable on narrow screens. These explicit rules
+   complement the utility classes so the menu remains visible in every build. */
+@media (max-width: 760px) {
+  .app-shell .mobile-menu-button {
+    position: fixed;
+    z-index: 7;
+    top: calc(env(safe-area-inset-top, 0px) + 12px);
+    left: 12px;
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    padding: 0;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(24, 20, 42, .12);
+    cursor: pointer;
+  }
+
+  .app-shell .sidebar {
+    z-index: 6;
+    width: var(--sidebar-width);
+    transform: translateX(-100%);
+    transition: transform .22s ease, box-shadow .22s ease;
+  }
+
+  .app-shell .sidebar.sidebar-open {
+    transform: translateX(0);
+    box-shadow: 8px 0 28px rgba(0, 0, 0, .16);
+  }
+
+  .app-shell .mobile-overlay {
+    position: fixed;
+    z-index: 4;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    background: rgba(15, 18, 30, .36);
+    border: 0;
+  }
+
+  .app-shell .topbar {
+    padding-left: 54px;
+  }
+}
+
 
