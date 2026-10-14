@@ -13,6 +13,26 @@ A personal job search dashboard with a searchable application list, Kanban board
 
 Charts use application dates and include the current calendar month. The daily goal counts records created today in UTC. Charts use the complete application list, independently of search and status filters on the board.
 
+## Full-screen app screenshots
+
+These captures use a 1920 × 1080 viewport and a demo-only feed. The Board shows all seven `Demo ·` sample companies; the Dashboard shows their status breakdown and month-to-month activity without unrelated live applications.
+
+### Dashboard
+
+![Job Tracker dashboard with status breakdown and monthly application chart](screenshots/01-dashboard.png)
+
+### Board
+
+![Job Tracker board with all application companies across the four statuses](screenshots/02-board.png)
+
+### Assets
+
+![Job Tracker Assets page](screenshots/03-assets.png)
+
+### Settings
+
+![Job Tracker settings page](screenshots/04-settings.png)
+
 ## Run locally
 
 Requirements: Node.js and a reachable MongoDB database.
@@ -29,7 +49,7 @@ Requirements: Node.js and a reachable MongoDB database.
    npm run seed:demo
    ```
 
-   The seeder is safe to rerun. It adds up to five sample applications dated May through September 2026, skips sample companies already present, and marks records with the `Demo ·` prefix. Remove them by deleting applications with that prefix in the app or MongoDB.
+   The seeder is safe to rerun. It adds up to seven sample applications dated May through September 2026, skips sample companies already present, and marks records with the `Demo ·` prefix. The monthly counts vary between one and two applications, and the sample statuses include Applied, Interview, Offer, and Rejected. Remove them by deleting applications with that prefix in the app or MongoDB.
 
 3. Start the API in its folder:
 
