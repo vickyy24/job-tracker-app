@@ -1,5 +1,7 @@
 # Job Tracker Frontend
 
+<img width="1919" height="966" alt="image" src="https://github.com/user-attachments/assets/937f72db-be08-43b2-980d-c3c3a8ff6a0d" />
+
 ## Run locally with the API
 
 1. Start MongoDB.
