@@ -28,12 +28,12 @@ function ChartTooltip({ active, payload, label }) {
 }
 
 export function Overview({ stats, loading, error, onRetry, applications, chartApplications, loadingChartApplications, chartApplicationsError, onRetryChartApplications, loadingApplications, applicationsError, onRetryApplications, onSelectApplication, onEditApplication, onStatusChange, onDeleteApplication, pendingIds, search, onSearchChange, status, onStatusFilter, sortBy, onSortByChange, order, onOrderChange, onClearFilters, onOpenBoard, onAdd }) {
-  const [chartRange, setChartRange] = useState(6);
-  const [statusScope, setStatusScope] = useState('all');
+  const [activityPeriod, setActivityPeriod] = useState('monthly-6');
+  const [statusPeriod, setStatusPeriod] = useState('all');
   return <section className="page-content dashboard-page max-[1100px]:[&_.stats-grid]:grid-cols-3 max-[760px]:[&_.stats-grid]:grid-cols-2 max-[760px]:[&_.stat-card]:min-h-[68px] max-[760px]:[&_.stat-card]:p-[10px]">
     <div className="page-heading"><div><p className="eyebrow">YOUR OVERVIEW</p><h1>Dashboard</h1><p>Track your pipeline and keep the next step in view.</p></div><Button variant="secondary" onClick={onOpenBoard}>Open board</Button></div>
     <StatsGrid stats={stats} loading={loading} error={error} onRetry={onRetry}/>
-    <div className="dashboard-insights"><StatusChart applications={chartApplications} loading={loadingChartApplications} error={chartApplicationsError} onRetry={onRetryChartApplications} scope={statusScope} onScopeChange={setStatusScope}/><MonthlyChart applications={chartApplications} loading={loadingChartApplications} error={chartApplicationsError} onRetry={onRetryChartApplications} range={chartRange} onRangeChange={setChartRange}/></div>
+    <div className="dashboard-insights"><StatusChart applications={chartApplications} loading={loadingChartApplications} error={chartApplicationsError} onRetry={onRetryChartApplications} period={statusPeriod} onPeriodChange={setStatusPeriod}/><MonthlyChart applications={chartApplications} loading={loadingChartApplications} error={chartApplicationsError} onRetry={onRetryChartApplications} period={activityPeriod} onPeriodChange={setActivityPeriod}/></div>
     <section className="overview-recent"><header><div><p className="eyebrow">APPLICATIONS</p><h2>All applications</h2></div><Button onClick={onAdd}><span className="plus-icon">+</span> Add job</Button></header>
       <div className="dashboard-filters max-[760px]:flex-wrap" aria-label="Filter and sort applications"><label className="search-control max-[760px]:flex-[1_1_100%]"><Icon name="search" size={16}/><input type="search" value={search} onChange={(event) => onSearchChange(event.target.value)} placeholder="Search company or job title…" aria-label="Search by company or job title"/></label><select className="status-filter max-[760px]:flex-1" value={status} onChange={(event) => onStatusFilter(event.target.value)} aria-label="Filter applications by status"><option value="">All statuses</option>{STATUSES.map((item) => <option key={item}>{item}</option>)}</select><label className="sort-control max-[760px]:flex-1"><span>Sort by</span><select value={sortBy} onChange={(event) => onSortByChange(event.target.value)} aria-label="Sort applications by"><option value="applicationDate">Application date</option><option value="createdAt">Created date</option><option value="companyName">Company name</option><option value="jobTitle">Job title</option></select></label><select className="direction-select max-[760px]:flex-1" value={order} onChange={(event) => onOrderChange(event.target.value)} aria-label="Sort direction"><option value="desc">Descending</option><option value="asc">Ascending</option></select>{Boolean(search.trim() || status) && <button className="clear-filters-button" onClick={onClearFilters}>Clear filters</button>}</div>
       <ApplicationList applications={applications} loading={loadingApplications} error={applicationsError} onRetry={onRetryApplications} onSelect={onSelectApplication} onEdit={onEditApplication} onStatusChange={onStatusChange} onDelete={onDeleteApplication} pendingIds={pendingIds}/>
@@ -45,26 +45,78 @@ export function StatsGrid({ stats, loading, error, onRetry }) {
   return <><div className="stats-grid">{STAT_CARDS.map((card) => <article className={`stat-card stat-card-${card.tone}`} key={card.key}><div className="stat-card-heading"><span className="stat-label">{card.label}</span><Icon name={card.icon} className="stat-icon" size={21}/></div><p className="stat-value">{loading || error ? '—' : metricValue(stats, card.key)}</p></article>)}</div>{error && <ErrorMessage message={error} onRetry={onRetry}/>}</>;
 }
 
-function ChartRangeSelect({ range, onRangeChange, label }) {
-  return <select className="chart-period-select" value={range} onChange={(event) => onRangeChange(Number(event.target.value))} aria-label={`Filter ${label} by date`}><option value={6}>Last 6 months</option><option value={12}>Last 12 months</option></select>;
+const ACTIVITY_PERIODS = {
+  daily: { label: 'Daily · last 7 days', buckets: 7, unit: 'day' },
+  weekly: { label: 'Weekly · last 8 weeks', buckets: 8, unit: 'week' },
+  monthly: { label: 'Monthly · last 6 months', buckets: 6, unit: 'month' },
+};
+const STATUS_PERIODS = {
+  all: { label: 'All time', start: null },
+  days30: { label: 'Last 30 days', start: 30 },
+  months6: { label: 'Last 6 months', start: 6 },
+  months12: { label: 'Last 12 months', start: 12 },
+};
+
+function StatusPeriodSelect({ period, onPeriodChange }) {
+  return <select className="chart-period-select" value={period} onChange={(event) => onPeriodChange(event.target.value)} aria-label="Filter status breakdown by application date"><option value="all">All time</option><option value="days30">Last 30 days</option><option value="months6">Last 6 months</option><option value="months12">Last 12 months</option></select>;
 }
 
-function StatusScopeSelect({ scope, onScopeChange }) {
-  return <select className="chart-period-select" value={scope} onChange={(event) => onScopeChange(event.target.value)} aria-label="Filter status breakdown by application pipeline"><option value="all">All applications</option><option value="active">Active pipeline</option></select>;
+function ActivityPeriodSelect({ period, onPeriodChange }) {
+  return <select className="chart-period-select" value={period} onChange={(event) => onPeriodChange(event.target.value)} aria-label="Group application activity by time period"><option value="daily">Daily · last 7 days</option><option value="weekly">Weekly · last 8 weeks</option><option value="monthly">Monthly · last 6 months</option></select>;
 }
 
-function getRangeData(applications = [], range) {
+function getStatusRangeData(applications = [], period) {
+  const config = STATUS_PERIODS[period] || STATUS_PERIODS.all;
+  if (!config.start) return applications;
   const now = new Date();
-  const rangeStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - range + 1, 1));
-  const rangeEnd = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1));
+  const start = config.start === 30
+    ? new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+    : new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - config.start + 1, 1));
   return applications.filter((application) => {
     const date = new Date(application.applicationDate);
-    return !Number.isNaN(date.getTime()) && date >= rangeStart && date < rangeEnd;
+    return !Number.isNaN(date.getTime()) && date >= start && date <= now;
   });
 }
 
-function StatusChart({ applications, loading, error, onRetry, scope, onScopeChange }) {
-  const visibleApplications = (applications || []).filter((application) => scope === 'all' || application.status !== 'Rejected');
+function getActivityBuckets(applications = [], period) {
+  const config = ACTIVITY_PERIODS[period] || ACTIVITY_PERIODS.monthly;
+  const now = new Date();
+  const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  return Array.from({ length: config.buckets }, (_, index) => {
+    const offset = index - config.buckets + 1;
+    let start;
+    let end;
+    if (config.unit === 'day') {
+      start = new Date(today);
+      start.setUTCDate(today.getUTCDate() + offset);
+      end = new Date(start);
+      end.setUTCDate(start.getUTCDate() + 1);
+    } else if (config.unit === 'week') {
+      const currentMonday = new Date(today);
+      currentMonday.setUTCDate(today.getUTCDate() - ((today.getUTCDay() + 6) % 7));
+      start = new Date(currentMonday);
+      start.setUTCDate(currentMonday.getUTCDate() + offset * 7);
+      end = new Date(start);
+      end.setUTCDate(start.getUTCDate() + 7);
+    } else {
+      start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + offset, 1));
+      end = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 1));
+    }
+    const count = applications.filter((application) => {
+      const date = new Date(application.applicationDate);
+      return !Number.isNaN(date.getTime()) && date >= start && date < end;
+    }).length;
+    const label = config.unit === 'day'
+      ? start.toLocaleDateString(undefined, { weekday: 'short', timeZone: 'UTC' })
+      : config.unit === 'week'
+        ? `${start.toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' })}`
+        : start.toLocaleDateString(undefined, { month: 'short', timeZone: 'UTC' });
+    return { label, count };
+  });
+}
+
+function StatusChart({ applications, loading, error, onRetry, period, onPeriodChange }) {
+  const visibleApplications = getStatusRangeData(applications || [], period);
   const counts = visibleApplications.reduce((result, application) => {
     if (STATUSES.includes(application.status)) result[application.status] += 1;
     return result;
@@ -76,26 +128,18 @@ function StatusChart({ applications, loading, error, onRetry, scope, onScopeChan
   });
   const populatedValues = values.filter((entry) => entry.count > 0);
   return <section className="chart-card" aria-label="Applications by status">
-    <header><div><p className="eyebrow">PIPELINE</p><h2>Status breakdown</h2></div><div className="chart-header-actions"><span className="chart-total">{total} {scope === 'all' ? 'total' : 'active'}</span><StatusScopeSelect scope={scope} onScopeChange={onScopeChange}/></div></header>
-    {loading ? <LoadingState message="Loading status totals…"/> : error ? <div><p className="chart-message">Status breakdown unavailable.</p><Button variant="secondary" onClick={onRetry}>Retry</Button></div> : total === 0 ? <p className="chart-message">No {scope === 'all' ? 'applications' : 'active applications'} yet. Add a job to see your pipeline.</p> : <div className="status-chart max-[760px]:grid-cols-1"><div className="recharts-pie-wrap max-[760px]:h-[220px]" role="img" aria-label={`Status breakdown for ${scope === 'all' ? 'all applications' : 'the active pipeline'}: ${values.map(({ status, count }) => `${status} ${count}`).join(', ')}`}><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={populatedValues} dataKey="count" nameKey="status" innerRadius="64%" outerRadius="91%" paddingAngle={3} stroke="var(--surface)" strokeWidth={3} isAnimationActive>{populatedValues.map((entry) => <Cell key={entry.status} fill={entry.color}/>)}</Pie><Tooltip shared={false} content={<ChartTooltip/>} wrapperStyle={{ pointerEvents: 'none', zIndex: 5 }}/></PieChart></ResponsiveContainer><div className="donut-center"><small>{scope === 'all' ? 'ALL APPLICATIONS' : 'ACTIVE PIPELINE'}</small><strong>{total}</strong><span>tracked</span></div></div><div className="status-legend">{values.map(({ status, count, percent, color }) => <div className="status-legend-item" key={status}><span className="status-dot" style={{ backgroundColor: color }}/><span>{status}</span><strong>{count} <small>({percent}%)</small></strong><span className="status-legend-track"><i style={{ width: `${percent}%`, backgroundColor: color }}/></span></div>)}</div></div>}
+    <header><div><p className="eyebrow">PIPELINE</p><h2>Status breakdown</h2></div><div className="chart-header-actions"><span className="chart-total">{total} {period === 'all' ? 'total' : 'in range'}</span><StatusPeriodSelect period={period} onPeriodChange={onPeriodChange}/></div></header>
+    {loading ? <LoadingState message="Loading status totals…"/> : error ? <div><p className="chart-message">Status breakdown unavailable.</p><Button variant="secondary" onClick={onRetry}>Retry</Button></div> : total === 0 ? <p className="chart-message">No applications in this period. Add a job to see your pipeline.</p> : <div className="status-chart max-[760px]:grid-cols-1"><div className="recharts-pie-wrap max-[760px]:h-[220px]" role="img" aria-label={`Status breakdown for ${STATUS_PERIODS[period]?.label || 'all time'}: ${values.map(({ status, count }) => `${status} ${count}`).join(', ')}`}><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={populatedValues} dataKey="count" nameKey="status" innerRadius="64%" outerRadius="91%" paddingAngle={3} stroke="var(--surface)" strokeWidth={3} isAnimationActive>{populatedValues.map((entry) => <Cell key={entry.status} fill={entry.color}/>)}</Pie><Tooltip shared={false} content={<ChartTooltip/>} wrapperStyle={{ pointerEvents: 'none', zIndex: 5 }}/></PieChart></ResponsiveContainer><div className="donut-center"><small>{period === 'all' ? 'ALL APPLICATIONS' : STATUS_PERIODS[period]?.label.toUpperCase()}</small><strong>{total}</strong><span>tracked</span></div></div><div className="status-legend">{values.map(({ status, count, percent, color }) => <div className="status-legend-item" key={status}><span className="status-dot" style={{ backgroundColor: color }}/><span>{status}</span><strong>{count} <small>({percent}%)</small></strong><span className="status-legend-track"><i style={{ width: `${percent}%`, backgroundColor: color }}/></span></div>)}</div></div>}
   </section>;
 }
 
-function MonthlyChart({ applications, loading, error, onRetry, range, onRangeChange }) {
-  const now = new Date();
-  const visibleApplications = getRangeData(applications, range);
-  const months = Array.from({ length: range }, (_, index) => {
-    const date = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - range + 1 + index, 1));
-    const count = visibleApplications.filter((application) => {
-      const appliedAt = new Date(application.applicationDate);
-      return appliedAt.getUTCFullYear() === date.getUTCFullYear() && appliedAt.getUTCMonth() === date.getUTCMonth();
-    }).length;
-    return { label: date.toLocaleDateString(undefined, { month: 'short', timeZone: 'UTC' }), count };
-  });
-  const total = months.reduce((sum, month) => sum + month.count, 0);
+function MonthlyChart({ applications, loading, error, onRetry, period, onPeriodChange }) {
+  const buckets = getActivityBuckets(applications || [], period);
+  const total = buckets.reduce((sum, bucket) => sum + bucket.count, 0);
+  const config = ACTIVITY_PERIODS[period] || ACTIVITY_PERIODS.monthly;
   return <section className="chart-card" aria-label="Applications created by month">
-    <header><div><p className="eyebrow">ACTIVITY</p><h2>Applications over time</h2></div><div className="chart-header-actions"><span className="chart-total">{total} in range</span><ChartRangeSelect range={range} onRangeChange={onRangeChange} label="applications over time"/></div></header>
-    {loading ? <LoadingState message="Loading activity…"/> : error ? <div><p className="chart-message">Application history unavailable.</p><Button variant="secondary" onClick={onRetry}>Retry</Button></div> : total === 0 ? <p className="chart-message">No applications in this period yet. Add a job to see activity.</p> : <div className="monthly-chart" role="img" aria-label={`Applications created in the last ${range} months: ${months.map((month) => `${month.label} ${month.count}`).join(', ')}`}><ResponsiveContainer width="100%" height="100%"><BarChart data={months} margin={{ top: 12, right: 10, bottom: 0, left: -18 }}><defs><linearGradient id="applicationBarGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#ff9b5d"/><stop offset="100%" stopColor="#f36e3d"/></linearGradient></defs><CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="3 5"/><XAxis dataKey="label" tick={{ fill: 'var(--muted)', fontSize: 11 }} axisLine={false} tickLine={false}/><YAxis allowDecimals={false} domain={[0, 'dataMax']} width={34} tick={{ fill: 'var(--muted)', fontSize: 11 }} axisLine={false} tickLine={false}/><Tooltip shared={false} cursor={{ fill: 'var(--surface-muted)', opacity: .7 }} content={<ChartTooltip/>} wrapperStyle={{ pointerEvents: 'none', zIndex: 5 }}/><Bar dataKey="count" name="Applications" fill="url(#applicationBarGradient)" radius={[7, 7, 2, 2]} activeBar={{ fill: '#e7672d' }} maxBarSize={range === 6 ? 38 : 26} isAnimationActive={false}/></BarChart></ResponsiveContainer></div>}
+    <header><div><p className="eyebrow">ACTIVITY</p><h2>Applications over time</h2></div><div className="chart-header-actions"><span className="chart-total">{total} in range</span><ActivityPeriodSelect period={period} onPeriodChange={onPeriodChange}/></div></header>
+    {loading ? <LoadingState message="Loading activity…"/> : error ? <div><p className="chart-message">Application history unavailable.</p><Button variant="secondary" onClick={onRetry}>Retry</Button></div> : total === 0 ? <p className="chart-message">No applications in this period yet. Add a job to see activity.</p> : <div className="monthly-chart" role="img" aria-label={`Applications grouped ${config.unit} for the selected period: ${buckets.map((bucket) => `${bucket.label} ${bucket.count}`).join(', ')}`}><ResponsiveContainer width="100%" height="100%"><BarChart data={buckets} margin={{ top: 12, right: 10, bottom: 0, left: -18 }}><defs><linearGradient id="applicationBarGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#ff9b5d"/><stop offset="100%" stopColor="#f36e3d"/></linearGradient></defs><CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="3 5"/><XAxis dataKey="label" interval={period === 'weekly' ? 1 : 0} tick={{ fill: 'var(--muted)', fontSize: 11 }} axisLine={false} tickLine={false}/><YAxis allowDecimals={false} domain={[0, 'dataMax']} width={34} tick={{ fill: 'var(--muted)', fontSize: 11 }} axisLine={false} tickLine={false}/><Tooltip shared={false} cursor={{ fill: 'var(--surface-muted)', opacity: .7 }} content={<ChartTooltip/>} wrapperStyle={{ pointerEvents: 'none', zIndex: 5 }}/><Bar dataKey="count" name="Applications" fill="url(#applicationBarGradient)" radius={[7, 7, 2, 2]} activeBar={{ fill: '#e7672d' }} maxBarSize={period === 'monthly' ? 38 : 28} isAnimationActive={false}/></BarChart></ResponsiveContainer></div>}
   </section>;
 }
 
