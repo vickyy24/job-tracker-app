@@ -8,7 +8,6 @@ import { createApplication, deleteApplication as deleteApplicationRequest, getAp
 
 
 const STATUSES = ['Applied', 'Interview', 'Offer', 'Rejected'];
-const readPreference = (key, fallback) => { try { return localStorage.getItem(key) || fallback; } catch { return fallback; } };
 function readRoute() {
   const hashRoute = window.location.hash.replace(/^#\/?/, '').split('?')[0];
   const pathRoute = window.location.pathname.replace(/^\//, '').split('/')[0];
@@ -19,15 +18,12 @@ function readRoute() {
 
 function App() {
   const [page, setPage] = useState(readRoute);
-  const [themeMode, setThemeMode] = useState(() => readPreference('job-tracker-theme', 'light') === 'dark' ? 'dark' : 'light');
+  const [themeMode, setThemeMode] = useState('light');
   const theme = themeMode;
-  const [workspace, setWorkspace] = useState(() => readPreference('job-tracker-workspace', 'Job Hunt 2025'));
-  const [dailyGoal, setDailyGoal] = useState(() => {
-    const savedGoal = Number(readPreference('job-tracker-daily-goal', '5'));
-    return Number.isInteger(savedGoal) && savedGoal > 0 ? savedGoal : 5;
-  });
-  const [viewMode, setViewMode] = useState(() => readPreference('job-tracker-view', 'board'));
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => readPreference('job-tracker-sidebar-collapsed', 'false') === 'true');
+  const [workspace, setWorkspace] = useState('Job Hunt 2025');
+  const [dailyGoal, setDailyGoal] = useState(5);
+  const [viewMode, setViewMode] = useState('board');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [stats, setStats] = useState(null);
   const [loadingStats, setLoadingStats] = useState(true);
   const [statsError, setStatsError] = useState('');
@@ -62,12 +58,7 @@ function App() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    localStorage.setItem('job-tracker-theme', themeMode);
   }, [theme, themeMode]);
-  useEffect(() => { localStorage.setItem('job-tracker-workspace', workspace); }, [workspace]);
-  useEffect(() => { localStorage.setItem('job-tracker-daily-goal', String(dailyGoal)); }, [dailyGoal]);
-  useEffect(() => { localStorage.setItem('job-tracker-view', viewMode); }, [viewMode]);
-  useEffect(() => { localStorage.setItem('job-tracker-sidebar-collapsed', String(sidebarCollapsed)); }, [sidebarCollapsed]);
   useEffect(() => {
     const update = () => setPage(readRoute());
     window.addEventListener('popstate', update);

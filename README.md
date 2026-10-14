@@ -9,7 +9,7 @@ A personal job search dashboard with a searchable application list, Kanban board
 - See application totals, a status breakdown, and daily, weekly, or monthly activity on the dashboard.
 - Filter the application list by selecting a status in the status chart or its status selector. Select the active status again to clear that filter.
 - Choose the last 7 days, 8 weeks, or 6 months for the activity chart.
-- Set a daily application goal and choose a light or dark theme. These preferences are saved in the current browser.
+- Set a daily application goal and choose a light or dark theme. Workspace preferences stay in React state for the current session and reset when the page reloads.
 - Record company, job title, salary or stipend, location, application date, status, and notes.
 
 Charts use application dates. Daily activity covers the last 7 days, weekly activity covers the last 8 weeks, and monthly activity covers the last 6 months. The daily goal counts records created today in UTC. Chart totals are calculated from the full application history; the status chart can also apply its selected status to the application list.
@@ -101,5 +101,5 @@ REACT_APP_API_BASE_URL=http://localhost:5000/api
 ## Data and limitations
 
 - Application records are stored by the API in MongoDB. Do not put database credentials in this frontend repository.
-- Authentication, multi-user workspaces, and synchronized preferences are not included.
+- Authentication, multi-user workspaces, and persisted preferences are not included.
 - Assets currently describes the resource library feature; uploads and document storage are not available.
