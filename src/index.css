@@ -609,19 +609,23 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .stat-card-amber {
-  border-color: #f7dfc4;
+  background: linear-gradient(135deg, #b96f0a 0%, #955300 100%);
+  border-color: #d89425;
 }
 
 .stat-card-teal {
-  border-color: #c7edee;
+  background: linear-gradient(135deg, #0f8883 0%, #086d68 100%);
+  border-color: #1fb6ac;
 }
 
 .stat-card-green {
-  border-color: #ccebdc;
+  background: linear-gradient(135deg, #0e7d54 0%, #075c40 100%);
+  border-color: #28aa78;
 }
 
 .stat-card-rose {
-  border-color: #f3d4dc;
+  background: linear-gradient(135deg, #c5445c 0%, #a52e47 100%);
+  border-color: #ea7184;
 }
 
 .stat-card-heading {
@@ -632,7 +636,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .stat-label {
-  color: var(--subtle);
+  color: rgba(255,255,255,.94);
   font-size: 12px;
   font-weight: 500;
 }
@@ -645,24 +649,26 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   height: 40px;
   color: #fff;
   border-radius: 14px;
-  box-shadow: 0 7px 16px rgba(53, 66, 120, .18);
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.48);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.16),0 5px 12px rgba(0,0,0,.14);
   transition: transform .18s ease;
 }
 
 .stat-card-amber .stat-icon {
-  background: linear-gradient(145deg, #ff9f1c, #f97316);
+  border-color: #ffd27a;
 }
 
 .stat-card-teal .stat-icon {
-  background: linear-gradient(145deg, #06b6d4, #0284c7);
+  border-color: #78e7dc;
 }
 
 .stat-card-green .stat-icon {
-  background: linear-gradient(145deg, #818cf8, #4f46e5);
+  border-color: #83dfb4;
 }
 
 .stat-card-rose .stat-icon {
-  background: linear-gradient(145deg, #3b82f6, #4f46e5);
+  border-color: #ff9dab;
 }
 
 .stat-card:hover .stat-icon {
@@ -671,7 +677,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 .stat-value {
   margin: 6px 0 0;
-  color: var(--text);
+  color: #fff;
   font-size: 22px;
   font-weight: 650;
   line-height: 1;
@@ -1973,7 +1979,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .chart-card {
   min-width: 0;
   min-height: 0;
-  padding: 16px;
+  padding: 12px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
@@ -1991,7 +1997,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
 }
 
 .chart-card .eyebrow {
@@ -2188,7 +2194,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .monthly-chart {
-  height: 240px;
+  height: 210px;
   padding: 8px 2px 0;
 }
 
