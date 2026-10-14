@@ -2079,7 +2079,16 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .chart-tooltip-percent {
+  padding: 2px 5px;
+  color: #047857;
+  background: #dcfce7;
+  border-radius: 5px;
   font-style: normal;
+  font-weight: 800;
+}
+
+.chart-tooltip-metric {
+  color: #047857;
   font-weight: 700;
 }
 

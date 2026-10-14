@@ -11,7 +11,6 @@ const STATUS_SWATCHES = {
   Offer: 'linear-gradient(135deg, #653fd0, #9566f4)',
   Rejected: 'linear-gradient(135deg, #5726a5, #a15bea)',
 };
-const STATUS_ACCENTS = { Applied: '#a78bfa', Interview: '#9b8afb', Offer: '#b197fc', Rejected: '#c4a1ff' };
 const STAT_CARDS = [
   { label: 'Total applications', key: 'totalApplications', tone: 'amber', icon: 'assets' },
   { label: 'Interviews', key: 'interviews', tone: 'teal', icon: 'interviews' },
@@ -29,7 +28,7 @@ function ChartTooltip({ active, payload, label }) {
   const item = payload[0];
   const title = item.payload?.status || label;
   const count = Number(item.value) || 0;
-  if (item.payload?.status) return <div className="chart-tooltip"><strong>{title}</strong><span>{count} {count === 1 ? 'application' : 'applications'} · <em className="chart-tooltip-percent" style={{ color: STATUS_ACCENTS[item.payload.key] }}>{item.payload.percent}%</em></span></div>;
+  if (item.payload?.status) return <div className="chart-tooltip"><strong>{title}</strong><span><b className="chart-tooltip-metric">{count} {count === 1 ? 'application' : 'applications'}</b> · <em className="chart-tooltip-percent">{item.payload.percent}%</em></span></div>;
   if (item.dataKey !== 'count') return null;
   return <div className="chart-tooltip"><strong>{title}</strong><span>{count} {count === 1 ? 'application' : 'applications'}</span></div>;
 }
