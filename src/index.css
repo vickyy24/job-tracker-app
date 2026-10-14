@@ -2416,6 +2416,121 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   .application-details-grid {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  /* Compact only the dashboard's recent-applications section on phones. */
+  .dashboard-page .overview-recent > header {
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dashboard-page .overview-recent > header .ui-button {
+    min-height: 30px;
+    padding: 0 9px;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .dashboard-page .dashboard-filters {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, .82fr) minmax(0, 1.1fr) minmax(0, .82fr);
+    gap: 5px;
+    flex-wrap: nowrap;
+    align-items: center;
+    position: relative;
+  }
+
+  .dashboard-page .dashboard-filters .search-control,
+  .dashboard-page .dashboard-filters .status-filter,
+  .dashboard-page .dashboard-filters .sort-control,
+  .dashboard-page .dashboard-filters .direction-select {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    height: 30px;
+    flex: initial;
+    padding: 0 5px;
+    font-size: 9px;
+  }
+
+  .dashboard-page .dashboard-filters .search-control {
+    gap: 4px;
+    padding: 0 6px;
+  }
+
+  .dashboard-page .dashboard-filters .search-control svg {
+    width: 12px;
+    min-width: 12px;
+  }
+
+  .dashboard-page .dashboard-filters .search-control input {
+    font-size: 9px;
+  }
+
+  .dashboard-page .dashboard-filters .sort-control {
+    gap: 0;
+    padding-right: 4px;
+  }
+
+  .dashboard-page .dashboard-filters .sort-control > span {
+    display: none;
+  }
+
+  .dashboard-page .dashboard-filters .sort-control select {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    overflow: hidden;
+    font-size: 9px;
+    text-overflow: ellipsis;
+  }
+
+  .dashboard-page .dashboard-filters .clear-filters-button {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 1px);
+    padding: 2px 4px;
+    font-size: 9px;
+  }
+
+  .dashboard-page .application-table-wrap {
+    overflow: hidden;
+  }
+
+  .dashboard-page .application-table {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+  }
+
+  .dashboard-page .application-table th,
+  .dashboard-page .application-table td {
+    padding: 7px 4px;
+    font-size: 9px;
+    overflow-wrap: anywhere;
+  }
+
+  .dashboard-page .application-table th:nth-child(1) { width: 24%; }
+  .dashboard-page .application-table th:nth-child(2) { width: 23%; }
+  .dashboard-page .application-table th:nth-child(3) { width: 18%; }
+  .dashboard-page .application-table th:nth-child(4) { width: 15%; }
+  .dashboard-page .application-table th:nth-child(5) { width: 20%; }
+
+  .dashboard-page .application-table .table-link,
+  .dashboard-page .application-table .table-action,
+  .dashboard-page .application-table-status {
+    max-width: 100%;
+    font-size: 9px;
+  }
+
+  .dashboard-page .application-table .table-link {
+    text-align: left;
+    overflow-wrap: anywhere;
+  }
+
+  .dashboard-page .application-table .table-action {
+    margin-right: 4px;
+  }
 }
 
 
