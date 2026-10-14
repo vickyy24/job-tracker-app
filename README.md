@@ -1,21 +1,22 @@
 # Job Tracker
 
-A personal job search dashboard with a searchable application list, Kanban board, status pipeline, and monthly activity chart. The React frontend stores application records through the [Job Tracker API](https://github.com/vickyy24/job-tracker-api), which persists them in MongoDB.
+A personal job search dashboard with a searchable application list, Kanban board, status pipeline, and daily, weekly, or monthly activity chart. The React frontend stores application records through the [Job Tracker API](https://github.com/vickyy24/job-tracker-api), which persists them in MongoDB.
 
 ## Features
 
 - Create, view, edit, search, sort, filter, and delete job applications.
 - Track applications through Applied, Interview, Offer, and Rejected statuses in a Kanban board or table.
-- See application totals, a status breakdown, and monthly application activity on the dashboard.
-- Compare all applications with the active pipeline in the status breakdown, and choose a six- or twelve-month activity view for the monthly chart.
+- See application totals, a status breakdown, and daily, weekly, or monthly activity on the dashboard.
+- Filter the application list by selecting a status in the status chart or its status selector. Select the active status again to clear that filter.
+- Choose the last 7 days, 8 weeks, or 6 months for the activity chart.
 - Set a daily application goal and choose a light or dark theme. These preferences are saved in the current browser.
 - Record company, job title, salary or stipend, location, application date, status, and notes.
 
-Charts use application dates and include the current calendar month. The daily goal counts records created today in UTC. Charts use the complete application list, independently of search and status filters on the board.
+Charts use application dates. Daily activity covers the last 7 days, weekly activity covers the last 8 weeks, and monthly activity covers the last 6 months. The daily goal counts records created today in UTC. Chart totals are calculated from the full application history; the status chart can also apply its selected status to the application list.
 
 ## Full-screen app screenshots
 
-These captures use a 1920 × 1080 viewport and a demo-only feed. The Board shows all seven `Demo ·` sample companies; the Dashboard shows their status breakdown and month-to-month activity without unrelated live applications.
+These captures show the dashboard, board, assets, and settings screens. Demo applications are stored in MongoDB through the API seeder; they are not bundled in this frontend repository. Hover a status segment in the dashboard pie chart to see its count and percentage, or select a segment to filter the application list.
 
 ### Dashboard
 
