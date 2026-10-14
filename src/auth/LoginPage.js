@@ -233,6 +233,7 @@ export default function LoginPage() {
       </div>}
 
       <form className="auth-form" onSubmit={submit} noValidate>
+        {!registering && !verificationStep && !forgotPasswordStep && error && <p className="auth-error" role="alert">{error}</p>}
         {verificationStep ? <>
           <label className="auth-field" htmlFor="auth-verification-code">Verification code
             <input id="auth-verification-code" name="verification-code" type="text" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" maxLength={6} value={verificationCode} onChange={(event) => { setVerificationCode(event.target.value.replace(/\D/g, '').slice(0, 6)); setFieldErrors((current) => ({ ...current, verificationCode: '' })); }} aria-invalid={Boolean(fieldErrors.verificationCode)} aria-describedby={fieldErrors.verificationCode ? 'verification-code-error' : undefined} required disabled={busy} />
@@ -245,7 +246,7 @@ export default function LoginPage() {
           <button className="auth-back-link" type="button" onClick={() => changeMode('login')} disabled={busy}>Back to sign in</button>
         </> : forgotPasswordStep ? <>
           {forgotPasswordStep === 'request' ? <label className="auth-field" htmlFor="auth-email">Email address
-            <input id="auth-email" name="email" type="email" autoComplete="email" autoCapitalize="none" spellCheck="false" maxLength={254} value={email} onChange={(event) => { setEmail(event.target.value); setFieldErrors((current) => ({ ...current, email: '' })); }} aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email ? 'email-error' : undefined} required disabled={busy}/>
+            <input id="auth-email" name="email" type="email" autoComplete="email" autoCapitalize="none" spellCheck="false" maxLength={254} value={email} onChange={(event) => { setEmail(event.target.value); setError(''); setFieldErrors((current) => ({ ...current, email: '' })); }} aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email ? 'email-error' : undefined} required disabled={busy}/>
             {fieldErrors.email && <small id="email-error" className="auth-field-error" role="alert">{fieldErrors.email}</small>}
           </label> : <>
             <label className="auth-field" htmlFor="auth-verification-code">Email verification code
@@ -285,13 +286,13 @@ export default function LoginPage() {
           </label>
         </div>}
         <label className="auth-field" htmlFor="auth-email">Email address
-          <input id="auth-email" name="email" type="email" autoComplete="email" autoCapitalize="none" spellCheck="false" maxLength={254} value={email} onChange={(event) => { setEmail(event.target.value); setFieldErrors((current) => ({ ...current, email: '' })); }} onBlur={() => registering && validateRegisterField('email')} aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email ? 'email-error' : undefined} required disabled={busy}/>
+          <input id="auth-email" name="email" type="email" autoComplete="email" autoCapitalize="none" spellCheck="false" maxLength={254} value={email} onChange={(event) => { setEmail(event.target.value); setError(''); setFieldErrors((current) => ({ ...current, email: '' })); }} onBlur={() => registering && validateRegisterField('email')} aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email ? 'email-error' : undefined} required disabled={busy}/>
           {fieldErrors.email && <small id="email-error" className="auth-field-error" role="alert">{fieldErrors.email}</small>}
         </label>
         <div className="auth-field">
           <label htmlFor="auth-password">Password</label>
           <div className="auth-password-control">
-            <input id="auth-password" name="password" type={passwordVisible ? 'text' : 'password'} autoComplete={registering ? 'new-password' : 'current-password'} minLength={registering ? 12 : undefined} maxLength={128} value={password} onChange={(event) => { setPassword(event.target.value); setFieldErrors((current) => ({ ...current, password: '' })); }} onBlur={() => registering && validateRegisterField('password')} aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'password-error' : undefined} required disabled={busy}/>
+            <input id="auth-password" name="password" type={passwordVisible ? 'text' : 'password'} autoComplete={registering ? 'new-password' : 'current-password'} minLength={registering ? 12 : undefined} maxLength={128} value={password} onChange={(event) => { setPassword(event.target.value); setError(''); setFieldErrors((current) => ({ ...current, password: '' })); }} onBlur={() => registering && validateRegisterField('password')} aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'password-error' : undefined} required disabled={busy}/>
             <button className="auth-password-toggle" type="button" onClick={() => setPasswordVisible((visible) => !visible)} aria-label={passwordVisible ? 'Hide password' : 'Show password'} aria-pressed={passwordVisible} disabled={busy}>
               {passwordVisible ? <EyeOff size={17} aria-hidden="true"/> : <Eye size={17} aria-hidden="true"/>}
             </button>
@@ -312,7 +313,7 @@ export default function LoginPage() {
           <label className="auth-remember"><input type="checkbox" checked={rememberMe} onChange={(event) => setRememberMe(event.target.checked)} disabled={busy}/> <span>Remember me</span></label>
           <button className="auth-back-link auth-forgot-link" type="button" onClick={() => { setForgotPasswordStep('request'); setError(''); setFeedback(''); setFieldErrors({}); setVerificationCode(''); setPassword(''); setConfirmPassword(''); }} disabled={busy}>Forgot password?</button>
         </div>}
-        {error && <p className="auth-error" role="alert">{error}</p>}
+        {registering && error && <p className="auth-error" role="alert">{error}</p>}
         <button className="auth-submit" type="submit" disabled={busy}>
           {busy ? 'Please wait…' : registering ? 'Create account' : 'Sign in'}
         </button>
