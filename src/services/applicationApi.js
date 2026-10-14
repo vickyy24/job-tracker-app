@@ -3,18 +3,26 @@ const API_BASE_URL = (
 ).replace(/\/+$/, '');
 
 async function request(path, options = {}) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  }).catch(() => {
-    const error = new Error('Unable to connect to the API.');
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), 60000);
+  let response;
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      ...options,
+      credentials: 'include',
+      signal: controller.signal,
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    });
+  } catch {
+    const error = new Error('Unable to connect to the API. Please try again shortly.');
     error.status = 0;
     throw error;
-  });
+  } finally {
+    window.clearTimeout(timeout);
+  }
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
