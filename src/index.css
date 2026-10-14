@@ -2198,9 +2198,16 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   padding: 8px 2px 0;
 }
 
-.recharts-bar-rectangle:focus:not(:focus-visible) {
-  outline: none;
-  stroke: none;
+.monthly-chart .recharts-bar-rectangle,
+.monthly-chart .recharts-bar-rectangle:focus,
+.monthly-chart .recharts-bar-rectangle:focus-visible,
+.monthly-chart .recharts-bar-rectangle:active,
+.monthly-chart .recharts-rectangle:focus,
+.monthly-chart .recharts-rectangle:focus-visible,
+.monthly-chart .recharts-active-bar {
+  outline: none !important;
+  stroke: none !important;
+  stroke-width: 0 !important;
 }
 
 .chart-message {
