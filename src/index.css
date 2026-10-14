@@ -1966,13 +1966,16 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .dashboard-insights {
   display: grid;
   grid-template-columns: minmax(0,1.35fr) minmax(330px,1fr);
-  align-items: start;
+  align-items: stretch;
   gap: 16px;
   margin: 0 0 12px;
 }
 
 .chart-card {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
+  height: 100%;
   min-height: 0;
   padding: 12px;
   background: var(--surface);
@@ -2189,8 +2192,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .monthly-chart {
-  height: 210px;
+  flex: 1 1 auto;
+  min-height: 280px;
+  height: auto;
   padding: 8px 2px 0;
+}
+
+.recharts-bar-rectangle:focus:not(:focus-visible) {
+  outline: none;
+  stroke: none;
 }
 
 .chart-message {
