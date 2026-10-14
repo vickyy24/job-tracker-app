@@ -5,6 +5,7 @@ const API_BASE_URL = (
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       ...options.headers,
@@ -19,10 +20,25 @@ async function request(path, options = {}) {
   if (!response.ok) {
     const error = new Error(data.message || 'The request could not be completed.');
     error.status = response.status;
+    if (response.status === 401 && !path.startsWith('/auth/login')) {
+      window.dispatchEvent(new Event('jobtracker:unauthorized'));
+    }
     throw error;
   }
 
   return data;
+}
+
+export function getAuthSession() {
+  return request('/auth/session');
+}
+
+export function login(password) {
+  return request('/auth/login', { method: 'POST', body: JSON.stringify({ password }) });
+}
+
+export function logout() {
+  return request('/auth/logout', { method: 'POST' });
 }
 
 export function listApplications({ search, status, sortBy = 'applicationDate', order = 'desc' } = {}) {

@@ -85,6 +85,17 @@ To use a different API URL, create `.env.local` in this folder and set `REACT_AP
 REACT_APP_API_BASE_URL=http://localhost:5000/api
 ```
 
+## Deploy to Vercel and Render
+
+The production frontend routes `/api/*` through the Vercel rewrite to `https://job-tracker-api.onrender.com`. This keeps browser requests same-origin so the API's secure, HTTP-only session cookie works without exposing a database credential in the frontend.
+
+1. Import this frontend repository into Vercel as a Create React App project. The build command is `npm run build` and the output directory is `build` (also defined in `vercel.json`). Set `REACT_APP_API_BASE_URL` to `/api` for Production, then deploy and note the production origin assigned by Vercel.
+2. Create a Render Blueprint from the [Job Tracker API repository](https://github.com/vickyy24/job-tracker-api). In Render's environment settings, enter the Atlas URI as `MONGODB_URI`, a randomly generated `ADMIN_PASSWORD` of at least 24 characters, and the exact Vercel production origin as `FRONTEND_ORIGIN`. Keep these values in Render only; never put them in the frontend environment or source control.
+3. Confirm the Render service is healthy at `/api/health`, then redeploy the Vercel project so its `/api` rewrite can reach the API.
+4. Sign in with `ADMIN_PASSWORD`. Application data is available only to an authenticated session; logout revokes that session. Keep MongoDB Atlas network access and credentials restricted.
+
+The API currently uses Render's free instance in `render.yaml`; free instances may sleep while idle. Upgrade the service if always-on availability is required.
+
 ## Commands
 
 - `npm start` starts the React development server and Tailwind stylesheet watcher.
