@@ -30,6 +30,20 @@ export function resendVerification(email) {
   });
 }
 
+export function requestPasswordReset(email) {
+  return apiRequest('/auth/forgot-password', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+}
+
+export function resetPassword({ email, code, password }) {
+  return apiRequest('/auth/reset-password', {
+    method: 'POST',
+    body: JSON.stringify({ email, code, password }),
+  });
+}
+
 export function signOut() {
   return apiRequest('/auth/logout', { method: 'POST' });
 }
