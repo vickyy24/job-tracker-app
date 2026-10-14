@@ -59,7 +59,7 @@ export function AuthProvider({ children }) {
     setCsrfToken('');
     setUser(null);
     setStatus('anonymous');
-    setNotice(error ? 'Could not reach the server to end this session. Check your connection and sign out again.' : 'You have been signed out.');
+    setNotice(error ? 'Could not reach the server to end this session. Check your connection and sign out again.' : '');
     window.history.replaceState({}, '', '/login');
   }, []);
 

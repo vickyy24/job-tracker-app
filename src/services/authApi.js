@@ -9,10 +9,10 @@ export function registerAccount({ firstName, lastName, email, password }) {
   });
 }
 
-export function signIn({ email, password }) {
+export function signIn({ email, password, rememberMe }) {
   return apiRequest('/auth/login', {
     method: 'POST',
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password, rememberMe }),
   });
 }
 

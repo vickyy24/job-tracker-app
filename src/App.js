@@ -154,7 +154,7 @@ function WorkspaceApp() {
         {assetsExpanded && <button className="nav-sublink" type="button" onClick={() => navigate('assets')}>Saved resources</button>}
       </nav>
       <div className="sidebar-bottom">
-        <div className="profile-row"><span className="profile-avatar">{(user?.firstName?.[0] || user?.email?.[0] || 'J').toUpperCase()}</span><span className="profile-copy"><strong>{[user?.firstName, user?.lastName].filter(Boolean).join(' ') || user?.email || 'Job Tracker'}</strong><small>{user?.email || 'Personal workspace'}</small></span><button className="profile-settings-button" type="button" aria-label="Open settings" title="Settings" onClick={() => navigate('settings')}><Icon name="settings" size={16}/></button><button className="profile-logout-button" type="button" aria-label="Sign out" title="Sign out" onClick={logout}><Icon name="logout" size={16}/></button></div>
+        <div className="profile-row"><span className="profile-avatar">{(user?.firstName?.[0] || user?.email?.[0] || 'J').toUpperCase()}</span><span className="profile-copy"><strong>{user?.firstName || user?.email?.split('@')[0] || 'User'}</strong><small title={user?.email || 'Personal workspace'}>{user?.email || 'Personal workspace'}</small></span><button className="profile-settings-button" type="button" aria-label="Open settings" title="Settings" onClick={() => navigate('settings')}><Icon name="settings" size={16}/></button><button className="profile-logout-button" type="button" aria-label="Sign out" title="Sign out" onClick={logout}><Icon name="logout" size={16}/></button></div>
         <p className="sidebar-tagline"><span className="footer-dot"/><span>Keep your job search moving</span></p>
       </div>
     </aside>
@@ -200,7 +200,11 @@ function App() {
     }
   }, [status]);
   if (status === 'restoring') {
-    return <main className="auth-page"><div className="auth-panel auth-restoring" role="status"><span className="auth-spinner" aria-hidden="true"/><p>Restoring your secure session…</p></div></main>;
+    return <main className="auth-page"><div className="auth-restoring" role="status" aria-live="polite">
+      <span className="auth-loading-mark" aria-hidden="true"><span className="auth-loading-ring"/><span className="auth-loading-letter">J</span></span>
+      <span className="auth-loading-brand">job<strong>track</strong></span>
+      <span className="auth-loading-caption"><span className="auth-loading-dots" aria-hidden="true"><i/><i/><i/></span>Restoring your secure session</span>
+    </div></main>;
   }
   if (status !== 'authenticated') return <LoginPage key={status}/>;
   return <WorkspaceApp/>;
