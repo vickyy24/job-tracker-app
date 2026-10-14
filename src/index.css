@@ -2698,6 +2698,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 @media (max-width: 760px) {
+  .app-shell .dashboard-main {
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+
   /* A collapsed desktop rail must become a full mobile drawer. */
   .app-shell.sidebar-collapsed {
     --sidebar-width: 220px;
