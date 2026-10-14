@@ -2705,7 +2705,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   }
 
   .app-shell .workspace-title strong {
-    font-size: 15px;
+    flex: 0 0 auto;
+    font-size: 16px;
     line-height: 1;
     white-space: nowrap;
   }
@@ -2735,7 +2736,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   .app-shell .daily-goal > span,
   .app-shell .daily-goal strong {
     white-space: nowrap;
-    font-size: 10px;
+    font-size: 11px;
   }
 
   .app-shell .daily-goal > svg {
@@ -2762,13 +2763,28 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
   .app-shell .dashboard-page .page-heading > .ui-button {
     box-sizing: border-box;
-    flex: none;
-    width: auto;
-    min-width: max-content;
+    display: inline-flex;
+    flex: 0 0 auto;
+    width: max-content;
+    min-width: 88px;
     min-height: 34px;
-    padding: 0 9px;
-    font-size: 10px;
-    white-space: nowrap;
+    padding: 0 8px;
+    font-size: 11px;
+    line-height: 1;
+    white-space: nowrap !important;
+    word-break: keep-all;
+  }
+
+  .app-shell .sidebar {
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .app-shell .sidebar-bottom {
+    flex: none;
+    margin-top: auto;
   }
 
   .app-shell .topbar {
