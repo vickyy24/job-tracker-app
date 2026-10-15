@@ -34,7 +34,7 @@ describe('LoginPage component', () => {
 
     // Initial sign-in elements
     expect(screen.getByRole('heading', { name: /Welcome back/i })).toBeInTheDocument();
-    expect(screen.getByLabelText(/Username or email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Email address/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/^Password$/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /^Sign in$/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Forgot password\?/i })).toBeInTheDocument();

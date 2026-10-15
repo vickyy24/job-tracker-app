@@ -154,7 +154,7 @@ function WorkspaceApp() {
         {assetsExpanded && <button className="nav-sublink" type="button" onClick={() => navigate('assets')}>Saved resources</button>}
       </nav>
       <div className="sidebar-bottom">
-        <div className="profile-row"><span className="profile-avatar">{(user?.username?.[0] || 'J').toUpperCase()}</span><span className="profile-copy"><strong>{user?.username || 'User'}</strong><small title={user?.username || 'Personal workspace'}>{user?.username || 'Personal workspace'}</small></span><button className="profile-settings-button" type="button" aria-label="Open settings" title="Settings" onClick={() => navigate('settings')}><Icon name="settings" size={16}/></button><button className="profile-logout-button" type="button" aria-label="Sign out" title="Sign out" onClick={logout}><Icon name="logout" size={16}/></button></div>
+        <div className="profile-row"><span className="profile-avatar">{((user?.email || user?.username)?.[0] || 'J').toUpperCase()}</span><span className="profile-copy"><strong>{user?.email || user?.username || 'User'}</strong><small title={user?.email || user?.username || 'Personal workspace'}>{user?.email || user?.username || 'Personal workspace'}</small></span><button className="profile-settings-button" type="button" aria-label="Open settings" title="Settings" onClick={() => navigate('settings')}><Icon name="settings" size={16}/></button><button className="profile-logout-button" type="button" aria-label="Sign out" title="Sign out" onClick={logout}><Icon name="logout" size={16}/></button></div>
         <p className="sidebar-tagline"><span className="footer-dot"/><span>Keep your job search moving</span></p>
       </div>
     </aside>

@@ -10,12 +10,6 @@ import {
 
 const passwordByteLength = (value) => new TextEncoder().encode(value).length;
 
-const validUsername = (value) => {
-  const normalized = value.trim().toLowerCase();
-  if (/^[a-z0-9._-]{3,32}$/.test(normalized)) return true;
-  return validEmail(normalized);
-};
-
 const validEmail = (value) => {
   const normalized = value.trim().toLowerCase();
   if (normalized.length < 6 || normalized.length > 254) return false;
@@ -46,7 +40,7 @@ export default function LoginPage() {
   const [mode, setMode] = useState(modeFromPath);
 
   // Common auth state
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -126,11 +120,11 @@ export default function LoginPage() {
 
   const validateField = (field) => {
     let message = '';
-    if (field === 'username') {
-      if (!username.trim()) {
-        message = mode === 'register' ? 'Enter your email address.' : 'Enter a username or email address.';
-      } else if (mode === 'register' ? !validEmail(username) : !validUsername(username)) {
-        message = mode === 'register' ? 'Enter a valid email address.' : 'Enter a valid username or email address.';
+    if (field === 'email' || field === 'username') {
+      if (!email.trim()) {
+        message = 'Enter your email address.';
+      } else if (!validEmail(email)) {
+        message = 'Enter a valid email address.';
       }
     } else if (field === 'password') {
       if (!password) {
@@ -182,12 +176,12 @@ export default function LoginPage() {
     setSuccessNotice('');
     setFieldErrors({});
 
-    const fields = ['username', 'password', ...(mode === 'register' ? ['confirmPassword'] : [])];
+    const fields = ['email', 'password', ...(mode === 'register' ? ['confirmPassword'] : [])];
     const messages = fields.map((f) => [f, validateField(f)]).filter(([, msg]) => msg);
     if (messages.length) {
       setFieldErrors(Object.fromEntries(messages));
       const inputIds = {
-        username: 'auth-username',
+        email: 'auth-email',
         password: 'auth-password',
         confirmPassword: 'auth-confirm-password',
       };
@@ -198,12 +192,13 @@ export default function LoginPage() {
     setBusy(true);
     if (mode === 'login') setPasswordVisible(false);
     try {
+      const normalizedEmail = email.trim().toLowerCase();
       const result = await authenticate(
-        { username: username.trim().toLowerCase(), password, confirmPassword, rememberMe },
+        { email: normalizedEmail, username: normalizedEmail, password, confirmPassword, rememberMe },
         mode
       );
       if (mode === 'register') {
-        setVerificationEmail(result.email || username.trim().toLowerCase());
+        setVerificationEmail(result.email || normalizedEmail);
         setVerificationCode('');
         setResendWait(60);
       }
@@ -342,7 +337,7 @@ export default function LoginPage() {
         newPassword,
         confirmPassword: confirmNewPassword,
       });
-      setUsername(resetEmail.trim().toLowerCase());
+      setEmail(resetEmail.trim().toLowerCase());
       setSuccessNotice('Your password has been reset successfully! Please sign in with your new password.');
       changeMode('login');
     } catch (requestError) {
@@ -642,32 +637,31 @@ export default function LoginPage() {
         ) : (
           /* ---------------- FLOW D: Sign In & Register Form ---------------- */
           <form className="auth-form" onSubmit={submitAuth} noValidate>
-            <label className="auth-field" htmlFor="auth-username">
-              {isRegister ? 'Email address' : 'Username or email'}
+            <label className="auth-field" htmlFor="auth-email">
+              Email address
               <input
-                id="auth-username"
-                name="username"
-                type="text"
-                autoComplete="username"
+                id="auth-email"
+                name="email"
+                type="email"
+                autoComplete="email"
                 autoCapitalize="none"
                 spellCheck="false"
-                minLength={3}
                 maxLength={254}
-                value={username}
+                value={email}
                 onChange={(event) => {
-                  setUsername(event.target.value);
+                  setEmail(event.target.value);
                   setError('');
-                  setFieldErrors((curr) => ({ ...curr, username: '' }));
+                  setFieldErrors((curr) => ({ ...curr, email: '' }));
                 }}
-                onBlur={() => validateField('username')}
-                aria-invalid={Boolean(fieldErrors.username)}
-                aria-describedby={fieldErrors.username ? 'username-error' : undefined}
+                onBlur={() => validateField('email')}
+                aria-invalid={Boolean(fieldErrors.email)}
+                aria-describedby={fieldErrors.email ? 'email-error' : undefined}
                 required
                 disabled={busy}
               />
-              {fieldErrors.username && (
-                <small id="username-error" className="auth-field-error" role="alert">
-                  {fieldErrors.username}
+              {fieldErrors.email && (
+                <small id="email-error" className="auth-field-error" role="alert">
+                  {fieldErrors.email}
                 </small>
               )}
             </label>
@@ -769,7 +763,7 @@ export default function LoginPage() {
                   className="auth-forgot-link"
                   type="button"
                   onClick={() => {
-                    setResetEmail(username.includes('@') ? username.trim() : '');
+                    setResetEmail(email.includes('@') ? email.trim() : '');
                     changeMode('forgot-password');
                   }}
                   disabled={busy}
