@@ -511,6 +511,8 @@ export default function LoginPage() {
             </div>
 
             <form className="auth-form" onSubmit={submitVerification} noValidate>
+              {error && <p className="auth-error" role="alert">{error}</p>}
+
               <div className="otp-input-section">
                 <label className="otp-input-label" htmlFor="auth-verification-code">
                   Verification code
@@ -529,8 +531,6 @@ export default function LoginPage() {
                   Code expires in 10 minutes
                 </span>
               </div>
-
-              {error && <p className="auth-error" role="alert">{error}</p>}
 
               <button className="auth-submit otp-submit-btn" type="submit" disabled={busy || verificationCode.length !== 6}>
                 {busy ? 'Verifying…' : 'Verify email and continue'}
@@ -567,6 +567,7 @@ export default function LoginPage() {
         ) : isForgotPassword ? (
           /* ---------------- FLOW B: Request Forgot Password Code ---------------- */
           <form className="auth-form" onSubmit={submitForgotPassword} noValidate>
+            {error && <p className="auth-error" role="alert">{error}</p>}
             <label className="auth-field" htmlFor="auth-reset-email">
               Email address
               <input
@@ -595,7 +596,6 @@ export default function LoginPage() {
                 </small>
               )}
             </label>
-            {error && <p className="auth-error" role="alert">{error}</p>}
             <button className="auth-submit" type="submit" disabled={busy}>
               {busy ? 'Please wait…' : 'Send reset code'}
             </button>
@@ -628,6 +628,8 @@ export default function LoginPage() {
               </div>
 
               <form className="auth-form" onSubmit={submitResetCode} noValidate>
+                {error && <p className="auth-error" role="alert">{error}</p>}
+
                 <div className="otp-input-section">
                   <label className="otp-input-label" htmlFor="auth-reset-code">
                     Reset code
@@ -646,8 +648,6 @@ export default function LoginPage() {
                     Code expires in 10 minutes
                   </span>
                 </div>
-
-                {error && <p className="auth-error" role="alert">{error}</p>}
 
                 <button className="auth-submit otp-submit-btn" type="submit" disabled={busy || resetCode.length !== 6}>
                   {busy ? 'Verifying…' : 'Verify reset code'}
@@ -680,6 +680,7 @@ export default function LoginPage() {
           ) : (
             /* Step C2: Enter New Password */
             <form className="auth-form" onSubmit={submitNewPassword} noValidate>
+              {error && <p className="auth-error" role="alert">{error}</p>}
               <div className="auth-field">
                 <label htmlFor="auth-new-password">New password</label>
                 <div className="auth-password-control">
@@ -760,7 +761,6 @@ export default function LoginPage() {
                 )}
               </div>
 
-              {error && <p className="auth-error" role="alert">{error}</p>}
               <button className="auth-submit" type="submit" disabled={busy}>
                 {busy ? 'Please wait…' : 'Save new password and sign in'}
               </button>
@@ -777,6 +777,7 @@ export default function LoginPage() {
         ) : (
           /* ---------------- FLOW D: Sign In & Register Form ---------------- */
           <form className="auth-form" onSubmit={submitAuth} noValidate>
+            {error && <p className="auth-error" role="alert">{error}</p>}
             {isRegister && (
               <div className="auth-name-fields">
                 <label className="auth-field" htmlFor="auth-first-name">
@@ -970,7 +971,6 @@ export default function LoginPage() {
               </div>
             )}
 
-            {error && <p className="auth-error" role="alert">{error}</p>}
             <button className="auth-submit" type="submit" disabled={busy}>
               {busy ? 'Please wait…' : isRegister ? 'Create account' : 'Sign in'}
             </button>
