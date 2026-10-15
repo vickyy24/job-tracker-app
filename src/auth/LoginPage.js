@@ -3,7 +3,18 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from './AuthContext';
 
 const passwordByteLength = (value) => new TextEncoder().encode(value).length;
-const validUsername = (value) => /^[a-zA-Z0-9._-]{3,32}$/.test(value.trim());
+const validUsername = (value) => {
+  const normalized = value.trim().toLowerCase();
+  if (/^[a-z0-9._-]{3,32}$/.test(normalized)) return true;
+  if (normalized.length < 6 || normalized.length > 254) return false;
+  const [localPart, ...domainParts] = normalized.split('@');
+  if (!localPart || localPart.length > 64 || domainParts.length !== 1) return false;
+  const domain = domainParts[0];
+  return Boolean(domain && domain.length <= 253 && domain.includes('.')
+    && /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+$/.test(localPart)
+    && domain.split('.').every((label) => label.length > 0 && label.length <= 63
+      && /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/.test(label)));
+};
 
 function modeFromPath() {
   return window.location.pathname === '/register' || window.location.pathname === '/sign-up' ? 'register' : 'login';
@@ -51,8 +62,8 @@ export default function LoginPage() {
   const validateField = (field) => {
     let message = '';
     if (field === 'username') {
-      if (!username.trim()) message = 'Enter a username.';
-      else if (!validUsername(username)) message = 'Use 3–32 letters, numbers, dots, underscores, or hyphens.';
+      if (!username.trim()) message = 'Enter a username or email address.';
+      else if (!validUsername(username)) message = 'Enter a valid username or email address.';
     } else if (field === 'password') {
       if (!password) message = 'Enter your password.';
       else if (password.length > 128) message = 'Password must be 128 characters or fewer.';
@@ -100,7 +111,7 @@ export default function LoginPage() {
       <a className="auth-brand" href="/login" aria-label="Jobtrack home"><span className="auth-brand-mark">J</span><span>job<strong>track</strong></span></a>
       <div className="auth-heading">
         <h1 id="auth-title">{registering ? 'Create your account' : 'Welcome back'}</h1>
-        <p>{registering ? 'Choose a username and password to get started.' : 'Sign in to continue tracking your applications.'}</p>
+        <p>{registering ? 'Choose a username or use your email address, then create a password.' : 'Sign in to continue tracking your applications.'}</p>
       </div>
 
       {notice && <p className="auth-notice" role="status">{notice}</p>}
@@ -110,8 +121,8 @@ export default function LoginPage() {
       </div>}
 
       <form className="auth-form" onSubmit={submit} noValidate>
-        <label className="auth-field" htmlFor="auth-username">Username
-          <input id="auth-username" name="username" type="text" autoComplete="username" autoCapitalize="none" spellCheck="false" minLength={3} maxLength={32} value={username} onChange={(event) => { setUsername(event.target.value); setError(''); setFieldErrors((current) => ({ ...current, username: '' })); }} onBlur={() => validateField('username')} aria-invalid={Boolean(fieldErrors.username)} aria-describedby={fieldErrors.username ? 'username-error' : undefined} required disabled={busy}/>
+        <label className="auth-field" htmlFor="auth-username">Username or email
+          <input id="auth-username" name="username" type="text" autoComplete="username" autoCapitalize="none" spellCheck="false" minLength={3} maxLength={254} value={username} onChange={(event) => { setUsername(event.target.value); setError(''); setFieldErrors((current) => ({ ...current, username: '' })); }} onBlur={() => validateField('username')} aria-invalid={Boolean(fieldErrors.username)} aria-describedby={fieldErrors.username ? 'username-error' : undefined} required disabled={busy}/>
           {fieldErrors.username && <small id="username-error" className="auth-field-error" role="alert">{fieldErrors.username}</small>}
         </label>
 
