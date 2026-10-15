@@ -111,6 +111,8 @@ export default function LoginPage() {
   const [mode, setMode] = useState(modeFromPath);
 
   // Common auth state
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -183,6 +185,8 @@ export default function LoginPage() {
       setConfirmNewPassword('');
     }
     if (next !== 'register') {
+      setFirstName('');
+      setLastName('');
       setVerificationEmail('');
       setVerificationCode('');
     }
@@ -191,7 +195,19 @@ export default function LoginPage() {
 
   const validateField = (field) => {
     let message = '';
-    if (field === 'email' || field === 'username') {
+    if (field === 'firstName') {
+      if (!firstName.trim()) {
+        message = 'Enter your first name.';
+      } else if (firstName.trim().length > 80) {
+        message = 'First name must be 80 characters or fewer.';
+      }
+    } else if (field === 'lastName') {
+      if (!lastName.trim()) {
+        message = 'Enter your last name.';
+      } else if (lastName.trim().length > 80) {
+        message = 'Last name must be 80 characters or fewer.';
+      }
+    } else if (field === 'email' || field === 'username') {
       if (!email.trim()) {
         message = 'Enter your email address.';
       } else if (!validEmail(email)) {
@@ -247,11 +263,18 @@ export default function LoginPage() {
     setSuccessNotice('');
     setFieldErrors({});
 
-    const fields = ['email', 'password', ...(mode === 'register' ? ['confirmPassword'] : [])];
+    const fields = [
+      ...(mode === 'register' ? ['firstName', 'lastName'] : []),
+      'email',
+      'password',
+      ...(mode === 'register' ? ['confirmPassword'] : []),
+    ];
     const messages = fields.map((f) => [f, validateField(f)]).filter(([, msg]) => msg);
     if (messages.length) {
       setFieldErrors(Object.fromEntries(messages));
       const inputIds = {
+        firstName: 'auth-first-name',
+        lastName: 'auth-last-name',
         email: 'auth-email',
         password: 'auth-password',
         confirmPassword: 'auth-confirm-password',
@@ -265,7 +288,15 @@ export default function LoginPage() {
     try {
       const normalizedEmail = email.trim().toLowerCase();
       const result = await authenticate(
-        { email: normalizedEmail, username: normalizedEmail, password, confirmPassword, rememberMe },
+        {
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          email: normalizedEmail,
+          username: normalizedEmail,
+          password,
+          confirmPassword,
+          rememberMe,
+        },
         mode
       );
       if (mode === 'register') {
@@ -746,6 +777,63 @@ export default function LoginPage() {
         ) : (
           /* ---------------- FLOW D: Sign In & Register Form ---------------- */
           <form className="auth-form" onSubmit={submitAuth} noValidate>
+            {isRegister && (
+              <div className="auth-name-fields">
+                <label className="auth-field" htmlFor="auth-first-name">
+                  First name
+                  <input
+                    id="auth-first-name"
+                    name="given-name"
+                    type="text"
+                    autoComplete="given-name"
+                    maxLength={80}
+                    value={firstName}
+                    onChange={(event) => {
+                      setFirstName(event.target.value);
+                      setError('');
+                      setFieldErrors((curr) => ({ ...curr, firstName: '' }));
+                    }}
+                    onBlur={() => validateField('firstName')}
+                    aria-invalid={Boolean(fieldErrors.firstName)}
+                    aria-describedby={fieldErrors.firstName ? 'first-name-error' : undefined}
+                    required
+                    disabled={busy}
+                  />
+                  {fieldErrors.firstName && (
+                    <small id="first-name-error" className="auth-field-error" role="alert">
+                      {fieldErrors.firstName}
+                    </small>
+                  )}
+                </label>
+                <label className="auth-field" htmlFor="auth-last-name">
+                  Last name
+                  <input
+                    id="auth-last-name"
+                    name="family-name"
+                    type="text"
+                    autoComplete="family-name"
+                    maxLength={80}
+                    value={lastName}
+                    onChange={(event) => {
+                      setLastName(event.target.value);
+                      setError('');
+                      setFieldErrors((curr) => ({ ...curr, lastName: '' }));
+                    }}
+                    onBlur={() => validateField('lastName')}
+                    aria-invalid={Boolean(fieldErrors.lastName)}
+                    aria-describedby={fieldErrors.lastName ? 'last-name-error' : undefined}
+                    required
+                    disabled={busy}
+                  />
+                  {fieldErrors.lastName && (
+                    <small id="last-name-error" className="auth-field-error" role="alert">
+                      {fieldErrors.lastName}
+                    </small>
+                  )}
+                </label>
+              </div>
+            )}
+
             <label className="auth-field" htmlFor="auth-email">
               Email address
               <input

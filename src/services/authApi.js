@@ -2,11 +2,11 @@ import { apiRequest, restoreSession, setCsrfToken } from './apiClient';
 
 export { restoreSession, setCsrfToken };
 
-export function registerAccount({ email, username, password, confirmPassword }) {
+export function registerAccount({ firstName, lastName, email, username, password, confirmPassword }) {
   const targetEmail = email || username;
   return apiRequest('/auth/register', {
     method: 'POST',
-    body: JSON.stringify({ email: targetEmail, username: targetEmail, password, confirmPassword }),
+    body: JSON.stringify({ firstName, lastName, email: targetEmail, username: targetEmail, password, confirmPassword }),
   });
 }
 

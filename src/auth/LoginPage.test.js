@@ -94,6 +94,8 @@ describe('LoginPage component', () => {
     });
 
     expect(screen.getByRole('heading', { name: /Create your account/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/First name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Last name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Email address/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/^Password$/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Confirm password/i)).toBeInTheDocument();
