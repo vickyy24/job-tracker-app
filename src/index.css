@@ -3415,3 +3415,221 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 @media (max-width: 380px) {
   .auth-name-fields { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* ---------------- Modern OTP Verification Styles ---------------- */
+.otp-card-flow {
+  display: flex;
+  flex-direction: column;
+}
+
+.otp-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.otp-icon-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  margin-bottom: 14px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #f5f0ff 0%, #ede5ff 100%);
+  border: 1px solid #e5d8ff;
+  box-shadow: 0 8px 20px rgba(124, 77, 255, 0.12);
+  color: #7c4dff;
+}
+
+.otp-icon-container svg {
+  color: #7c4dff;
+}
+
+.otp-badge-pulse {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 13px;
+  height: 13px;
+  background: #10b981;
+  border: 2.5px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.otp-title {
+  margin: 0 0 6px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e1b2e;
+  letter-spacing: -0.02em;
+}
+
+.otp-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: #6c6882;
+  line-height: 1.5;
+}
+
+.otp-email-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  margin-top: 8px;
+  background: #f6f3ff;
+  border: 1px solid #e8e0ff;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6848d5;
+  max-width: 100%;
+  word-break: break-all;
+}
+
+.otp-input-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.otp-input-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4c495f;
+}
+
+.otp-boxes-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 6px 0 2px;
+}
+
+.otp-digit-box {
+  width: 48px;
+  height: 56px;
+  text-align: center;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e1b2e;
+  background: #ffffff;
+  border: 1.5px solid #dedbe8;
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 4px rgba(30, 27, 46, 0.03);
+}
+
+.otp-digit-box:hover:not(:disabled) {
+  border-color: #b9a8f2;
+}
+
+.otp-digit-box:focus {
+  border-color: #7c4dff;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(124, 77, 255, 0.15), 0 2px 6px rgba(124, 77, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.otp-digit-box-filled {
+  border-color: #a48cf5;
+  background: #faf8ff;
+  color: #5527db;
+}
+
+.otp-digit-box:disabled {
+  background: #f8f7fb;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.otp-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #8b879e;
+  margin-top: 4px;
+}
+
+.otp-submit-btn {
+  margin-top: 8px;
+}
+
+.otp-resend-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #6c6882;
+}
+
+.otp-resend-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  background: transparent;
+  border: 0;
+  color: #7c4dff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.otp-resend-btn:hover:not(:disabled) {
+  background: #f6f3ff;
+  color: #5b28d9;
+}
+
+.otp-resend-btn:disabled {
+  color: #9f9cb2;
+  cursor: default;
+}
+
+.otp-back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 6px 12px;
+  background: transparent;
+  border: 0;
+  color: #77758a;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.otp-back-btn:hover:not(:disabled) {
+  color: #5527db;
+  background: #f6f3ff;
+}
+
+@media (max-width: 400px) {
+  .otp-boxes-container {
+    gap: 6px;
+  }
+  .otp-digit-box {
+    width: 40px;
+    height: 48px;
+    font-size: 19px;
+    border-radius: 10px;
+  }
+}
+

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Eye, EyeOff, Mail, ArrowLeft, RefreshCw, KeyRound } from 'lucide-react';
 import { useAuth } from './AuthContext';
 import {
   requestPasswordReset,
@@ -26,6 +26,77 @@ const validEmail = (value) => {
     )
   );
 };
+
+function OtpInputGroup({ value, onChange, disabled, idPrefix = 'otp', ariaLabel = 'Six-digit verification code' }) {
+  const inputRefs = useRef([]);
+  const digits = Array.from({ length: 6 }, (_, i) => value[i] || '');
+
+  const handleKeyDown = (index, e) => {
+    if (e.key === 'Backspace') {
+      e.preventDefault();
+      if (digits[index]) {
+        const next = digits.slice();
+        next[index] = '';
+        onChange(next.join(''));
+      } else if (index > 0) {
+        const next = digits.slice();
+        next[index - 1] = '';
+        onChange(next.join(''));
+        inputRefs.current[index - 1]?.focus();
+      }
+    } else if (e.key === 'ArrowLeft' && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    } else if (e.key === 'ArrowRight' && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleChange = (index, e) => {
+    const raw = e.target.value;
+    const char = raw.replace(/\D/g, '').slice(-1);
+    const next = digits.slice();
+    next[index] = char;
+    const combined = next.join('');
+    onChange(combined);
+    if (char && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (pasted) {
+      onChange(pasted);
+      const targetIndex = Math.min(pasted.length, 5);
+      inputRefs.current[targetIndex]?.focus();
+    }
+  };
+
+  return (
+    <div className="otp-boxes-container" onPaste={handlePaste}>
+      {digits.map((digit, i) => (
+        <input
+          key={i}
+          ref={(el) => { inputRefs.current[i] = el; }}
+          id={i === 0 ? idPrefix : `${idPrefix}-${i}`}
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          maxLength={1}
+          autoComplete={i === 0 ? 'one-time-code' : 'off'}
+          value={digit}
+          onChange={(e) => handleChange(i, e)}
+          onKeyDown={(e) => handleKeyDown(i, e)}
+          onFocus={(e) => e.target.select()}
+          className={`otp-digit-box ${digit ? 'otp-digit-box-filled' : ''}`}
+          disabled={disabled}
+          aria-label={i === 0 ? ariaLabel : `Digit ${i + 1}`}
+        />
+      ))}
+    </div>
+  );
+}
 
 function modeFromPath() {
   const path = window.location.pathname;
@@ -359,34 +430,28 @@ export default function LoginPage() {
           <span>job<strong>track</strong></span>
         </a>
 
-        <div className="auth-heading">
-          <h1 id="auth-title">
-            {isRegister && verificationEmail
-              ? 'Check your email'
-              : isRegister
-              ? 'Create your account'
-              : isForgotPassword
-              ? 'Reset your password'
-              : isResetPassword && !resetToken
-              ? 'Enter reset code'
-              : isResetPassword && resetToken
-              ? 'Choose new password'
-              : 'Welcome back'}
-          </h1>
-          <p>
-            {isRegister && verificationEmail
-              ? `Enter the six-digit code sent to ${verificationEmail}. It expires in 10 minutes.`
-              : isRegister
-              ? 'Enter your email address and choose a password.'
-              : isForgotPassword
-              ? "Enter your email address and we'll send you a six-digit verification code."
-              : isResetPassword && !resetToken
-              ? `Enter the six-digit code sent to ${resetEmail || 'your email'}. It expires in 10 minutes.`
-              : isResetPassword && resetToken
-              ? 'Create a strong password of at least 12 characters.'
-              : 'Sign in to continue tracking your applications.'}
-          </p>
-        </div>
+        {!((isRegister && verificationEmail) || (isResetPassword && !resetToken)) && (
+          <div className="auth-heading">
+            <h1 id="auth-title">
+              {isRegister
+                ? 'Create your account'
+                : isForgotPassword
+                ? 'Reset your password'
+                : isResetPassword && resetToken
+                ? 'Choose new password'
+                : 'Welcome back'}
+            </h1>
+            <p>
+              {isRegister
+                ? 'Enter your email address and choose a password.'
+                : isForgotPassword
+                ? "Enter your email address and we'll send you a six-digit verification code."
+                : isResetPassword && resetToken
+                ? 'Create a strong password of at least 12 characters.'
+                : 'Sign in to continue tracking your applications.'}
+            </p>
+          </div>
+        )}
 
         {notice && <p className="auth-notice" role="status">{notice}</p>}
         {successNotice && <p className="auth-notice" role="status">{successNotice}</p>}
@@ -399,53 +464,75 @@ export default function LoginPage() {
 
         {/* ---------------- FLOW A: Registration OTP Verification ---------------- */}
         {isRegister && verificationEmail ? (
-          <form className="auth-form" onSubmit={submitVerification} noValidate>
-            <label className="auth-field" htmlFor="auth-verification-code">
-              Verification code
-              <input
-                id="auth-verification-code"
-                name="verification-code"
-                type="text"
-                inputMode="numeric"
-                autoComplete="one-time-code"
-                pattern="[0-9]{6}"
-                minLength={6}
-                maxLength={6}
-                value={verificationCode}
-                onChange={(event) => {
-                  setVerificationCode(event.target.value.replace(/\D/g, '').slice(0, 6));
+          <div className="otp-card-flow">
+            <div className="otp-header">
+              <div className="otp-icon-container">
+                <Mail size={26} strokeWidth={2.2} />
+                <span className="otp-badge-pulse" />
+              </div>
+              <h2 className="otp-title">Check your email</h2>
+              <p className="otp-subtitle">
+                We sent a 6-digit verification code to
+              </p>
+              <div className="otp-email-chip" title={verificationEmail}>
+                <span>{verificationEmail}</span>
+              </div>
+            </div>
+
+            <form className="auth-form" onSubmit={submitVerification} noValidate>
+              <div className="otp-input-section">
+                <label className="otp-input-label" htmlFor="auth-verification-code">
+                  Verification code
+                </label>
+                <OtpInputGroup
+                  value={verificationCode}
+                  onChange={(val) => {
+                    setVerificationCode(val);
+                    setError('');
+                  }}
+                  idPrefix="auth-verification-code"
+                  disabled={busy}
+                  ariaLabel="Six-digit email verification code"
+                />
+                <span className="otp-meta">
+                  Code expires in 10 minutes
+                </span>
+              </div>
+
+              {error && <p className="auth-error" role="alert">{error}</p>}
+
+              <button className="auth-submit otp-submit-btn" type="submit" disabled={busy || verificationCode.length !== 6}>
+                {busy ? 'Verifying…' : 'Verify email and continue'}
+              </button>
+
+              <div className="otp-resend-bar">
+                <span>Didn't receive the email?</span>
+                <button
+                  className="otp-resend-btn"
+                  type="button"
+                  onClick={resendVerification}
+                  disabled={busy || resendWait > 0}
+                >
+                  <RefreshCw size={13} className={busy ? 'animate-spin' : ''} />
+                  {resendWait > 0 ? `Send another code in ${resendWait}s` : 'Resend verification code'}
+                </button>
+              </div>
+
+              <button
+                className="otp-back-btn"
+                type="button"
+                onClick={() => {
+                  setVerificationEmail('');
+                  setVerificationCode('');
                   setError('');
                 }}
-                aria-label="Six-digit email verification code"
-                required
                 disabled={busy}
-              />
-            </label>
-            {error && <p className="auth-error" role="alert">{error}</p>}
-            <button className="auth-submit" type="submit" disabled={busy}>
-              {busy ? 'Please wait…' : 'Verify email and continue'}
-            </button>
-            <button
-              className="auth-secondary"
-              type="button"
-              onClick={resendVerification}
-              disabled={busy || resendWait > 0}
-            >
-              {resendWait > 0 ? `Send another code in ${resendWait}s` : 'Resend verification code'}
-            </button>
-            <button
-              className="auth-back-link"
-              type="button"
-              onClick={() => {
-                setVerificationEmail('');
-                setVerificationCode('');
-                setError('');
-              }}
-              disabled={busy}
-            >
-              Back to registration
-            </button>
-          </form>
+              >
+                <ArrowLeft size={14} />
+                <span>Back to registration</span>
+              </button>
+            </form>
+          </div>
         ) : isForgotPassword ? (
           /* ---------------- FLOW B: Request Forgot Password Code ---------------- */
           <form className="auth-form" onSubmit={submitForgotPassword} noValidate>
@@ -494,49 +581,71 @@ export default function LoginPage() {
           /* ---------------- FLOW C: Reset Password (OTP or New Password) ---------------- */
           !resetToken ? (
             /* Step C1: Enter 6-digit Reset OTP */
-            <form className="auth-form" onSubmit={submitResetCode} noValidate>
-              <label className="auth-field" htmlFor="auth-reset-code">
-                Reset verification code
-                <input
-                  id="auth-reset-code"
-                  name="reset-code"
-                  type="text"
-                  inputMode="numeric"
-                  autoComplete="one-time-code"
-                  pattern="[0-9]{6}"
-                  minLength={6}
-                  maxLength={6}
-                  value={resetCode}
-                  onChange={(event) => {
-                    setResetCode(event.target.value.replace(/\D/g, '').slice(0, 6));
-                    setError('');
-                  }}
-                  aria-label="Six-digit password reset code"
-                  required
+            <div className="otp-card-flow">
+              <div className="otp-header">
+                <div className="otp-icon-container">
+                  <KeyRound size={26} strokeWidth={2.2} />
+                  <span className="otp-badge-pulse" />
+                </div>
+                <h2 className="otp-title">Enter reset code</h2>
+                <p className="otp-subtitle">
+                  We sent a 6-digit password reset code to
+                </p>
+                <div className="otp-email-chip" title={resetEmail}>
+                  <span>{resetEmail || 'your email'}</span>
+                </div>
+              </div>
+
+              <form className="auth-form" onSubmit={submitResetCode} noValidate>
+                <div className="otp-input-section">
+                  <label className="otp-input-label" htmlFor="auth-reset-code">
+                    Reset code
+                  </label>
+                  <OtpInputGroup
+                    value={resetCode}
+                    onChange={(val) => {
+                      setResetCode(val);
+                      setError('');
+                    }}
+                    idPrefix="auth-reset-code"
+                    disabled={busy}
+                    ariaLabel="Six-digit password reset code"
+                  />
+                  <span className="otp-meta">
+                    Code expires in 10 minutes
+                  </span>
+                </div>
+
+                {error && <p className="auth-error" role="alert">{error}</p>}
+
+                <button className="auth-submit otp-submit-btn" type="submit" disabled={busy || resetCode.length !== 6}>
+                  {busy ? 'Verifying…' : 'Verify reset code'}
+                </button>
+
+                <div className="otp-resend-bar">
+                  <span>Didn't receive the email?</span>
+                  <button
+                    className="otp-resend-btn"
+                    type="button"
+                    onClick={resendReset}
+                    disabled={busy || resetResendWait > 0}
+                  >
+                    <RefreshCw size={13} className={busy ? 'animate-spin' : ''} />
+                    {resetResendWait > 0 ? `Send another code in ${resetResendWait}s` : 'Resend reset code'}
+                  </button>
+                </div>
+
+                <button
+                  className="otp-back-btn"
+                  type="button"
+                  onClick={() => changeMode('login')}
                   disabled={busy}
-                />
-              </label>
-              {error && <p className="auth-error" role="alert">{error}</p>}
-              <button className="auth-submit" type="submit" disabled={busy}>
-                {busy ? 'Please wait…' : 'Verify reset code'}
-              </button>
-              <button
-                className="auth-secondary"
-                type="button"
-                onClick={resendReset}
-                disabled={busy || resetResendWait > 0}
-              >
-                {resetResendWait > 0 ? `Send another code in ${resetResendWait}s` : 'Resend reset code'}
-              </button>
-              <button
-                className="auth-back-link"
-                type="button"
-                onClick={() => changeMode('login')}
-                disabled={busy}
-              >
-                Back to sign in
-              </button>
-            </form>
+                >
+                  <ArrowLeft size={14} />
+                  <span>Back to sign in</span>
+                </button>
+              </form>
+            </div>
           ) : (
             /* Step C2: Enter New Password */
             <form className="auth-form" onSubmit={submitNewPassword} noValidate>
