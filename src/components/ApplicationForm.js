@@ -37,12 +37,31 @@ function ApplicationForm({ application, initialStatus = 'Applied', loading, savi
     if (!applicationDate) errors.applicationDate = 'Application date is required.';
     else if (Number.isNaN(new Date(`${applicationDate}T00:00:00`).getTime())) errors.applicationDate = 'Enter a valid application date.';
     else if (applicationDate > localToday()) errors.applicationDate = 'Application date cannot be in the future.';
+    if (!location.trim()) errors.location = 'Location is required.';
+    else if (location.trim().length > 120) errors.location = 'Location must be 120 characters or fewer.';
     if (salary.trim().length > 100) errors.salary = 'Salary must be 100 characters or fewer.';
-    if (location.trim().length > 120) errors.location = 'Location must be 120 characters or fewer.';
     if (notes.length > 5000) errors.notes = 'Notes must be 5,000 characters or fewer.';
     if (!statuses.includes(status)) errors.status = 'Choose a valid application status.';
     setFieldErrors(errors);
     if (Object.keys(errors).length) {
+      const order = ['companyName', 'jobTitle', 'location', 'applicationDate', 'status', 'salary', 'notes'];
+      const firstError = order.find((field) => errors[field]);
+      if (firstError) {
+        const idMap = {
+          companyName: 'company-name',
+          jobTitle: 'job-title',
+          location: 'job-location',
+          applicationDate: 'application-date',
+          status: 'application-status',
+          salary: 'job-salary',
+          notes: 'application-notes',
+        };
+        const el = document.getElementById(idMap[firstError]);
+        if (el) {
+          el.focus();
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
       return;
     }
     setSubmission({ companyName: companyName.trim(), jobTitle: jobTitle.trim(), salary: salary.trim(), location: location.trim(), applicationDate, status, notes });
@@ -62,14 +81,14 @@ function ApplicationForm({ application, initialStatus = 'Applied', loading, savi
           {error && <p className="form-error" role="alert">{error}</p>}
           <TextInput id="company-name" label="Company name" value={companyName} onChange={(event) => changeField('companyName', setCompanyName, event.target.value)} error={fieldErrors.companyName} maxLength={120} required aria-required="true" disabled={saving} />
           <TextInput id="job-title" label="Job title" value={jobTitle} onChange={(event) => changeField('jobTitle', setJobTitle, event.target.value)} error={fieldErrors.jobTitle} maxLength={120} required aria-required="true" disabled={saving} />
-          <TextInput id="job-salary" label="Salary" placeholder="e.g. Up to ₹6,000 per month" value={salary} onChange={(event) => changeField('salary', setSalary, event.target.value)} error={fieldErrors.salary} maxLength={100} disabled={saving} />
-          <TextInput id="job-location" label="Location" placeholder="e.g. Surat, Gujarat" value={location} onChange={(event) => changeField('location', setLocation, event.target.value)} error={fieldErrors.location} maxLength={120} disabled={saving} />
+          <TextInput id="job-salary" label="Salary" placeholder="e.g. Up to ₹6,000 per month (Optional)" value={salary} onChange={(event) => changeField('salary', setSalary, event.target.value)} error={fieldErrors.salary} maxLength={100} disabled={saving} />
+          <TextInput id="job-location" label="Location" placeholder="e.g. Surat, Gujarat (or Remote)" value={location} onChange={(event) => changeField('location', setLocation, event.target.value)} error={fieldErrors.location} maxLength={120} required aria-required="true" disabled={saving} />
           <TextInput id="application-date" label="Application date" type="date" value={applicationDate} onChange={(event) => changeField('applicationDate', setApplicationDate, event.target.value)} error={fieldErrors.applicationDate} max={localToday()} required aria-required="true" disabled={saving} />
           <SelectInput id="application-status" label="Status" value={status} onChange={(event) => changeField('status', setStatus, event.target.value)} error={fieldErrors.status} disabled={saving}>
             {statuses.map((item) => <option key={item} value={item}>{item}</option>)}
           </SelectInput>
           <label className="notes-field" htmlFor="application-notes">Notes <span>Optional</span></label>
-          <textarea id="application-notes" value={notes} onChange={(event) => changeField('notes', setNotes, event.target.value)} maxLength={5000} rows="6" aria-invalid={Boolean(fieldErrors.notes)} aria-describedby={fieldErrors.notes ? 'application-notes-error' : undefined} disabled={saving} />
+          <textarea id="application-notes" value={notes} onChange={(event) => changeField('notes', setNotes, event.target.value)} maxLength={5000} rows="3" aria-invalid={Boolean(fieldErrors.notes)} aria-describedby={fieldErrors.notes ? 'application-notes-error' : undefined} disabled={saving} />
           {fieldErrors.notes && <span className="ui-field-error" id="application-notes-error">{fieldErrors.notes}</span>}
           <div className="form-actions">
             <Button variant="secondary" onClick={onClose} disabled={saving}>Cancel</Button>
