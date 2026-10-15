@@ -3,6 +3,8 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from './AuthContext';
 import { requestPasswordReset, resetPassword } from '../services/authApi';
 
+const passwordByteLength = (value) => new TextEncoder().encode(value).length;
+
 function modeFromPath() {
   return window.location.pathname === '/register' || window.location.pathname === '/sign-up' ? 'register' : 'login';
 }
@@ -78,6 +80,7 @@ export default function LoginPage() {
     } else if (field === 'password') {
       if (!password) message = 'Enter your password.';
       else if (password.length > 128) message = 'Password must be 128 characters or fewer.';
+      else if (passwordByteLength(password) > 72) message = 'Password must be no more than 72 bytes when encoded.';
       else if (Array.from(password).length < 12 || !/\S/.test(password)) message = 'Use 12–128 characters and include at least one non-space character.';
     } else if (field === 'confirmPassword') {
       if (!confirmPassword) message = 'Confirm your password.';
@@ -138,6 +141,7 @@ export default function LoginPage() {
       if (!/^\d{6}$/.test(verificationCode)) validation.verificationCode = 'Enter the six-digit code from your email.';
       if (!password) validation.password = 'Enter your new password.';
       else if (password.length > 128) validation.password = 'Password must be 128 characters or fewer.';
+      else if (passwordByteLength(password) > 72) validation.password = 'Password must be no more than 72 bytes when encoded.';
       else if (Array.from(password).length < 12 || !/\S/.test(password)) validation.password = 'Use 12–128 characters and include at least one non-space character.';
       if (!confirmPassword) validation.confirmPassword = 'Confirm your new password.';
       else if (password !== confirmPassword) validation.confirmPassword = 'Passwords do not match.';
@@ -173,6 +177,7 @@ export default function LoginPage() {
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) validation.email = 'Enter a valid email address.';
     if (!password) validation.password = 'Enter your password.';
     else if (password.length > 128) validation.password = 'Password must be 128 characters or fewer.';
+    else if (registering && passwordByteLength(password) > 72) validation.password = 'Password must be no more than 72 bytes when encoded.';
     else if (registering && (Array.from(password).length < 12 || !/\S/.test(password))) validation.password = 'Use 12–128 characters and include at least one non-space character.';
     if (registering && !confirmPassword) validation.confirmPassword = 'Confirm your password.';
     else if (registering && password !== confirmPassword) validation.confirmPassword = 'Passwords do not match.';
