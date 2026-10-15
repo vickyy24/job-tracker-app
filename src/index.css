@@ -3148,6 +3148,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   justify-self: auto;
   padding: 3px 0;
   color: #6848d5;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
   font-size: 12px;
   font-weight: 600;
   text-decoration: none;
@@ -3156,6 +3160,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .auth-login-options .auth-forgot-link:hover:not(:disabled) {
   color: #4f31bd;
   text-decoration: underline;
+}
+
+.auth-login-options .auth-forgot-link:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .auth-password-control {

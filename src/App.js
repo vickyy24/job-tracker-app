@@ -195,7 +195,7 @@ function App() {
   const { status } = useAuth();
   useEffect(() => {
     if (status !== 'restoring' && status !== 'authenticated'
-      && !['/login', '/register', '/sign-in', '/sign-up'].includes(window.location.pathname)) {
+      && !['/login', '/register', '/sign-in', '/sign-up', '/forgot-password', '/reset-password'].includes(window.location.pathname)) {
       window.history.replaceState({}, '', '/login');
     }
   }, [status]);

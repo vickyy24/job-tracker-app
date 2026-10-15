@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { registerAccount, restoreSession, setCsrfToken, signIn, signOut } from '../services/authApi';
+import { registerAccount, resendRegistrationCode as resendRegistrationCodeRequest, restoreSession, setCsrfToken, signIn, signOut, verifyRegistrationCode } from '../services/authApi';
 
 const AuthContext = createContext(null);
 
@@ -43,13 +43,21 @@ export function AuthProvider({ children }) {
   }, []);
 
   const authenticate = useCallback(async (credentials, mode) => {
-    const session = mode === 'register'
-      ? await registerAccount(credentials)
-      : await signIn(credentials);
+    if (mode === 'register') return registerAccount(credentials);
+    const session = await signIn(credentials);
     acceptSession(session);
     window.history.replaceState({}, '', '/dashboard');
     return session;
   }, [acceptSession]);
+
+  const verifyRegistration = useCallback(async (challenge) => {
+    const session = await verifyRegistrationCode(challenge);
+    acceptSession(session);
+    window.history.replaceState({}, '', '/dashboard');
+    return session;
+  }, [acceptSession]);
+
+  const resendRegistrationCode = useCallback((email) => resendRegistrationCodeRequest({ email }), []);
 
   const logout = useCallback(async () => {
     let error = null;
@@ -62,7 +70,7 @@ export function AuthProvider({ children }) {
     window.history.replaceState({}, '', '/login');
   }, []);
 
-  const value = useMemo(() => ({ status, user, notice, authenticate, logout, retryRestore: restore }), [status, user, notice, authenticate, logout, restore]);
+  const value = useMemo(() => ({ status, user, notice, authenticate, verifyRegistration, resendRegistrationCode, logout, retryRestore: restore }), [status, user, notice, authenticate, verifyRegistration, resendRegistrationCode, logout, restore]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

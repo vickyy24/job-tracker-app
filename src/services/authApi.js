@@ -9,6 +9,48 @@ export function registerAccount({ username, password, confirmPassword }) {
   });
 }
 
+export function verifyRegistrationCode({ email, code }) {
+  return apiRequest('/auth/verify-email', {
+    method: 'POST',
+    body: JSON.stringify({ email, code }),
+  });
+}
+
+export function resendRegistrationCode({ email }) {
+  return apiRequest('/auth/resend-verification', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+}
+
+export function requestPasswordReset({ email }) {
+  return apiRequest('/auth/forgot-password', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+}
+
+export function verifyResetCode({ email, code }) {
+  return apiRequest('/auth/verify-reset-code', {
+    method: 'POST',
+    body: JSON.stringify({ email, code }),
+  });
+}
+
+export function resendResetCode({ email }) {
+  return apiRequest('/auth/resend-reset-code', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+}
+
+export function resetPassword({ email, resetToken, newPassword, confirmPassword }) {
+  return apiRequest('/auth/reset-password', {
+    method: 'POST',
+    body: JSON.stringify({ email, resetToken, newPassword, confirmPassword }),
+  });
+}
+
 export function signIn({ username, password, rememberMe }) {
   return apiRequest('/auth/login', {
     method: 'POST',
