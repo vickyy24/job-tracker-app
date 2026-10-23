@@ -340,46 +340,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   box-shadow: 0 12px 34px rgba(23, 32, 51, .16);
 }
 
-.profile-dropdown-identity {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-  padding: 9px 8px 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-.profile-dropdown-identity > span:last-child {
-  display: grid;
-  gap: 4px;
-  min-width: 0;
-}
-
-.profile-dropdown-identity strong,
-.profile-dropdown-identity small {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.profile-dropdown-identity strong {
-  color: var(--text);
-  font-size: 12px;
-  font-weight: 650;
-}
-
-.profile-dropdown-identity small {
-  color: var(--subtle);
-  font-size: 10px;
-}
-
 .profile-dropdown-item {
   display: flex;
   align-items: center;
   gap: 10px;
   width: 100%;
   min-height: 38px;
-  margin-top: 6px;
+  margin-top: 0;
   padding: 0 9px;
   color: var(--text);
   background: transparent;

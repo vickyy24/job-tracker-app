@@ -228,10 +228,6 @@ function WorkspaceApp() {
                             <Icon className="topbar-profile-chevron" name="down" size={14} />
                         </button>
                         {profileMenuOpen && <div className="profile-dropdown" role="menu" aria-label="Account menu">
-                            <div className="profile-dropdown-identity">
-                                {profile?.avatar ? <img className="profile-avatar profile-avatar-image" src={profile.avatar} alt="" /> : <span className="profile-avatar">{displayName[0]?.toUpperCase() || 'U'}</span>}
-                                <span><strong>{displayName}</strong><small>{profile?.email || profile?.username || ''}</small></span>
-                            </div>
                             <button className="profile-dropdown-item" type="button" role="menuitem" onClick={() => { setProfileMenuOpen(false); navigate('profile'); }}>
                                 <Icon name="user" size={17} />
                                 <span>Profile</span>
