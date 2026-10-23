@@ -75,12 +75,12 @@ export default function SettingsPage({
         && Number(dailyGoalDraft) <= 100;
 
     return (
-        <section className="page-content settings-page min-w-0">
+        <section className="page-content settings-page min-w-0 max-[760px]:w-full">
             <div className="page-heading settings-heading">
                 <h1>Settings</h1>
             </div>
 
-            <form className="settings-card" onSubmit={saveWorkspace}>
+            <form className="settings-card max-[760px]:grid-cols-1 max-[760px]:gap-3 max-[760px]:p-[15px]" onSubmit={saveWorkspace}>
                 <div className="settings-description">
                     <h2>Workspace</h2>
                     <p>Set the name displayed in your workspace.</p>
@@ -107,7 +107,7 @@ export default function SettingsPage({
                 </div>
             </form>
 
-            <form className="settings-card" onSubmit={saveDailyGoal}>
+            <form className="settings-card max-[760px]:grid-cols-1 max-[760px]:gap-3 max-[760px]:p-[15px]" onSubmit={saveDailyGoal}>
                 <div className="settings-description">
                     <h2>Daily goal</h2>
                     <p>Choose how many applications you want to submit each day.</p>
@@ -136,7 +136,7 @@ export default function SettingsPage({
                 </div>
             </form>
 
-            <section className="settings-card">
+            <section className="settings-card max-[760px]:grid-cols-1 max-[760px]:gap-3 max-[760px]:p-[15px]">
                 <div className="settings-description">
                     <h2>Appearance</h2>
                     <p>Choose the theme used across the app.</p>

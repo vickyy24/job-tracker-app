@@ -2226,31 +2226,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   border-color: var(--border);
 }
 
-@media (max-width: 760px) {
-  .topbar-profile-trigger {
-    width: 34px;
-    height: 34px;
-    min-height: 34px;
-    justify-content: center;
-    padding: 2px;
-    border-radius: 50%;
-  }
-
-  .page-content.settings-page {
-    width: 100%;
-  }
-
-  .profile-page-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .settings-card {
-    grid-template-columns: 1fr;
-    gap: 12px;
-    padding: 15px;
-  }
-}
-
 .application-table-wrap {
   overflow: auto;
   background: var(--surface);
@@ -2350,12 +2325,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 .mobile-menu-button {
   display: none;
-}
-
-@media (max-width: 760px) {
-  .mobile-menu-button[aria-expanded='true'] {
-    left: 176px !important;
-  }
 }
 
 .visually-hidden {

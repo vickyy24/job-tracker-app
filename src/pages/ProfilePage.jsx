@@ -106,7 +106,7 @@ export default function ProfilePage({ user, onUserUpdated }) {
     };
 
     return (
-        <section className="page-content settings-page profile-page min-w-0">
+        <section className="page-content settings-page profile-page min-w-0 max-[760px]:w-full">
             <div className="page-heading profile-page-heading">
                 <div className="profile-page-heading-title">
                     <div>
@@ -116,7 +116,7 @@ export default function ProfilePage({ user, onUserUpdated }) {
                 </div>
             </div>
 
-            <div className="profile-page-layout">
+            <div className="profile-page-layout max-[760px]:grid-cols-1">
                 <section className="profile-identity-card" aria-label="Profile overview">
                     {draft.avatar
                         ? <img className="profile-page-avatar" src={draft.avatar} alt={`${displayName} profile`} />
