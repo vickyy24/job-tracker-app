@@ -3204,7 +3204,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   padding: 0 11px;
   color: #a64d57;
   background: linear-gradient(135deg, #fdf0f1, #f9e7e9);
-  border: 0.75px solid #f8e9eb;
+  border: 1px solid #e7aab3;
   border-radius: 8px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9), inset 0 -1px 0 rgba(166, 77, 87, .08);
   font-weight: 600;
