@@ -126,8 +126,8 @@ textarea {
   --text: #242333;
   --subtle: #777789;
   --muted: #9898a8;
-  --border: #e8e8ef;
-  --line: #eeeeF3;
+  --border: #d7d7e2;
+  --line: #e0e0e9;
   --shadow: 0 3px 10px rgba(29,26,62,.035);
   --sidebar-width: 220px;
 }
@@ -139,8 +139,8 @@ html[data-theme='dark'] {
   --text: #f1f0f8;
   --subtle: #b0afbf;
   --muted: #898899;
-  --border: #383846;
-  --line: #343440;
+  --border: #4b4b5a;
+  --line: #41414f;
   --purple-soft: #1d3938;
   --shadow: 0 3px 10px rgba(0,0,0,.18);
 }
@@ -651,7 +651,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .search-control:focus-within {
   color: var(--purple);
   border-color: var(--purple);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--purple) 22%, transparent);
+  box-shadow: none;
 }
 
 .search-control input {
@@ -3523,4 +3523,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   color: #91d9d4;
   background: linear-gradient(135deg, #1d3938 0%, #264442 100%);
   box-shadow: inset 0 0 0 1px #39625f;
+}
+
+:where(button, a, input, select, textarea, [tabindex]):focus,
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
 }
