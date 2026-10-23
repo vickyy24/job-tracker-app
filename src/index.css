@@ -3099,7 +3099,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 .ui-button-primary,
 .add-job-button {
-  background: linear-gradient(135deg, #e56f3d 0%, #cf5d32 100%);
+  background: linear-gradient(135deg, #e56f3d 0%, #d96234 100%);
   border-color: #e56f3d;
   box-shadow: 0 3px 8px rgba(229, 111, 61, .2);
 }
