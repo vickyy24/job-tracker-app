@@ -2227,6 +2227,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 @media (max-width: 760px) {
+  .topbar-profile-trigger {
+    width: 34px;
+    height: 34px;
+    min-height: 34px;
+    justify-content: center;
+    padding: 2px;
+    border-radius: 50%;
+  }
+
   .page-content.settings-page {
     width: 100%;
   }
