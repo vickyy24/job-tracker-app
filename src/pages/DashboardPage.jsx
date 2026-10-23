@@ -52,16 +52,16 @@ function StatsGrid({ stats, loading, error, onRetry }) {
 }
 
 const ACTIVITY_PERIODS = {
-    daily: { label: 'Daily · last 30 days', buckets: 30, unit: 'day' },
-    weekly: { label: 'Weekly · last 8 weeks', buckets: 8, unit: 'week' },
-    monthly: { label: 'Monthly · last 6 months', buckets: 6, unit: 'month' },
+    daily: { label: 'Last 30 days', buckets: 30, unit: 'day' },
+    weekly: { label: 'Last 8 weeks', buckets: 8, unit: 'week' },
+    monthly: { label: 'Last 6 months', buckets: 6, unit: 'month' },
 };
 function StatusFilterSelect({ status, onStatusFilter }) {
     return <select className="chart-period-select" value={status || ''} onChange={(event) => onStatusFilter(event.target.value)} aria-label="Filter applications by status"><option value="">All statuses</option>{STATUSES.map((item) => <option key={item} value={item}>{item === 'Interview' ? 'Interviewing' : item}</option>)}</select>;
 }
 
 function ActivityPeriodSelect({ period, onPeriodChange }) {
-    return <select className="chart-period-select" value={period} onChange={(event) => onPeriodChange(event.target.value)} aria-label="Group application activity by time period"><option value="daily">Daily · last 30 days</option><option value="weekly">Weekly · last 8 weeks</option><option value="monthly">Monthly · last 6 months</option></select>;
+    return <select className="chart-period-select" value={period} onChange={(event) => onPeriodChange(event.target.value)} aria-label="Group application activity by time period"><option value="daily">Last 30 days</option><option value="weekly">Last 8 weeks</option><option value="monthly">Last 6 months</option></select>;
 }
 
 function getActivityBuckets(applications = [], period) {
