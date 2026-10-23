@@ -6,11 +6,11 @@ import { ApplicationList } from './components/ApplicationList';
 import AssetsPage from './pages/AssetsPage';
 import BoardPage from './pages/BoardPage';
 import DashboardPage from './pages/DashboardPage';
+import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
 import Icon from './components/Icon';
 import ThemeModeIcon from './components/ThemeModeIcon';
 import { createApplication, deleteApplication as deleteApplicationRequest, getApplicationStats, listApplications, updateApplication } from './services/applicationApi';
-import { apiRequest } from './services/apiClient';
 import { useAuth } from './auth/AuthContext';
 import LoginPage from './auth/LoginPage';
 
@@ -37,7 +37,7 @@ function readRoute() {
     const hashRoute = window.location.hash.replace(/^#\/?/, '').split('?')[0];
     const pathRoute = window.location.pathname.replace(/^\//, '').split('/')[0];
     const route = pathRoute || hashRoute;
-    if (route === 'home' || route === 'statistics' || !['dashboard', 'board', 'assets', 'settings'].includes(route)) return 'dashboard';
+    if (route === 'home' || route === 'statistics' || !['dashboard', 'board', 'assets', 'settings', 'profile'].includes(route)) return 'dashboard';
     return route;
 }
 
@@ -88,11 +88,6 @@ function WorkspaceApp() {
     const [workspaceEditOpen, setWorkspaceEditOpen] = useState(false);
     const [workspaceDraft, setWorkspaceDraft] = useState(workspace);
     const [workspaceError, setWorkspaceError] = useState('');
-    const [profileDraft, setProfileDraft] = useState({ firstName: '', lastName: '', gender: 'prefer-not-to-say', avatar: '' });
-    const [profileSaving, setProfileSaving] = useState(false);
-    const [profileError, setProfileError] = useState('');
-    const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-    const profileMenuRef = useRef(null);
     const requestNumber = useRef(0);
 
     useEffect(() => {
@@ -122,20 +117,6 @@ function WorkspaceApp() {
         window.addEventListener('resize', closeOnDesktop);
         return () => { document.body.style.overflow = previousOverflow; window.removeEventListener('keydown', closeOnEscape); window.removeEventListener('resize', closeOnDesktop); };
     }, [mobileNavOpen]);
-    useEffect(() => {
-        if (!profileMenuOpen) return undefined;
-        const closeMenu = (event) => {
-            if (event.key === 'Escape') setProfileMenuOpen(false);
-            if (event.type === 'pointerdown' && !profileMenuRef.current?.contains(event.target)) setProfileMenuOpen(false);
-        };
-        document.addEventListener('pointerdown', closeMenu);
-        document.addEventListener('keydown', closeMenu);
-        return () => {
-            document.removeEventListener('pointerdown', closeMenu);
-            document.removeEventListener('keydown', closeMenu);
-        };
-    }, [profileMenuOpen]);
-
     const navigate = (next) => { setPage(next); setMobileNavOpen(false); window.history.pushState({}, '', `/${next}`); };
     const refreshStats = useCallback(() => {
         setLoadingStats(true); setStatsError('');
@@ -159,65 +140,6 @@ function WorkspaceApp() {
     useEffect(() => { refreshChartApplications(); }, [refreshChartApplications]);
     useEffect(() => { const timer = setTimeout(() => refreshApplications({ search: search.trim(), status, sortBy, order }), 250); return () => clearTimeout(timer); }, [search, status, sortBy, order, refreshApplications]);
     const clearFilters = () => { requestNumber.current += 1; setSearch(''); setStatus(''); };
-    const openProfile = () => {
-        setProfileDraft({
-            firstName: profile?.firstName || '',
-            lastName: profile?.lastName || '',
-            gender: profile?.gender || 'prefer-not-to-say',
-            avatar: profile?.avatar || '',
-        });
-        setProfileError('');
-        setProfileMenuOpen((open) => !open);
-    };
-    const changeProfileAvatar = async (event) => {
-        const file = event.target.files?.[0];
-        event.target.value = '';
-        if (!file) return;
-        if (!file.type.startsWith('image/')) { setProfileError('Choose an image file.'); return; }
-        if (file.size > 8 * 1024 * 1024) { setProfileError('Choose an image smaller than 8 MB.'); return; }
-        try {
-            const bitmap = await createImageBitmap(file);
-            let scale = Math.min(1, 256 / Math.max(bitmap.width, bitmap.height));
-            const canvas = document.createElement('canvas');
-            let avatar = '';
-            for (let attempt = 0; attempt < 6; attempt += 1) {
-                canvas.width = Math.max(1, Math.round(bitmap.width * scale));
-                canvas.height = Math.max(1, Math.round(bitmap.height * scale));
-                canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-                avatar = canvas.toDataURL('image/jpeg', .76 - attempt * .08);
-                if (avatar.length <= 28000) break;
-                scale *= .8;
-            }
-            bitmap.close();
-            if (avatar.length > 28000) { setProfileError('Choose a simpler or smaller image.'); return; }
-            setProfileDraft((current) => ({ ...current, avatar }));
-            setProfileError('');
-        } catch {
-            setProfileError('This image could not be opened. Try another file.');
-        }
-    };
-    const saveProfile = async (event) => {
-        event.preventDefault();
-        const firstName = profileDraft.firstName.trim();
-        const lastName = profileDraft.lastName.trim();
-        if (!firstName) { setProfileError('Enter your first name.'); return; }
-        if (firstName.length > 80 || lastName.length > 80) { setProfileError('Names must be 80 characters or fewer.'); return; }
-        setProfileSaving(true);
-        setProfileError('');
-        try {
-            const result = await apiRequest('/auth/profile', {
-                method: 'PATCH',
-                body: JSON.stringify({ firstName, lastName, gender: profileDraft.gender, avatar: profileDraft.avatar }),
-            }, { retryAfterRefresh: true });
-            setProfileUser(result.user);
-            setProfileMenuOpen(false);
-        } catch (error) {
-            setProfileError(error.message || 'Could not save your profile. Try again.');
-        } finally {
-            setProfileSaving(false);
-        }
-    };
-
     const saveApplication = async (application) => {
         setSaving(true); setFormError('');
         try { await createApplication(application); setShowForm(false); refreshApplications(currentFilters()); refreshChartApplications(); refreshStats(); }
@@ -284,30 +206,10 @@ function WorkspaceApp() {
                     <button className="topbar-theme-toggle max-[760px]:size-8 max-[760px]:flex-none" type="button" onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`} aria-pressed={themeMode === 'dark'} title={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`}>
                         <ThemeModeIcon mode={themeMode === 'dark' ? 'sun' : 'moon'} />
                     </button>
-                    <div className="profile-menu" ref={profileMenuRef}>
-                        <button className="topbar-profile-trigger" type="button" onClick={openProfile} aria-label={`Account menu for ${displayName}`} aria-expanded={profileMenuOpen} aria-haspopup="true">
-                            {profile?.avatar ? <img className="profile-avatar profile-avatar-image" src={profile.avatar} alt="" /> : <span className="profile-avatar">{displayName[0]?.toUpperCase() || 'U'}</span>}
-                            <span className="topbar-profile-copy max-[760px]:hidden"><strong title={displayName}>{displayName}</strong></span>
-                        </button>
-                        {profileMenuOpen && <section className="profile-dropdown" aria-label="Account details">
-                            <div className="profile-dropdown-heading"><strong>Account details</strong><span>Manage your personal information</span></div>
-                            <form className="profile-dropdown-form" onSubmit={saveProfile}>
-                                <div className="profile-editor-avatar-row">
-                                    {profileDraft.avatar ? <img className="profile-editor-avatar" src={profileDraft.avatar} alt="Profile preview" /> : <span className="profile-editor-avatar profile-editor-avatar-fallback">{displayName[0]?.toUpperCase() || 'U'}</span>}
-                                    <label className="profile-photo-action"><Icon name="camera" size={15} />Update photo<input type="file" accept="image/*" onChange={changeProfileAvatar} disabled={profileSaving} /></label>
-                                    {profileDraft.avatar && <button className="profile-photo-remove" type="button" onClick={() => setProfileDraft((current) => ({ ...current, avatar: '' }))} disabled={profileSaving}>Remove</button>}
-                                </div>
-                                <label className="profile-dropdown-field">Email<input value={profile?.email || profile?.username || ''} readOnly /></label>
-                                <div className="profile-dropdown-name-fields">
-                                    <label className="profile-dropdown-field">First name<input autoComplete="given-name" value={profileDraft.firstName} maxLength={80} onChange={(event) => { setProfileDraft((current) => ({ ...current, firstName: event.target.value })); setProfileError(''); }} /></label>
-                                    <label className="profile-dropdown-field">Last name<input autoComplete="family-name" value={profileDraft.lastName} maxLength={80} onChange={(event) => { setProfileDraft((current) => ({ ...current, lastName: event.target.value })); setProfileError(''); }} /></label>
-                                </div>
-                                <label className="profile-dropdown-field">Gender<select value={profileDraft.gender} onChange={(event) => setProfileDraft((current) => ({ ...current, gender: event.target.value }))}><option value="prefer-not-to-say">Prefer not to say</option><option value="woman">Woman</option><option value="man">Man</option><option value="non-binary">Non-binary</option><option value="other">Other</option></select></label>
-                                {profileError && <p className="profile-dropdown-error" role="alert">{profileError}</p>}
-                                <div className="profile-dropdown-actions"><button className="profile-save-button" type="submit" disabled={profileSaving}>{profileSaving ? 'Saving…' : 'Save changes'}</button></div>
-                            </form>
-                        </section>}
-                    </div>
+                    <button className="topbar-profile-trigger" type="button" onClick={() => navigate('profile')} aria-label={`Open profile for ${displayName}`}>
+                        {profile?.avatar ? <img className="profile-avatar profile-avatar-image" src={profile.avatar} alt="" /> : <span className="profile-avatar">{displayName[0]?.toUpperCase() || 'U'}</span>}
+                        <span className="topbar-profile-copy max-[760px]:hidden"><strong title={displayName}>{displayName}</strong></span>
+                    </button>
                 </div>
             </header>
             <main className="dashboard-main min-h-[calc(100vh-58px)] min-w-0 overflow-x-clip px-5 pt-[14px] pb-[18px] max-[1100px]:px-[14px] max-[1100px]:py-3 max-[760px]:px-[10px] max-[760px]:py-3 max-[390px]:px-2">
@@ -339,7 +241,7 @@ function WorkspaceApp() {
                 {page === 'dashboard' && <DashboardPage stats={stats} loading={loadingStats} error={statsError} onRetry={refreshStats} applications={applications} chartApplications={chartApplications} loadingChartApplications={loadingChartApplications} chartApplicationsError={chartApplicationsError} onRetryChartApplications={refreshChartApplications} loadingApplications={loadingApplications} applicationsError={applicationsError} onRetryApplications={() => refreshApplications(currentFilters())} onSelectApplication={openDetails} onEditApplication={openEdit} onDeleteApplication={(item) => { setDeleteTarget(item); setDeleteError(''); }} search={search} onSearchChange={(value) => { requestNumber.current += 1; setSearch(value); }} status={status} onStatusFilter={(value) => { requestNumber.current += 1; setStatus(value); }} sortBy={sortBy} onSortByChange={setSortBy} order={order} onOrderChange={setOrder} onClearFilters={clearFilters} onOpenBoard={() => navigate('board')} onAdd={() => openCreate()} />}
                 {page === 'assets' && <AssetsPage onBoard={() => navigate('board')} />}
                 {page === 'settings' && <SettingsPage workspace={workspace} onWorkspaceChange={setWorkspace} dailyGoal={dailyGoal} onDailyGoalChange={setDailyGoal} themeMode={themeMode} onThemeChange={setThemeMode} />}
-                {!['dashboard', 'board', 'assets', 'settings'].includes(page) && <DashboardPage stats={stats} loading={loadingStats} error={statsError} onRetry={refreshStats} applications={applications} loadingApplications={loadingApplications} applicationsError={applicationsError} onRetryApplications={() => refreshApplications(currentFilters())} onSelectApplication={openDetails} onEditApplication={openEdit} onDeleteApplication={(item) => { setDeleteTarget(item); setDeleteError(''); }} search={search} onSearchChange={setSearch} status={status} onStatusFilter={setStatus} sortBy={sortBy} onSortByChange={setSortBy} order={order} onOrderChange={setOrder} onClearFilters={clearFilters} onOpenBoard={() => navigate('board')} onAdd={() => openCreate()} />}
+                {page === 'profile' && <ProfilePage user={profile} onUserUpdated={setProfileUser} />}
             </main>
         </div>
         {showForm && <ApplicationForm saving={saving} error={formError} initialStatus={newStatus} onClose={() => setShowForm(false)} onSubmit={saveApplication} />}

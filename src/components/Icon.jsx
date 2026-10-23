@@ -15,6 +15,7 @@ import {
     CircleX,
     FileCheck2,
     Trophy,
+    UserRound,
     UsersRound,
     PanelLeftClose,
     PanelLeftOpen,
@@ -52,6 +53,7 @@ const icons = {
     offer: Trophy,
     rejected: CircleX,
     applied: FileCheck2,
+    user: UserRound,
 };
 
 function Icon({ name, size = 18, className }) {
