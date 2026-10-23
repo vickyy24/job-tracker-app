@@ -2184,6 +2184,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   border-color: #b8b8c5;
 }
 
+.chart-period-select:focus-visible {
+  outline: none;
+}
+
 .chart-total {
   padding: 6px 10px;
   color: var(--purple);
