@@ -2011,8 +2011,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .profile-page-photo-button:focus-within {
-  outline: 2px solid color-mix(in srgb, var(--purple) 30%, transparent);
-  outline-offset: 2px;
+  outline: none;
 }
 
 .profile-page-remove-photo {
