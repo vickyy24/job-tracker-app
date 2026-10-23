@@ -88,10 +88,11 @@ function WorkspaceApp() {
     const [workspaceEditOpen, setWorkspaceEditOpen] = useState(false);
     const [workspaceDraft, setWorkspaceDraft] = useState(workspace);
     const [workspaceError, setWorkspaceError] = useState('');
-    const [profileOpen, setProfileOpen] = useState(false);
-    const [profileDraft, setProfileDraft] = useState({ firstName: '', lastName: '' });
+    const [profileDraft, setProfileDraft] = useState({ firstName: '', lastName: '', gender: 'prefer-not-to-say', avatar: '' });
     const [profileSaving, setProfileSaving] = useState(false);
     const [profileError, setProfileError] = useState('');
+    const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+    const profileMenuRef = useRef(null);
     const requestNumber = useRef(0);
 
     useEffect(() => {
@@ -121,6 +122,19 @@ function WorkspaceApp() {
         window.addEventListener('resize', closeOnDesktop);
         return () => { document.body.style.overflow = previousOverflow; window.removeEventListener('keydown', closeOnEscape); window.removeEventListener('resize', closeOnDesktop); };
     }, [mobileNavOpen]);
+    useEffect(() => {
+        if (!profileMenuOpen) return undefined;
+        const closeMenu = (event) => {
+            if (event.key === 'Escape') setProfileMenuOpen(false);
+            if (event.type === 'pointerdown' && !profileMenuRef.current?.contains(event.target)) setProfileMenuOpen(false);
+        };
+        document.addEventListener('pointerdown', closeMenu);
+        document.addEventListener('keydown', closeMenu);
+        return () => {
+            document.removeEventListener('pointerdown', closeMenu);
+            document.removeEventListener('keydown', closeMenu);
+        };
+    }, [profileMenuOpen]);
 
     const navigate = (next) => { setPage(next); setMobileNavOpen(false); window.history.pushState({}, '', `/${next}`); };
     const refreshStats = useCallback(() => {
@@ -146,9 +160,41 @@ function WorkspaceApp() {
     useEffect(() => { const timer = setTimeout(() => refreshApplications({ search: search.trim(), status, sortBy, order }), 250); return () => clearTimeout(timer); }, [search, status, sortBy, order, refreshApplications]);
     const clearFilters = () => { requestNumber.current += 1; setSearch(''); setStatus(''); };
     const openProfile = () => {
-        setProfileDraft({ firstName: profile?.firstName || '', lastName: profile?.lastName || '' });
+        setProfileDraft({
+            firstName: profile?.firstName || '',
+            lastName: profile?.lastName || '',
+            gender: profile?.gender || 'prefer-not-to-say',
+            avatar: profile?.avatar || '',
+        });
         setProfileError('');
-        setProfileOpen(true);
+        setProfileMenuOpen((open) => !open);
+    };
+    const changeProfileAvatar = async (event) => {
+        const file = event.target.files?.[0];
+        event.target.value = '';
+        if (!file) return;
+        if (!file.type.startsWith('image/')) { setProfileError('Choose an image file.'); return; }
+        if (file.size > 8 * 1024 * 1024) { setProfileError('Choose an image smaller than 8 MB.'); return; }
+        try {
+            const bitmap = await createImageBitmap(file);
+            let scale = Math.min(1, 256 / Math.max(bitmap.width, bitmap.height));
+            const canvas = document.createElement('canvas');
+            let avatar = '';
+            for (let attempt = 0; attempt < 6; attempt += 1) {
+                canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+                canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+                canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+                avatar = canvas.toDataURL('image/jpeg', .76 - attempt * .08);
+                if (avatar.length <= 28000) break;
+                scale *= .8;
+            }
+            bitmap.close();
+            if (avatar.length > 28000) { setProfileError('Choose a simpler or smaller image.'); return; }
+            setProfileDraft((current) => ({ ...current, avatar }));
+            setProfileError('');
+        } catch {
+            setProfileError('This image could not be opened. Try another file.');
+        }
     };
     const saveProfile = async (event) => {
         event.preventDefault();
@@ -161,10 +207,10 @@ function WorkspaceApp() {
         try {
             const result = await apiRequest('/auth/profile', {
                 method: 'PATCH',
-                body: JSON.stringify({ firstName, lastName }),
+                body: JSON.stringify({ firstName, lastName, gender: profileDraft.gender, avatar: profileDraft.avatar }),
             }, { retryAfterRefresh: true });
             setProfileUser(result.user);
-            setProfileOpen(false);
+            setProfileMenuOpen(false);
         } catch (error) {
             setProfileError(error.message || 'Could not save your profile. Try again.');
         } finally {
@@ -238,10 +284,31 @@ function WorkspaceApp() {
                     <button className="topbar-theme-toggle max-[760px]:size-8 max-[760px]:flex-none" type="button" onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`} aria-pressed={themeMode === 'dark'} title={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`}>
                         <ThemeModeIcon mode={themeMode === 'dark' ? 'sun' : 'moon'} />
                     </button>
-                    <button className="topbar-profile-trigger" type="button" onClick={openProfile} aria-label={`Open profile for ${displayName}`} title="Profile">
-                        <span className="profile-avatar">{displayName[0]?.toUpperCase() || 'U'}</span>
-                        <span className="topbar-profile-copy max-[760px]:hidden"><strong title={displayName}>{displayName}</strong><small>Profile</small></span>
-                    </button>
+                    <div className="profile-menu" ref={profileMenuRef}>
+                        <button className="topbar-profile-trigger" type="button" onClick={openProfile} aria-label={`Account menu for ${displayName}`} aria-expanded={profileMenuOpen} aria-haspopup="true">
+                            {profile?.avatar ? <img className="profile-avatar profile-avatar-image" src={profile.avatar} alt="" /> : <span className="profile-avatar">{displayName[0]?.toUpperCase() || 'U'}</span>}
+                            <span className="topbar-profile-copy max-[760px]:hidden"><strong title={displayName}>{displayName}</strong></span>
+                            <Icon name="down" size={14} />
+                        </button>
+                        {profileMenuOpen && <section className="profile-dropdown" aria-label="Account details">
+                            <div className="profile-dropdown-heading"><strong>Account details</strong><span>Manage your personal information</span></div>
+                            <form className="profile-dropdown-form" onSubmit={saveProfile}>
+                                <div className="profile-editor-avatar-row">
+                                    {profileDraft.avatar ? <img className="profile-editor-avatar" src={profileDraft.avatar} alt="Profile preview" /> : <span className="profile-editor-avatar profile-editor-avatar-fallback">{displayName[0]?.toUpperCase() || 'U'}</span>}
+                                    <label className="profile-photo-action"><Icon name="camera" size={15} />Update photo<input type="file" accept="image/*" onChange={changeProfileAvatar} disabled={profileSaving} /></label>
+                                    {profileDraft.avatar && <button className="profile-photo-remove" type="button" onClick={() => setProfileDraft((current) => ({ ...current, avatar: '' }))} disabled={profileSaving}>Remove</button>}
+                                </div>
+                                <label className="profile-dropdown-field">Email<input value={profile?.email || profile?.username || ''} readOnly /></label>
+                                <div className="profile-dropdown-name-fields">
+                                    <label className="profile-dropdown-field">First name<input autoComplete="given-name" value={profileDraft.firstName} maxLength={80} onChange={(event) => { setProfileDraft((current) => ({ ...current, firstName: event.target.value })); setProfileError(''); }} /></label>
+                                    <label className="profile-dropdown-field">Last name<input autoComplete="family-name" value={profileDraft.lastName} maxLength={80} onChange={(event) => { setProfileDraft((current) => ({ ...current, lastName: event.target.value })); setProfileError(''); }} /></label>
+                                </div>
+                                <label className="profile-dropdown-field">Gender<select value={profileDraft.gender} onChange={(event) => setProfileDraft((current) => ({ ...current, gender: event.target.value }))}><option value="prefer-not-to-say">Prefer not to say</option><option value="woman">Woman</option><option value="man">Man</option><option value="non-binary">Non-binary</option><option value="other">Other</option></select></label>
+                                {profileError && <p className="profile-dropdown-error" role="alert">{profileError}</p>}
+                                <div className="profile-dropdown-actions"><button className="profile-save-button" type="submit" disabled={profileSaving}>{profileSaving ? 'Saving…' : 'Save changes'}</button></div>
+                            </form>
+                        </section>}
+                    </div>
                 </div>
             </header>
             <main className="dashboard-main min-h-[calc(100vh-58px)] min-w-0 overflow-x-clip px-5 pt-[14px] pb-[18px] max-[1100px]:px-[14px] max-[1100px]:py-3 max-[760px]:px-[10px] max-[760px]:py-3 max-[390px]:px-2">
@@ -279,22 +346,6 @@ function WorkspaceApp() {
         {showForm && <ApplicationForm saving={saving} error={formError} initialStatus={newStatus} onClose={() => setShowForm(false)} onSubmit={saveApplication} />}
         {editing && <ApplicationForm key={editing._id} application={editing} saving={saving} error={editError} onClose={() => { const application = editing; setEditing(null); setViewing(application); }} onDismiss={() => { setEditing(null); setViewing(null); }} onSubmit={saveEdit} />}
         {viewing && <ApplicationDetails application={viewing} onClose={() => setViewing(null)} onEdit={openEdit} />}
-        {profileOpen && <Modal className="application-modal profile-modal" labelledBy="profile-title" onClose={() => !profileSaving && setProfileOpen(false)} closeDisabled={profileSaving}>
-            <div className="modal-heading">
-                <div><p className="eyebrow">ACCOUNT</p><h2 id="profile-title">Profile</h2></div>
-                <button className="modal-close" type="button" aria-label="Close profile" disabled={profileSaving} onClick={() => setProfileOpen(false)}>×</button>
-            </div>
-            <form className="application-form" onSubmit={saveProfile}>
-                <div className="profile-summary">
-                    <span className="profile-summary-avatar">{displayName[0]?.toUpperCase() || 'U'}</span>
-                    <div><strong>{displayName}</strong><span>Personal profile</span></div>
-                </div>
-                <label className="settings-field">First name<input autoFocus autoComplete="given-name" value={profileDraft.firstName} maxLength={80} onChange={(event) => { setProfileDraft((current) => ({ ...current, firstName: event.target.value })); setProfileError(''); }} /></label>
-                <label className="settings-field">Last name<input autoComplete="family-name" value={profileDraft.lastName} maxLength={80} onChange={(event) => { setProfileDraft((current) => ({ ...current, lastName: event.target.value })); setProfileError(''); }} /></label>
-                {profileError && <p className="form-error" role="alert">{profileError}</p>}
-                <div className="form-actions"><Button variant="secondary" type="button" disabled={profileSaving} onClick={() => setProfileOpen(false)}>Cancel</Button><Button type="submit" disabled={profileSaving}>{profileSaving ? 'Saving…' : 'Save profile'}</Button></div>
-            </form>
-        </Modal>}
         {deleteTarget && <Modal className="delete-confirmation" role="alertdialog" labelledBy="delete-title" describedBy="delete-description" onClose={() => !deleting && setDeleteTarget(null)} closeDisabled={deleting}><p className="eyebrow">DELETE APPLICATION</p><h2 id="delete-title">Delete {deleteTarget.companyName}?</h2><p id="delete-description">This will permanently delete the application for {deleteTarget.jobTitle}.</p>{deleteError && <p className="form-error" role="alert">{deleteError}</p>}<div className="form-actions"><Button variant="secondary" disabled={deleting} onClick={() => setDeleteTarget(null)}>Cancel</Button><Button className="confirm-delete-button" disabled={deleting} onClick={confirmDelete}>{deleting ? 'Deleting…' : 'Delete application'}</Button></div></Modal>}
         {workspaceEditOpen && <Modal className="application-modal" labelledBy="workspace-edit-title" onClose={() => setWorkspaceEditOpen(false)}><div className="modal-heading"><div><p className="eyebrow">WORKSPACE</p><h2 id="workspace-edit-title">Edit workspace title</h2></div><button className="modal-close" type="button" aria-label="Close" onClick={() => setWorkspaceEditOpen(false)}>×</button></div><form className="application-form" onSubmit={(event) => { event.preventDefault(); if (!workspaceDraft.trim()) { setWorkspaceError('Enter a workspace title.'); return; } setWorkspace(workspaceDraft.trim()); setWorkspaceEditOpen(false); }}><label className="settings-field">Title<input autoFocus value={workspaceDraft} maxLength={50} onChange={(event) => { setWorkspaceDraft(event.target.value); setWorkspaceError(''); }} /></label>{workspaceError && <p className="form-error" role="alert">{workspaceError}</p>}<div className="form-actions"><Button variant="secondary" onClick={() => setWorkspaceEditOpen(false)}>Cancel</Button><Button type="submit">Save title</Button></div></form></Modal>}
     </div>;

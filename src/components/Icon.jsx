@@ -1,6 +1,7 @@
 import {
     BriefcaseBusiness,
     CalendarDays,
+    Camera,
     Check,
     ChartNoAxesColumnIncreasing,
     ChevronDown,
@@ -33,6 +34,7 @@ const icons = {
     logout: LogOut,
     search: Search,
     calendar: CalendarDays,
+    camera: Camera,
     check: Check,
     sun: Sun,
     moon: Moon,
