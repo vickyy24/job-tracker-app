@@ -223,7 +223,7 @@ function WorkspaceApp() {
                     </button>
                     <div className="topbar-profile-menu" ref={profileMenuRef}>
                         <button className="topbar-profile-trigger" type="button" onClick={() => setProfileMenuOpen((open) => !open)} aria-label={`Open account menu for ${displayName}`} aria-expanded={profileMenuOpen} aria-haspopup="menu">
-                            {profile?.avatar ? <img className="profile-avatar profile-avatar-image" src={profile.avatar} alt="" /> : <span className="profile-avatar">{displayName[0]?.toUpperCase() || 'U'}</span>}
+                            {profile?.avatar ? <img className="profile-avatar profile-avatar-image" src={profile.avatar} alt="" /> : <span className="profile-avatar"><Icon name="user" size={16} /></span>}
                             <span className="topbar-profile-copy max-[760px]:hidden"><strong title={displayName}>{displayName}</strong></span>
                             <Icon className="topbar-profile-chevron" name="down" size={14} />
                         </button>
