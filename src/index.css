@@ -317,16 +317,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   position: relative;
 }
 
-.topbar-profile-chevron {
-  flex: 0 0 auto;
-  color: var(--subtle);
-  transition: transform .16s ease;
-}
-
-.topbar-profile-trigger[aria-expanded="true"] .topbar-profile-chevron {
-  transform: rotate(180deg);
-}
-
 .profile-dropdown {
   position: absolute;
   z-index: 20;
