@@ -14,14 +14,9 @@
     "recharts": "^3.10.1"
   },
   "scripts": {
-    "prestart": "npm run tailwind:build",
-    "start": "concurrently -k \"npm:tailwind:watch\" \"npm:react-start\"",
-    "react-start": "react-scripts start",
-    "tailwind:build": "tailwindcss -i ./src/index.css -o ./src/index.generated.css",
-    "tailwind:watch": "tailwindcss -i ./src/index.css -o ./src/index.generated.css --watch",
-    "build": "npm run tailwind:build && react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "vite --open",
+    "build": "vite build",
+    "test": "react-scripts test"
   },
   "eslintConfig": {
     "extends": [
@@ -42,8 +37,9 @@
     ]
   },
   "devDependencies": {
-    "@tailwindcss/cli": "^4.3.3",
-    "concurrently": "^10.0.6",
-    "tailwindcss": "^4.3.3"
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-react": "^6.1.2",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.3.5"
   }
 }

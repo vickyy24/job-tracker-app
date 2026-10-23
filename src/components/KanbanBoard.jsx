@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Icon from './Icon';
-import { EmptyState, ErrorMessage, LoadingState } from './UI';
+import { EmptyState, ErrorMessage, LoadingState } from './shared';
 
 const columns = ['Applied', 'Interview', 'Offer', 'Rejected'];
 

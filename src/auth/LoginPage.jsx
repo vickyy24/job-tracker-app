@@ -74,7 +74,7 @@ function OtpInputGroup({ value, onChange, disabled, idPrefix = 'otp', ariaLabel 
   };
 
   return (
-    <div className="otp-boxes-container" onPaste={handlePaste}>
+    <div className="otp-boxes-container max-[400px]:gap-1.5" onPaste={handlePaste}>
       {digits.map((digit, i) => (
         <input
           key={i}
@@ -89,7 +89,7 @@ function OtpInputGroup({ value, onChange, disabled, idPrefix = 'otp', ariaLabel 
           onChange={(e) => handleChange(i, e)}
           onKeyDown={(e) => handleKeyDown(i, e)}
           onFocus={(e) => e.target.select()}
-          className={`otp-digit-box ${digit ? 'otp-digit-box-filled' : ''}`}
+          className={`otp-digit-box max-[400px]:h-12 max-[400px]:w-10 max-[400px]:rounded-[10px] max-[400px]:text-[19px] ${digit ? 'otp-digit-box-filled' : ''}`}
           disabled={disabled}
           aria-label={i === 0 ? ariaLabel : `Digit ${i + 1}`}
         />
@@ -454,7 +454,7 @@ export default function LoginPage() {
   const isResetPassword = mode === 'reset-password';
 
   return (
-    <main className={`auth-page ${isRegister ? 'auth-register-page' : ''}`}>
+    <main className={`auth-page motion-reduce:[&_.auth-field_input]:transition-none motion-reduce:[&_.auth-loading-ring]:animate-none motion-reduce:[&_.auth-loading-dots_i]:animate-none ${isRegister ? 'auth-register-page' : ''}`}>
       <section className="auth-panel" aria-labelledby="auth-title">
         <a className="auth-brand" href="/login" aria-label="Jobtrack home">
           <span className="auth-brand-mark">J</span>
@@ -779,7 +779,7 @@ export default function LoginPage() {
           <form className="auth-form" onSubmit={submitAuth} noValidate>
             {error && <p className="auth-error" role="alert">{error}</p>}
             {isRegister && (
-              <div className="auth-name-fields">
+              <div className="auth-name-fields max-[380px]:grid-cols-1">
                 <label className="auth-field" htmlFor="auth-first-name">
                   First name
                   <input

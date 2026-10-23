@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, LoadingState, Modal, SelectInput, TextInput } from './UI';
+import { Button, LoadingState, Modal, SelectInput, TextInput } from './shared';
 import Icon from './Icon';
 
 const statuses = ['Applied', 'Interview', 'Offer', 'Rejected'];
@@ -77,7 +77,7 @@ function ApplicationForm({ application, initialStatus = 'Applied', loading, savi
           </div>
           <button className="modal-close" type="button" aria-label="Close form" title="Close" onClick={onDismiss} disabled={saving}><Icon name="close" size={16}/></button>
         </div>
-        {loading ? <LoadingState message="Loading application…" /> : <form className="application-form" onSubmit={submit} noValidate>
+        {loading ? <LoadingState message="Loading application…" /> : <form className="application-form max-[760px]:overflow-x-hidden" onSubmit={submit} noValidate>
           {error && <p className="form-error" role="alert">{error}</p>}
           <TextInput id="company-name" label="Company name" value={companyName} onChange={(event) => changeField('companyName', setCompanyName, event.target.value)} error={fieldErrors.companyName} maxLength={120} required aria-required="true" disabled={saving} />
           <TextInput id="job-title" label="Job title" value={jobTitle} onChange={(event) => changeField('jobTitle', setJobTitle, event.target.value)} error={fieldErrors.jobTitle} maxLength={120} required aria-required="true" disabled={saving} />
