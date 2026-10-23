@@ -3077,127 +3077,68 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 }
 
-/* A restrained metallic sheen carries the existing palette across colored UI. */
-.nav-link-active,
-.ui-button-primary,
-.add-job-button,
-.kanban-column-header,
-.appearance-options button.chosen,
-.view-toggle button.active,
-.job-delete-button:hover:not(:disabled),
-.column-menu button:hover {
-  position: relative;
-  isolation: isolate;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .38),
-    inset 0 -1px 0 rgba(0, 0, 0, .12),
-    0 3px 9px rgba(36, 28, 24, .12);
+/* Use the same simple tonal gradients as the dashboard cards, keeping each control's hue. */
+.nav-link-active {
+  background: linear-gradient(135deg, #e56f3d 0%, #d96234 100%);
+  box-shadow: 0 3px 9px rgba(229, 111, 61, .2);
 }
 
-.nav-link-active::before,
-.ui-button-primary::before,
-.add-job-button::before,
-.kanban-column-header::before,
-.appearance-options button.chosen::before,
-.view-toggle button.active::before,
-.job-delete-button:hover:not(:disabled)::before,
-.column-menu button:hover::before {
-  position: absolute;
-  z-index: -1;
-  inset: 1px;
-  border-radius: inherit;
-  background: linear-gradient(
-    112deg,
-    rgba(255, 255, 255, .25) 0%,
-    rgba(255, 255, 255, .08) 24%,
-    transparent 48%,
-    rgba(0, 0, 0, .08) 100%
-  );
-  content: '';
-  pointer-events: none;
+.nav-link-active:hover {
+  background: linear-gradient(135deg, #d96234 0%, #c9572d 100%);
+  box-shadow: 0 5px 12px rgba(201, 87, 45, .22);
+}
+
+.app-shell[data-theme='dark'] .nav-link-active {
+  background: linear-gradient(135deg, #e56f3d 0%, #d96234 100%);
+  box-shadow: 0 3px 9px rgba(229, 111, 61, .24);
+}
+
+.app-shell[data-theme='dark'] .nav-link-active:hover {
+  background: linear-gradient(135deg, #d96234 0%, #c9572d 100%);
+}
+
+.ui-button-primary,
+.add-job-button {
+  background: linear-gradient(135deg, #e56f3d 0%, #cf5d32 100%);
+  border-color: #e56f3d;
+  box-shadow: 0 3px 8px rgba(229, 111, 61, .2);
 }
 
 .ui-button-primary:hover:not(:disabled),
-.add-job-button:hover,
-.nav-link-active:hover,
-.job-delete-button:hover:not(:disabled),
-.column-menu button:hover {
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .44),
-    inset 0 -1px 0 rgba(0, 0, 0, .14),
-    0 6px 14px rgba(36, 28, 24, .18);
+.add-job-button:hover {
+  background: linear-gradient(135deg, #d96234 0%, #c9572d 100%);
+  border-color: #d96234;
+  box-shadow: 0 5px 13px rgba(201, 87, 45, .2);
 }
 
-.app-shell[data-theme='dark'] .nav-link-active,
-.app-shell[data-theme='dark'] .ui-button-primary,
-.app-shell[data-theme='dark'] .add-job-button,
-.app-shell[data-theme='dark'] .kanban-column-header,
-.app-shell[data-theme='dark'] .appearance-options button.chosen,
-.app-shell[data-theme='dark'] .view-toggle button.active {
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .34),
-    inset 0 -1px 0 rgba(0, 0, 0, .2),
-    0 3px 10px rgba(0, 0, 0, .2);
+.kanban-column-applied .kanban-column-header { background: linear-gradient(135deg, #c87912 0%, #a9640f 100%); }
+.kanban-column-interview .kanban-column-header { background: linear-gradient(135deg, #2584e8 0%, #1e70c8 100%); }
+.kanban-column-offer .kanban-column-header { background: linear-gradient(135deg, #239b75 0%, #1d805f 100%); }
+.kanban-column-rejected .kanban-column-header { background: linear-gradient(135deg, #cf5a6a 0%, #b84758 100%); }
+
+.appearance-options button.chosen {
+  background: linear-gradient(135deg, #fff0e8 0%, #f8dfd1 100%);
 }
 
-.ui-button-secondary:hover:not(:disabled),
-.modal-close:hover:not(:disabled),
-.job-edit-button:hover,
-.job-delete-button:hover:not(:disabled),
-.column-menu button:hover {
-  position: relative;
-  isolation: isolate;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .34),
-    inset 0 -1px 0 rgba(0, 0, 0, .1),
-    0 3px 9px rgba(36, 28, 24, .1);
+.view-toggle button.active {
+  background: linear-gradient(135deg, #fff0e8 0%, #f8dfd1 100%);
 }
 
-.status-badge,
-.status-applied,
-.status-interview,
-.status-offer,
-.status-rejected {
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .72), inset 0 -1px 0 rgba(0, 0, 0, .045);
-}
-.ui-button-secondary:hover:not(:disabled)::before,
-.modal-close:hover:not(:disabled)::before,
-.job-edit-button:hover::before,
-.job-delete-button:hover:not(:disabled)::before,
-.column-menu button:hover::before {
-  position: absolute;
-  z-index: -1;
-  inset: 1px;
-  border-radius: inherit;
-  background: linear-gradient(112deg, rgba(255, 255, 255, .24), rgba(255, 255, 255, .07) 26%, transparent 52%, rgba(0, 0, 0, .07));
-  content: '';
-  pointer-events: none;
-}
+.status-badge-applied { background: linear-gradient(135deg, #f1edfc 0%, #e8e2f8 100%); }
+.status-badge-interview { background: linear-gradient(135deg, #eaf7f3 0%, #dff0e9 100%); }
+.status-badge-offer { background: linear-gradient(135deg, #fff6df 0%, #f8eac9 100%); }
+.status-badge-rejected { background: linear-gradient(135deg, #fdf0f1 0%, #f7e2e5 100%); }
+.status-badge-default { background: linear-gradient(135deg, #f1f0f5 0%, #e8e7ed 100%); }
+
 .auth-submit,
 .auth-brand-mark {
-  position: relative;
-  isolation: isolate;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .32), inset 0 -1px 0 rgba(0, 0, 0, .12), 0 3px 9px rgba(36, 28, 24, .1);
-}
-
-.auth-submit::before,
-.auth-secondary:hover:not(:disabled)::before {
-  position: absolute;
-  z-index: -1;
-  inset: 1px;
-  border-radius: inherit;
-  background: linear-gradient(112deg, rgba(255, 255, 255, .24), rgba(255, 255, 255, .07) 26%, transparent 52%, rgba(0, 0, 0, .07));
-  content: '';
-  pointer-events: none;
+  box-shadow: 0 3px 9px rgba(36, 28, 24, .1);
 }
 
 .auth-submit:hover:not(:disabled),
 .auth-secondary:hover:not(:disabled) {
-  position: relative;
-  isolation: isolate;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .42), inset 0 -1px 0 rgba(0, 0, 0, .14), 0 5px 12px rgba(36, 28, 24, .16);
+  box-shadow: 0 5px 12px rgba(36, 28, 24, .14);
 }
-
 .sidebar-sign-out {
   min-height: 38px;
   margin-top: 10px;
@@ -3206,7 +3147,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   background: linear-gradient(135deg, #fdf0f1, #f9e7e9);
   border: 1px solid #e7aab3;
   border-radius: 8px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9), inset 0 -1px 0 rgba(166, 77, 87, .08);
+  box-shadow: 0 2px 6px rgba(166, 77, 87, .08);
   font-weight: 600;
 }
 
@@ -3219,21 +3160,21 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   color: #fff;
   background: linear-gradient(135deg, #d66b78, #cf5a6a);
   border-color: #cf5a6a;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .38), inset 0 -1px 0 rgba(0, 0, 0, .12), 0 4px 10px rgba(166, 77, 87, .22);
+  box-shadow: 0 4px 10px rgba(166, 77, 87, .18);
 }
 
 .app-shell[data-theme='dark'] .sidebar-sign-out {
   color: #ffb3bc;
   background: linear-gradient(135deg, #492b30, #3c272c);
   border-color: #563b40;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12), inset 0 -1px 0 rgba(0, 0, 0, .16);
+  box-shadow: 0 3px 9px rgba(0, 0, 0, .16);
 }
 
 .app-shell[data-theme='dark'] .sidebar-sign-out:hover:not(.nav-link-active) {
   color: #fff;
   background: linear-gradient(135deg, #d66b78, #cf5a6a);
   border-color: #cf5a6a;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .34), inset 0 -1px 0 rgba(0, 0, 0, .18), 0 4px 12px rgba(0, 0, 0, .22);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .22);
 }
 
 .sidebar-sign-out:focus-visible {
