@@ -58,6 +58,8 @@ function WorkspaceApp() {
     });
     const [viewMode, setViewMode] = useState('board');
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+    const profileMenuRef = useRef(null);
     const [stats, setStats] = useState(null);
     const [loadingStats, setLoadingStats] = useState(true);
     const [statsError, setStatsError] = useState('');
@@ -107,6 +109,19 @@ function WorkspaceApp() {
         if (window.location.pathname !== `/${route}` || window.location.hash) window.history.replaceState({}, '', `/${route}`);
     }, []);
     useEffect(() => { setSearch(''); setStatus(''); }, [page]);
+    useEffect(() => {
+        if (!profileMenuOpen) return undefined;
+        const closeMenu = (event) => {
+            if (event.type === 'keydown' && event.key === 'Escape') setProfileMenuOpen(false);
+            if (event.type === 'pointerdown' && !profileMenuRef.current?.contains(event.target)) setProfileMenuOpen(false);
+        };
+        document.addEventListener('pointerdown', closeMenu);
+        document.addEventListener('keydown', closeMenu);
+        return () => {
+            document.removeEventListener('pointerdown', closeMenu);
+            document.removeEventListener('keydown', closeMenu);
+        };
+    }, [profileMenuOpen]);
     useEffect(() => {
         if (!mobileNavOpen) return undefined;
         const previousOverflow = document.body.style.overflow;
@@ -206,10 +221,23 @@ function WorkspaceApp() {
                     <button className="topbar-theme-toggle max-[760px]:size-8 max-[760px]:flex-none" type="button" onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`} aria-pressed={themeMode === 'dark'} title={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`}>
                         <ThemeModeIcon mode={themeMode === 'dark' ? 'sun' : 'moon'} />
                     </button>
-                    <button className="topbar-profile-trigger" type="button" onClick={() => navigate('profile')} aria-label={`Open profile for ${displayName}`}>
-                        {profile?.avatar ? <img className="profile-avatar profile-avatar-image" src={profile.avatar} alt="" /> : <span className="profile-avatar">{displayName[0]?.toUpperCase() || 'U'}</span>}
-                        <span className="topbar-profile-copy max-[760px]:hidden"><strong title={displayName}>{displayName}</strong></span>
-                    </button>
+                    <div className="topbar-profile-menu" ref={profileMenuRef}>
+                        <button className="topbar-profile-trigger" type="button" onClick={() => setProfileMenuOpen((open) => !open)} aria-label={`Open account menu for ${displayName}`} aria-expanded={profileMenuOpen} aria-haspopup="menu">
+                            {profile?.avatar ? <img className="profile-avatar profile-avatar-image" src={profile.avatar} alt="" /> : <span className="profile-avatar">{displayName[0]?.toUpperCase() || 'U'}</span>}
+                            <span className="topbar-profile-copy max-[760px]:hidden"><strong title={displayName}>{displayName}</strong></span>
+                            <Icon className="topbar-profile-chevron" name="down" size={14} />
+                        </button>
+                        {profileMenuOpen && <div className="profile-dropdown" role="menu" aria-label="Account menu">
+                            <div className="profile-dropdown-identity">
+                                {profile?.avatar ? <img className="profile-avatar profile-avatar-image" src={profile.avatar} alt="" /> : <span className="profile-avatar">{displayName[0]?.toUpperCase() || 'U'}</span>}
+                                <span><strong>{displayName}</strong><small>{profile?.email || profile?.username || ''}</small></span>
+                            </div>
+                            <button className="profile-dropdown-item" type="button" role="menuitem" onClick={() => { setProfileMenuOpen(false); navigate('profile'); }}>
+                                <Icon name="user" size={17} />
+                                <span>Profile</span>
+                            </button>
+                        </div>}
+                    </div>
                 </div>
             </header>
             <main className="dashboard-main min-h-[calc(100vh-58px)] min-w-0 overflow-x-clip px-5 pt-[14px] pb-[18px] max-[1100px]:px-[14px] max-[1100px]:py-3 max-[760px]:px-[10px] max-[760px]:py-3 max-[390px]:px-2">
