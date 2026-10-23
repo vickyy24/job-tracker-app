@@ -51,7 +51,7 @@ function JobCard({ application, onSelect, onStatusChange, onRequestDelete, pendi
                     Delete
                 </button>
             </div>
-            {error && <p className="form-error status-update-error" role="alert">{error}</p>}
+            {error && <p className="form-error m-[0_10px_8px] text-[10px]" role="alert">{error}</p>}
         </article>
     );
 }

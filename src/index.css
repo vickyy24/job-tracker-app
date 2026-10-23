@@ -1220,11 +1220,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   font-size: 10px;
 }
 
-.status-update-error {
-  margin: 0 10px 8px !important;
-  font-size: 10px !important;
-}
-
 .column-add-job {
   position: absolute;
   inset: auto 7px 7px;
@@ -1385,22 +1380,9 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .application-detail > strong {
-  color: var(--text);
   font-size: 13px;
   font-weight: 600;
   overflow-wrap: anywhere;
-}
-
-.details-status-interview {
-  color: #137e7c !important;
-}
-
-.details-status-offer {
-  color: #208057 !important;
-}
-
-.details-status-rejected {
-  color: #bd4858 !important;
 }
 
 .application-details-notes {
@@ -2636,8 +2618,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .recharts-wrapper :focus-visible,
 .recharts-surface:focus,
 .recharts-surface:focus-visible {
-  outline: none !important;
-  box-shadow: none !important;
+  outline: none;
+  box-shadow: none;
 }
 
 .monthly-chart .recharts-bar-rectangle,
@@ -2647,9 +2629,9 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .monthly-chart .recharts-rectangle:focus,
 .monthly-chart .recharts-rectangle:focus-visible,
 .monthly-chart .recharts-active-bar {
-  outline: none !important;
-  stroke: none !important;
-  stroke-width: 0 !important;
+  outline: none;
+  stroke: none;
+  stroke-width: 0;
 }
 
 .chart-message {
@@ -3508,6 +3490,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 :where(button, a, input, select, textarea, [tabindex]):focus,
 :where(button, a, input, select, textarea, [tabindex]):focus-visible {
-  outline: none !important;
-  box-shadow: none !important;
+  outline: none;
+  box-shadow: none;
 }
