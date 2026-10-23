@@ -2236,13 +2236,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .chart-tooltip {
   display: grid;
   gap: 4px;
-  min-width: 112px;
-  padding: 9px 11px;
+  min-width: 124px;
+  padding: 10px 12px;
   color: var(--text);
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid #e56f3d;
   border-radius: 9px;
-  box-shadow: 0 8px 22px rgba(30, 32, 48, .16);
+  box-shadow: 0 10px 26px rgba(30, 32, 48, .24), 0 0 0 2px rgba(229, 111, 61, .12);
   white-space: nowrap;
 }
 
@@ -2252,8 +2252,9 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .chart-tooltip span {
-  color: var(--subtle);
-  font-size: 10px;
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .chart-tooltip-percent {

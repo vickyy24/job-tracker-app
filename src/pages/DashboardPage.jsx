@@ -27,7 +27,7 @@ function metricValue(stats, key) {
 function ChartTooltip({ active, payload, label }) {
     if (!active || !payload?.length) return null;
     const item = payload[0];
-    const title = item.payload?.status || label;
+    const title = item.payload?.status || label || 'Selected period';
     const count = Number(item.value) || 0;
     if (item.payload?.status) return <div className="chart-tooltip"><strong>{title}</strong><span><b className="chart-tooltip-metric">{count} {count === 1 ? 'application' : 'applications'}</b> · <em className="chart-tooltip-percent">{item.payload.percent}%</em></span></div>;
     if (item.dataKey !== 'count') return null;
@@ -35,7 +35,7 @@ function ChartTooltip({ active, payload, label }) {
 }
 
 export default function DashboardPage({ stats, loading, error, onRetry, applications, chartApplications, loadingChartApplications, chartApplicationsError, onRetryChartApplications, loadingApplications, applicationsError, onRetryApplications, onSelectApplication, onEditApplication, onDeleteApplication, search, onSearchChange, status, onStatusFilter, sortBy, onSortByChange, order, onOrderChange, onClearFilters, onOpenBoard, onAdd }) {
-    const [activityPeriod, setActivityPeriod] = useState('monthly');
+    const [activityPeriod, setActivityPeriod] = useState('weekly');
     return <section className="page-content dashboard-page min-w-0">
         <div className="page-heading flex items-center justify-between -mt-[12px] mb-[18px] max-[480px]:items-start max-[480px]:gap-2"><div><h1 className="max-[480px]:text-[22px]">Dashboard</h1><p>Track your pipeline and keep the next step in view.</p></div><Button className="max-[390px]:px-2 max-[390px]:text-[10px] max-[480px]:min-h-[34px] max-[480px]:whitespace-nowrap" variant="secondary" onClick={onOpenBoard}>Open board</Button></div>
         <StatsGrid stats={stats} loading={loading} error={error} onRetry={onRetry} />
