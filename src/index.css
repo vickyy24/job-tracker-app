@@ -2352,6 +2352,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   display: none;
 }
 
+@media (max-width: 760px) {
+  .mobile-menu-button[aria-expanded='true'] {
+    left: 176px !important;
+  }
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;
