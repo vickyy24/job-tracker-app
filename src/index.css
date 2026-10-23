@@ -1631,6 +1631,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   max-width: none;
 }
 
+.dashboard-page .page-heading {
+  margin-top: -12px;
+}
+
 .page-heading {
   display: flex;
   align-items: center;
