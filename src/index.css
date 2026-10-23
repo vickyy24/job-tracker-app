@@ -3181,3 +3181,22 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   outline: 3px solid rgba(207, 90, 106, .28);
   outline-offset: 2px;
 }
+
+.nav-link:hover:not(.nav-link-active),
+.nav-sublink:hover {
+  color: #b95130;
+  background: linear-gradient(135deg, #fff4ed 0%, #fbe7dc 100%);
+  box-shadow: inset 0 0 0 1px #f1d8c8;
+  transform: translateX(1px);
+}
+
+.nav-link:hover:not(.nav-link-active) svg {
+  color: #e56f3d;
+}
+
+.app-shell[data-theme='dark'] .nav-link:hover:not(.nav-link-active),
+.app-shell[data-theme='dark'] .nav-sublink:hover {
+  color: #f3b89e;
+  background: linear-gradient(135deg, #352a27 0%, #41302c 100%);
+  box-shadow: inset 0 0 0 1px #59423b;
+}
