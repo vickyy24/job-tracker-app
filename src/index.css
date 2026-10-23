@@ -2128,7 +2128,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   padding: 0 10px;
   color: var(--text);
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid color-mix(in srgb, var(--border) 55%, var(--subtle) 45%);
   border-radius: 8px;
   font-size: 12px;
 }
