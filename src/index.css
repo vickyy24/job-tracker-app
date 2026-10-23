@@ -290,17 +290,47 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   border-top: 1px solid var(--border);
 }
 
-.topbar-profile-row {
+.topbar-profile-trigger {
+  display: inline-flex;
   flex: 0 0 auto;
-  gap: 8px;
-  padding: 0;
-  border-top: 0;
+  align-items: center;
+  gap: 9px;
+  min-height: 38px;
+  margin-left: 5px;
+  padding: 4px 8px 4px 13px;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  border-left: 1px solid var(--border);
+  border-radius: 0 9px 9px 0;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color .15s ease;
 }
 
-.topbar-profile-row > span:nth-child(2) {
-  flex: 0 1 auto;
-  width: auto;
+.topbar-profile-trigger:hover {
+  background: var(--surface-muted);
+}
+
+.topbar-profile-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
   max-width: 160px;
+}
+
+.topbar-profile-copy strong {
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar-profile-copy small {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1;
 }
 
 .profile-avatar {
@@ -1219,6 +1249,54 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+.profile-modal {
+  width: min(100%, 460px);
+  max-height: min(88vh, 620px);
+  padding: 24px;
+}
+
+.profile-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.profile-summary-avatar {
+  display: grid;
+  flex: 0 0 42px;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  color: var(--purple-dark);
+  background: var(--purple-soft);
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.profile-summary > div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.profile-summary strong {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-summary span:last-child {
+  color: var(--muted);
+  font-size: 11px;
 }
 
 .application-form-modal {

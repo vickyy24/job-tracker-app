@@ -10,6 +10,7 @@ import SettingsPage from './pages/SettingsPage';
 import Icon from './components/Icon';
 import ThemeModeIcon from './components/ThemeModeIcon';
 import { createApplication, deleteApplication as deleteApplicationRequest, getApplicationStats, listApplications, updateApplication } from './services/applicationApi';
+import { apiRequest } from './services/apiClient';
 import { useAuth } from './auth/AuthContext';
 import LoginPage from './auth/LoginPage';
 
@@ -42,9 +43,11 @@ function readRoute() {
 
 function WorkspaceApp() {
     const { user, logout } = useAuth();
-    const displayName = [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim()
-        || user?.name?.trim()
-        || (user?.username && !user.username.includes('@') ? user.username : 'User');
+    const [profileUser, setProfileUser] = useState(null);
+    const profile = profileUser?.id === user?.id ? profileUser : user;
+    const displayName = [profile?.firstName, profile?.lastName].filter(Boolean).join(' ').trim()
+        || profile?.name?.trim()
+        || (profile?.username && !profile.username.includes('@') ? profile.username : 'User');
     const [page, setPage] = useState(readRoute);
     const [themeMode, setThemeMode] = useState(() => readPreference('theme', 'light') === 'dark' ? 'dark' : 'light');
     const theme = themeMode;
@@ -85,6 +88,10 @@ function WorkspaceApp() {
     const [workspaceEditOpen, setWorkspaceEditOpen] = useState(false);
     const [workspaceDraft, setWorkspaceDraft] = useState(workspace);
     const [workspaceError, setWorkspaceError] = useState('');
+    const [profileOpen, setProfileOpen] = useState(false);
+    const [profileDraft, setProfileDraft] = useState({ firstName: '', lastName: '' });
+    const [profileSaving, setProfileSaving] = useState(false);
+    const [profileError, setProfileError] = useState('');
     const requestNumber = useRef(0);
 
     useEffect(() => {
@@ -138,6 +145,32 @@ function WorkspaceApp() {
     useEffect(() => { refreshChartApplications(); }, [refreshChartApplications]);
     useEffect(() => { const timer = setTimeout(() => refreshApplications({ search: search.trim(), status, sortBy, order }), 250); return () => clearTimeout(timer); }, [search, status, sortBy, order, refreshApplications]);
     const clearFilters = () => { requestNumber.current += 1; setSearch(''); setStatus(''); };
+    const openProfile = () => {
+        setProfileDraft({ firstName: profile?.firstName || '', lastName: profile?.lastName || '' });
+        setProfileError('');
+        setProfileOpen(true);
+    };
+    const saveProfile = async (event) => {
+        event.preventDefault();
+        const firstName = profileDraft.firstName.trim();
+        const lastName = profileDraft.lastName.trim();
+        if (!firstName) { setProfileError('Enter your first name.'); return; }
+        if (firstName.length > 80 || lastName.length > 80) { setProfileError('Names must be 80 characters or fewer.'); return; }
+        setProfileSaving(true);
+        setProfileError('');
+        try {
+            const result = await apiRequest('/auth/profile', {
+                method: 'PATCH',
+                body: JSON.stringify({ firstName, lastName }),
+            }, { retryAfterRefresh: true });
+            setProfileUser(result.user);
+            setProfileOpen(false);
+        } catch (error) {
+            setProfileError(error.message || 'Could not save your profile. Try again.');
+        } finally {
+            setProfileSaving(false);
+        }
+    };
 
     const saveApplication = async (application) => {
         setSaving(true); setFormError('');
@@ -205,10 +238,10 @@ function WorkspaceApp() {
                     <button className="topbar-theme-toggle max-[760px]:size-8 max-[760px]:flex-none" type="button" onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`} aria-pressed={themeMode === 'dark'} title={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`}>
                         <ThemeModeIcon mode={themeMode === 'dark' ? 'sun' : 'moon'} />
                     </button>
-                    <div className="profile-row topbar-profile-row">
+                    <button className="topbar-profile-trigger" type="button" onClick={openProfile} aria-label={`Open profile for ${displayName}`} title="Profile">
                         <span className="profile-avatar">{displayName[0]?.toUpperCase() || 'U'}</span>
-                        <span className="profile-copy max-[760px]:hidden"><strong title={displayName}>{displayName}</strong></span>
-                    </div>
+                        <span className="topbar-profile-copy max-[760px]:hidden"><strong title={displayName}>{displayName}</strong><small>Profile</small></span>
+                    </button>
                 </div>
             </header>
             <main className="dashboard-main min-h-[calc(100vh-58px)] min-w-0 overflow-x-clip px-5 pt-[14px] pb-[18px] max-[1100px]:px-[14px] max-[1100px]:py-3 max-[760px]:px-[10px] max-[760px]:py-3 max-[390px]:px-2">
@@ -246,6 +279,22 @@ function WorkspaceApp() {
         {showForm && <ApplicationForm saving={saving} error={formError} initialStatus={newStatus} onClose={() => setShowForm(false)} onSubmit={saveApplication} />}
         {editing && <ApplicationForm key={editing._id} application={editing} saving={saving} error={editError} onClose={() => { const application = editing; setEditing(null); setViewing(application); }} onDismiss={() => { setEditing(null); setViewing(null); }} onSubmit={saveEdit} />}
         {viewing && <ApplicationDetails application={viewing} onClose={() => setViewing(null)} onEdit={openEdit} />}
+        {profileOpen && <Modal className="application-modal profile-modal" labelledBy="profile-title" onClose={() => !profileSaving && setProfileOpen(false)} closeDisabled={profileSaving}>
+            <div className="modal-heading">
+                <div><p className="eyebrow">ACCOUNT</p><h2 id="profile-title">Profile</h2></div>
+                <button className="modal-close" type="button" aria-label="Close profile" disabled={profileSaving} onClick={() => setProfileOpen(false)}>×</button>
+            </div>
+            <form className="application-form" onSubmit={saveProfile}>
+                <div className="profile-summary">
+                    <span className="profile-summary-avatar">{displayName[0]?.toUpperCase() || 'U'}</span>
+                    <div><strong>{displayName}</strong><span>Personal profile</span></div>
+                </div>
+                <label className="settings-field">First name<input autoFocus autoComplete="given-name" value={profileDraft.firstName} maxLength={80} onChange={(event) => { setProfileDraft((current) => ({ ...current, firstName: event.target.value })); setProfileError(''); }} /></label>
+                <label className="settings-field">Last name<input autoComplete="family-name" value={profileDraft.lastName} maxLength={80} onChange={(event) => { setProfileDraft((current) => ({ ...current, lastName: event.target.value })); setProfileError(''); }} /></label>
+                {profileError && <p className="form-error" role="alert">{profileError}</p>}
+                <div className="form-actions"><Button variant="secondary" type="button" disabled={profileSaving} onClick={() => setProfileOpen(false)}>Cancel</Button><Button type="submit" disabled={profileSaving}>{profileSaving ? 'Saving…' : 'Save profile'}</Button></div>
+            </form>
+        </Modal>}
         {deleteTarget && <Modal className="delete-confirmation" role="alertdialog" labelledBy="delete-title" describedBy="delete-description" onClose={() => !deleting && setDeleteTarget(null)} closeDisabled={deleting}><p className="eyebrow">DELETE APPLICATION</p><h2 id="delete-title">Delete {deleteTarget.companyName}?</h2><p id="delete-description">This will permanently delete the application for {deleteTarget.jobTitle}.</p>{deleteError && <p className="form-error" role="alert">{deleteError}</p>}<div className="form-actions"><Button variant="secondary" disabled={deleting} onClick={() => setDeleteTarget(null)}>Cancel</Button><Button className="confirm-delete-button" disabled={deleting} onClick={confirmDelete}>{deleting ? 'Deleting…' : 'Delete application'}</Button></div></Modal>}
         {workspaceEditOpen && <Modal className="application-modal" labelledBy="workspace-edit-title" onClose={() => setWorkspaceEditOpen(false)}><div className="modal-heading"><div><p className="eyebrow">WORKSPACE</p><h2 id="workspace-edit-title">Edit workspace title</h2></div><button className="modal-close" type="button" aria-label="Close" onClick={() => setWorkspaceEditOpen(false)}>×</button></div><form className="application-form" onSubmit={(event) => { event.preventDefault(); if (!workspaceDraft.trim()) { setWorkspaceError('Enter a workspace title.'); return; } setWorkspace(workspaceDraft.trim()); setWorkspaceEditOpen(false); }}><label className="settings-field">Title<input autoFocus value={workspaceDraft} maxLength={50} onChange={(event) => { setWorkspaceDraft(event.target.value); setWorkspaceError(''); }} /></label>{workspaceError && <p className="form-error" role="alert">{workspaceError}</p>}<div className="form-actions"><Button variant="secondary" onClick={() => setWorkspaceEditOpen(false)}>Cancel</Button><Button type="submit">Save title</Button></div></form></Modal>}
     </div>;
