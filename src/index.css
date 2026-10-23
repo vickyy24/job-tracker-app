@@ -2218,7 +2218,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .chart-card:hover {
-  border-color: #d6cafa;
   box-shadow: 0 12px 30px rgba(33, 30, 55, .085);
 }
 
