@@ -15,6 +15,23 @@ import LoginPage from './auth/LoginPage';
 
 
 const STATUSES = ['Applied', 'Interview', 'Offer', 'Rejected'];
+
+function readPreference(key, fallback) {
+    try {
+        return window.localStorage.getItem(`jobtracker.${key}`) ?? fallback;
+    } catch {
+        return fallback;
+    }
+}
+
+function savePreference(key, value) {
+    try {
+        window.localStorage.setItem(`jobtracker.${key}`, String(value));
+    } catch {
+        // Preferences remain available for the current session if storage is unavailable.
+    }
+}
+
 function readRoute() {
     const hashRoute = window.location.hash.replace(/^#\/?/, '').split('?')[0];
     const pathRoute = window.location.pathname.replace(/^\//, '').split('/')[0];
@@ -29,10 +46,13 @@ function WorkspaceApp() {
         || user?.name?.trim()
         || (user?.username && !user.username.includes('@') ? user.username : 'User');
     const [page, setPage] = useState(readRoute);
-    const [themeMode, setThemeMode] = useState('light');
+    const [themeMode, setThemeMode] = useState(() => readPreference('theme', 'light') === 'dark' ? 'dark' : 'light');
     const theme = themeMode;
-    const [workspace, setWorkspace] = useState('Job Hunt 2025');
-    const [dailyGoal, setDailyGoal] = useState(5);
+    const [workspace, setWorkspace] = useState(() => readPreference('workspace', 'Job Hunt 2025'));
+    const [dailyGoal, setDailyGoal] = useState(() => {
+        const savedGoal = Number(readPreference('dailyGoal', '5'));
+        return Number.isInteger(savedGoal) && savedGoal >= 1 && savedGoal <= 100 ? savedGoal : 5;
+    });
     const [viewMode, setViewMode] = useState('board');
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [stats, setStats] = useState(null);
@@ -70,6 +90,9 @@ function WorkspaceApp() {
     useEffect(() => {
         document.documentElement.dataset.theme = theme;
     }, [theme, themeMode]);
+    useEffect(() => savePreference('theme', themeMode), [themeMode]);
+    useEffect(() => savePreference('workspace', workspace), [workspace]);
+    useEffect(() => savePreference('dailyGoal', dailyGoal), [dailyGoal]);
     useEffect(() => {
         const update = () => setPage(readRoute());
         window.addEventListener('popstate', update);
@@ -160,9 +183,10 @@ function WorkspaceApp() {
                 {navItems.map(([key, label]) => <a className={`nav-link ${page === key ? 'nav-link-active' : ''}`} href={`/${key}`} aria-label={label} title={sidebarCollapsed ? label : undefined} aria-current={page === key ? 'page' : undefined} key={key} onClick={(event) => { event.preventDefault(); navigate(key); }}><Icon name={key === 'board' ? 'board' : 'stats'} /><span>{label}</span></a>)}
                 <a className={`nav-link ${page === 'assets' ? 'nav-link-active' : ''}`} href="/assets" aria-label="Assets" title={sidebarCollapsed ? 'Assets' : undefined} aria-current={page === 'assets' ? 'page' : undefined} onClick={(event) => { event.preventDefault(); setAssetsExpanded((value) => !value); navigate('assets'); }}><Icon name="assets" /><span>Assets</span><Icon className="nav-chevron" name="down" size={14} /></a>
                 {assetsExpanded && <button className="nav-sublink" type="button" onClick={() => navigate('assets')}>Saved resources</button>}
+                <a className={`nav-link ${page === 'settings' ? 'nav-link-active' : ''}`} href="/settings" aria-label="Settings" title={sidebarCollapsed ? 'Settings' : undefined} aria-current={page === 'settings' ? 'page' : undefined} onClick={(event) => { event.preventDefault(); navigate('settings'); }}><Icon name="settings" /><span>Settings</span></a>
             </nav>
             <div className="sidebar-bottom">
-                <div className="profile-row"><span className="profile-avatar">{displayName[0]?.toUpperCase() || 'U'}</span><span className="profile-copy"><strong title={displayName}>{displayName}</strong></span><button className="profile-settings-button" type="button" aria-label="Open settings" title="Settings" onClick={() => navigate('settings')}><Icon name="settings" size={16} /></button><button className="profile-logout-button" type="button" aria-label="Sign out" title="Sign out" onClick={logout}><Icon name="logout" size={16} /></button></div>
+                <div className="profile-row"><span className="profile-avatar">{displayName[0]?.toUpperCase() || 'U'}</span><span className="profile-copy"><strong title={displayName}>{displayName}</strong></span><button className="profile-logout-button" type="button" aria-label="Sign out" title="Sign out" onClick={logout}><Icon name="logout" size={16} /></button></div>
             </div>
         </aside>
         <div className="main-area min-h-screen flex-1 ml-[var(--sidebar-width)] max-[760px]:ml-0 max-[760px]:w-full max-[760px]:min-w-0">
@@ -198,7 +222,7 @@ function WorkspaceApp() {
                 />}
                 {page === 'dashboard' && <DashboardPage stats={stats} loading={loadingStats} error={statsError} onRetry={refreshStats} applications={applications} chartApplications={chartApplications} loadingChartApplications={loadingChartApplications} chartApplicationsError={chartApplicationsError} onRetryChartApplications={refreshChartApplications} loadingApplications={loadingApplications} applicationsError={applicationsError} onRetryApplications={() => refreshApplications(currentFilters())} onSelectApplication={openDetails} onEditApplication={openEdit} onDeleteApplication={(item) => { setDeleteTarget(item); setDeleteError(''); }} search={search} onSearchChange={(value) => { requestNumber.current += 1; setSearch(value); }} status={status} onStatusFilter={(value) => { requestNumber.current += 1; setStatus(value); }} sortBy={sortBy} onSortByChange={setSortBy} order={order} onOrderChange={setOrder} onClearFilters={clearFilters} onOpenBoard={() => navigate('board')} onAdd={() => openCreate()} />}
                 {page === 'assets' && <AssetsPage onBoard={() => navigate('board')} />}
-                {page === 'settings' && <SettingsPage workspace={workspace} onWorkspaceChange={setWorkspace} dailyGoal={dailyGoal} onDailyGoalChange={setDailyGoal} />}
+                {page === 'settings' && <SettingsPage workspace={workspace} onWorkspaceChange={setWorkspace} dailyGoal={dailyGoal} onDailyGoalChange={setDailyGoal} themeMode={themeMode} onThemeChange={setThemeMode} />}
                 {!['dashboard', 'board', 'assets', 'settings'].includes(page) && <DashboardPage stats={stats} loading={loadingStats} error={statsError} onRetry={refreshStats} applications={applications} loadingApplications={loadingApplications} applicationsError={applicationsError} onRetryApplications={() => refreshApplications(currentFilters())} onSelectApplication={openDetails} onEditApplication={openEdit} onDeleteApplication={(item) => { setDeleteTarget(item); setDeleteError(''); }} search={search} onSearchChange={setSearch} status={status} onStatusFilter={setStatus} sortBy={sortBy} onSortByChange={setSortBy} order={order} onOrderChange={setOrder} onClearFilters={clearFilters} onOpenBoard={() => navigate('board')} onAdd={() => openCreate()} />}
             </main>
         </div>

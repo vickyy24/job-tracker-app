@@ -342,23 +342,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   background: var(--purple-soft);
 }
 
-.sidebar-tagline {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 15px 3px 0;
-  color: var(--muted);
-  font-size: 10px;
-}
-
-.footer-dot {
-  width: 6px;
-  height: 6px;
-  flex: none;
-  border-radius: 50%;
-  background: var(--purple);
-}
-
 .topbar {
   position: sticky;
   z-index: 3;
@@ -1815,7 +1798,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .settings-page {
-  max-width: 720px;
+  width: 100%;
+  max-width: none;
 }
 
 .settings-card {
@@ -2039,7 +2023,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   width: 24px;
 }
 
-.sidebar-collapsed .brand-name,.sidebar-collapsed .nav-link>span,.sidebar-collapsed .nav-chevron,.sidebar-collapsed .nav-sublink,.sidebar-collapsed .profile-copy,.sidebar-collapsed .sidebar-tagline>span:last-child {
+.sidebar-collapsed .brand-name,.sidebar-collapsed .nav-link>span,.sidebar-collapsed .nav-chevron,.sidebar-collapsed .nav-sublink,.sidebar-collapsed .profile-copy {
   display: none;
 }
 
@@ -2062,14 +2046,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .sidebar-collapsed .profile-row button {
   width: 24px;
   flex-basis: 24px;
-}
-
-.sidebar-collapsed .profile-settings-button {
-  display: none;
-}
-
-.sidebar-collapsed .sidebar-tagline {
-  justify-content: center;
 }
 
 .mobile-overlay {
