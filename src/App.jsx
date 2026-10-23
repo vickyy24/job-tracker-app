@@ -163,7 +163,6 @@ function WorkspaceApp() {
             </nav>
             <div className="sidebar-bottom">
                 <div className="profile-row"><span className="profile-avatar">{displayName[0]?.toUpperCase() || 'U'}</span><span className="profile-copy"><strong title={displayName}>{displayName}</strong></span><button className="profile-settings-button" type="button" aria-label="Open settings" title="Settings" onClick={() => navigate('settings')}><Icon name="settings" size={16} /></button><button className="profile-logout-button" type="button" aria-label="Sign out" title="Sign out" onClick={logout}><Icon name="logout" size={16} /></button></div>
-                <p className="sidebar-tagline"><span className="footer-dot" /><span>Keep your job search moving</span></p>
             </div>
         </aside>
         <div className="main-area min-h-screen flex-1 ml-[var(--sidebar-width)] max-[760px]:ml-0 max-[760px]:w-full max-[760px]:min-w-0">
