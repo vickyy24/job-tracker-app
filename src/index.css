@@ -3079,7 +3079,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 /* Use the same simple tonal gradients as the dashboard cards, keeping each control's hue. */
 .nav-link-active {
-  background: linear-gradient(135deg, #e56f3d 0%, #d96234 100%);
+  background: #e56f3d;
   box-shadow: 0 3px 9px rgba(229, 111, 61, .2);
 }
 
@@ -3089,7 +3089,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .app-shell[data-theme='dark'] .nav-link-active {
-  background: linear-gradient(135deg, #e56f3d 0%, #d96234 100%);
+  background: #e56f3d;
   box-shadow: 0 3px 9px rgba(229, 111, 61, .24);
 }
 
@@ -3097,9 +3097,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   background: linear-gradient(135deg, #d96234 0%, #c9572d 100%);
 }
 
-.ui-button-primary,
-.add-job-button {
+.ui-button-primary {
   background: linear-gradient(135deg, #e56f3d 0%, #d96234 100%);
+  border-color: #e56f3d;
+  box-shadow: 0 3px 8px rgba(229, 111, 61, .2);
+}
+
+.add-job-button {
+  background: #e56f3d;
   border-color: #e56f3d;
   box-shadow: 0 3px 8px rgba(229, 111, 61, .2);
 }
