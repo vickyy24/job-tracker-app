@@ -1956,19 +1956,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .profile-page-heading-title {
   display: flex;
   align-items: center;
-  gap: 12px;
-}
-
-.profile-page-heading-icon {
-  display: grid;
-  flex: 0 0 42px;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  color: var(--purple-dark);
-  background: var(--purple-soft);
-  border: 1px solid color-mix(in srgb, var(--purple) 20%, var(--border));
-  border-radius: 12px;
 }
 
 .profile-page-layout {

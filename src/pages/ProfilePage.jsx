@@ -109,7 +109,6 @@ export default function ProfilePage({ user, onUserUpdated }) {
         <section className="page-content settings-page profile-page min-w-0">
             <div className="page-heading profile-page-heading">
                 <div className="profile-page-heading-title">
-                    <span className="profile-page-heading-icon"><Icon name="user" size={20} /></span>
                     <div>
                         <h1>Profile</h1>
                         <p>Manage your personal information and account photo.</p>
