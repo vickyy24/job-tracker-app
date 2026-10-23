@@ -186,13 +186,30 @@ function WorkspaceApp() {
                 <a className={`nav-link ${page === 'settings' ? 'nav-link-active' : ''}`} href="/settings" aria-label="Settings" title={sidebarCollapsed ? 'Settings' : undefined} aria-current={page === 'settings' ? 'page' : undefined} onClick={(event) => { event.preventDefault(); navigate('settings'); }}><Icon name="settings" /><span>Settings</span></a>
             </nav>
             <div className="sidebar-bottom">
-                <div className="profile-row"><span className="profile-avatar">{displayName[0]?.toUpperCase() || 'U'}</span><span className="profile-copy"><strong title={displayName}>{displayName}</strong></span><button className="profile-logout-button" type="button" aria-label="Sign out" title="Sign out" onClick={logout}><Icon name="logout" size={16} /></button></div>
+                <button className="nav-link sidebar-sign-out" type="button" onClick={logout} aria-label="Sign out" title={sidebarCollapsed ? 'Sign out' : undefined}>
+                    <Icon name="logout" />
+                    <span>Sign out</span>
+                </button>
             </div>
         </aside>
         <div className="main-area min-h-screen flex-1 ml-[var(--sidebar-width)] max-[760px]:ml-0 max-[760px]:w-full max-[760px]:min-w-0">
             <header className="topbar sticky top-0 z-[3] flex h-[58px] items-center justify-between border-b border-[var(--border)] bg-[var(--surface)] px-6 max-[1100px]:px-4 max-[760px]:h-[58px] max-[760px]:py-0 max-[760px]:pr-[10px] max-[760px]:pl-[54px]">
                 <div className="workspace-title max-[760px]:min-w-0 max-[760px]:flex-nowrap"><div className="max-[760px]:min-w-0 max-[760px]:flex-nowrap"><strong className="max-[760px]:flex-none max-[760px]:text-base max-[760px]:leading-none max-[760px]:whitespace-nowrap">{workspace}</strong><button className="icon-button max-[760px]:size-[21px] max-[760px]:flex-none" aria-label="Edit workspace title" onClick={() => { setWorkspaceDraft(workspace); setWorkspaceError(''); setWorkspaceEditOpen(true); }}><Icon name="pencil" size={15} /></button></div></div>
-                <div className="topbar-actions max-[760px]:gap-[6px] max-[390px]:ml-auto"><div className="daily-goal max-[760px]:h-9 max-[760px]:flex-none max-[760px]:gap-[5px] max-[760px]:whitespace-nowrap max-[760px]:px-2 max-[760px]:py-[6px] max-[760px]:text-[10px] max-[760px]:[&>span]:whitespace-nowrap max-[760px]:[&>span]:text-[11px] max-[760px]:[&>svg]:size-[13px] max-[760px]:[&>.goal-track]:w-10 max-[760px]:[&>.goal-track]:flex-none" aria-label={`Daily application goal: ${loadingStats ? 'loading' : stats?.applicationsToday ?? 0} of ${dailyGoal} applications created today (UTC)`}><Icon name="goal" size={16} /><span>Daily Goal</span><span className="goal-track" aria-hidden="true"><i style={{ width: `${Math.min(100, ((stats?.applicationsToday || 0) / dailyGoal) * 100)}%` }} /></span><strong className="max-[760px]:text-[11px] max-[760px]:whitespace-nowrap">{loadingStats ? '—' : stats?.applicationsToday ?? 0}/{dailyGoal}</strong></div><button className="topbar-theme-toggle max-[760px]:size-8 max-[760px]:flex-none" type="button" onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`} aria-pressed={themeMode === 'dark'} title={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`}><ThemeModeIcon mode={themeMode === 'dark' ? 'sun' : 'moon'} /></button></div>
+                <div className="topbar-actions max-[760px]:gap-[6px] max-[390px]:ml-auto">
+                    <div className="daily-goal max-[760px]:h-9 max-[760px]:flex-none max-[760px]:gap-[5px] max-[760px]:whitespace-nowrap max-[760px]:px-2 max-[760px]:py-[6px] max-[760px]:text-[10px] max-[760px]:[&>span]:whitespace-nowrap max-[760px]:[&>span]:text-[11px] max-[760px]:[&>svg]:size-[13px] max-[760px]:[&>.goal-track]:w-10 max-[760px]:[&>.goal-track]:flex-none max-[480px]:hidden" aria-label={`Daily application goal: ${loadingStats ? 'loading' : stats?.applicationsToday ?? 0} of ${dailyGoal} applications created today (UTC)`}>
+                        <Icon name="goal" size={16} />
+                        <span>Daily Goal</span>
+                        <span className="goal-track" aria-hidden="true"><i style={{ width: `${Math.min(100, ((stats?.applicationsToday || 0) / dailyGoal) * 100)}%` }} /></span>
+                        <strong className="max-[760px]:text-[11px] max-[760px]:whitespace-nowrap">{loadingStats ? '—' : stats?.applicationsToday ?? 0}/{dailyGoal}</strong>
+                    </div>
+                    <button className="topbar-theme-toggle max-[760px]:size-8 max-[760px]:flex-none" type="button" onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`} aria-pressed={themeMode === 'dark'} title={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`}>
+                        <ThemeModeIcon mode={themeMode === 'dark' ? 'sun' : 'moon'} />
+                    </button>
+                    <div className="profile-row topbar-profile-row">
+                        <span className="profile-avatar">{displayName[0]?.toUpperCase() || 'U'}</span>
+                        <span className="profile-copy max-[760px]:hidden"><strong title={displayName}>{displayName}</strong></span>
+                    </div>
+                </div>
             </header>
             <main className="dashboard-main min-h-[calc(100vh-58px)] min-w-0 overflow-x-clip px-5 pt-[14px] pb-[18px] max-[1100px]:px-[14px] max-[1100px]:py-3 max-[760px]:px-[10px] max-[760px]:py-3 max-[390px]:px-2">
                 {page === 'board' && <BoardPage

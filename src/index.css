@@ -278,12 +278,29 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   margin-top: auto;
 }
 
+.sidebar-sign-out {
+  margin-top: 10px;
+}
+
 .profile-row {
   display: flex;
   align-items: center;
   gap: 9px;
   padding: 11px 4px;
   border-top: 1px solid var(--border);
+}
+
+.topbar-profile-row {
+  flex: 0 0 auto;
+  gap: 8px;
+  padding: 0;
+  border-top: 0;
+}
+
+.topbar-profile-row > span:nth-child(2) {
+  flex: 0 1 auto;
+  width: auto;
+  max-width: 160px;
 }
 
 .profile-avatar {
@@ -1797,13 +1814,75 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   line-height: 1.6;
 }
 
-.settings-page {
-  width: 100%;
-  max-width: none;
+.page-content.settings-page {
+  width: min(100%, 1020px);
+  max-width: 1020px;
+  margin: 0;
 }
 
 .settings-card {
+  display: grid;
+  grid-template-columns: minmax(190px, .8fr) minmax(0, 1.2fr);
+  align-items: center;
+  gap: 28px;
   margin-bottom: 12px;
+  padding: 19px 21px;
+}
+
+.settings-description h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.settings-description p {
+  max-width: 250px;
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.settings-controls {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+}
+
+.settings-controls .settings-field {
+  flex: 1 1 0;
+  max-width: none;
+  min-width: 0;
+  margin-top: 0;
+}
+
+.settings-controls > .ui-button {
+  flex: 0 0 auto;
+}
+
+.settings-saved {
+  display: inline-flex;
+  flex: 0 0 auto;
+  min-width: 59px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.settings-controls .appearance-options {
+  flex: 1 1 auto;
+  margin: 0;
+}
+
+.settings-card .form-actions {
+  position: static;
+  justify-content: flex-start;
+  margin-top: 12px;
+  padding: 0;
 }
 
 .settings-field {
@@ -1852,7 +1931,19 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .appearance-options button.chosen {
   color: var(--purple);
   background: var(--purple-soft);
-  border-color: #d9ccff;
+  border-color: #f1c4b4;
+}
+
+@media (max-width: 760px) {
+  .page-content.settings-page {
+    width: 100%;
+  }
+
+  .settings-card {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 15px;
+  }
 }
 
 .application-table-wrap {
@@ -2023,7 +2114,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   width: 24px;
 }
 
-.sidebar-collapsed .brand-name,.sidebar-collapsed .nav-link>span,.sidebar-collapsed .nav-chevron,.sidebar-collapsed .nav-sublink,.sidebar-collapsed .profile-copy {
+.sidebar-collapsed .brand-name,.sidebar-collapsed .nav-link>span,.sidebar-collapsed .nav-chevron,.sidebar-collapsed .nav-sublink {
   display: none;
 }
 
@@ -2034,18 +2125,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .sidebar-collapsed .nav-link {
   justify-content: center;
   padding: 0;
-}
-
-.sidebar-collapsed .profile-row {
-  justify-content: center;
-  gap: 3px;
-  padding-right: 0;
-  padding-left: 0;
-}
-
-.sidebar-collapsed .profile-row button {
-  width: 24px;
-  flex-basis: 24px;
 }
 
 .mobile-overlay {
@@ -2996,4 +3075,168 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   color: #5527db;
   background: #f6f3ff;
 }
+}
+
+/* A restrained metallic sheen carries the existing palette across colored UI. */
+.nav-link-active,
+.ui-button-primary,
+.add-job-button,
+.kanban-column-header,
+.appearance-options button.chosen,
+.view-toggle button.active,
+.job-delete-button:hover:not(:disabled),
+.column-menu button:hover {
+  position: relative;
+  isolation: isolate;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .38),
+    inset 0 -1px 0 rgba(0, 0, 0, .12),
+    0 3px 9px rgba(36, 28, 24, .12);
+}
+
+.nav-link-active::before,
+.ui-button-primary::before,
+.add-job-button::before,
+.kanban-column-header::before,
+.appearance-options button.chosen::before,
+.view-toggle button.active::before,
+.job-delete-button:hover:not(:disabled)::before,
+.column-menu button:hover::before {
+  position: absolute;
+  z-index: -1;
+  inset: 1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    112deg,
+    rgba(255, 255, 255, .25) 0%,
+    rgba(255, 255, 255, .08) 24%,
+    transparent 48%,
+    rgba(0, 0, 0, .08) 100%
+  );
+  content: '';
+  pointer-events: none;
+}
+
+.ui-button-primary:hover:not(:disabled),
+.add-job-button:hover,
+.nav-link-active:hover,
+.job-delete-button:hover:not(:disabled),
+.column-menu button:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .44),
+    inset 0 -1px 0 rgba(0, 0, 0, .14),
+    0 6px 14px rgba(36, 28, 24, .18);
+}
+
+.app-shell[data-theme='dark'] .nav-link-active,
+.app-shell[data-theme='dark'] .ui-button-primary,
+.app-shell[data-theme='dark'] .add-job-button,
+.app-shell[data-theme='dark'] .kanban-column-header,
+.app-shell[data-theme='dark'] .appearance-options button.chosen,
+.app-shell[data-theme='dark'] .view-toggle button.active {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .34),
+    inset 0 -1px 0 rgba(0, 0, 0, .2),
+    0 3px 10px rgba(0, 0, 0, .2);
+}
+
+.ui-button-secondary:hover:not(:disabled),
+.modal-close:hover:not(:disabled),
+.job-edit-button:hover,
+.job-delete-button:hover:not(:disabled),
+.column-menu button:hover {
+  position: relative;
+  isolation: isolate;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .34),
+    inset 0 -1px 0 rgba(0, 0, 0, .1),
+    0 3px 9px rgba(36, 28, 24, .1);
+}
+
+.status-badge,
+.status-applied,
+.status-interview,
+.status-offer,
+.status-rejected {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .72), inset 0 -1px 0 rgba(0, 0, 0, .045);
+}
+.ui-button-secondary:hover:not(:disabled)::before,
+.modal-close:hover:not(:disabled)::before,
+.job-edit-button:hover::before,
+.job-delete-button:hover:not(:disabled)::before,
+.column-menu button:hover::before {
+  position: absolute;
+  z-index: -1;
+  inset: 1px;
+  border-radius: inherit;
+  background: linear-gradient(112deg, rgba(255, 255, 255, .24), rgba(255, 255, 255, .07) 26%, transparent 52%, rgba(0, 0, 0, .07));
+  content: '';
+  pointer-events: none;
+}
+.auth-submit,
+.auth-brand-mark {
+  position: relative;
+  isolation: isolate;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .32), inset 0 -1px 0 rgba(0, 0, 0, .12), 0 3px 9px rgba(36, 28, 24, .1);
+}
+
+.auth-submit::before,
+.auth-secondary:hover:not(:disabled)::before {
+  position: absolute;
+  z-index: -1;
+  inset: 1px;
+  border-radius: inherit;
+  background: linear-gradient(112deg, rgba(255, 255, 255, .24), rgba(255, 255, 255, .07) 26%, transparent 52%, rgba(0, 0, 0, .07));
+  content: '';
+  pointer-events: none;
+}
+
+.auth-submit:hover:not(:disabled),
+.auth-secondary:hover:not(:disabled) {
+  position: relative;
+  isolation: isolate;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .42), inset 0 -1px 0 rgba(0, 0, 0, .14), 0 5px 12px rgba(36, 28, 24, .16);
+}
+
+.sidebar-sign-out {
+  min-height: 38px;
+  margin-top: 10px;
+  padding: 0 11px;
+  color: #a64d57;
+  background: linear-gradient(135deg, #fdf0f1, #f9e7e9);
+  border: 0.75px solid #f8e9eb;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9), inset 0 -1px 0 rgba(166, 77, 87, .08);
+  font-weight: 600;
+}
+
+.sidebar-sign-out svg {
+  flex: none;
+  color: currentColor;
+}
+
+.sidebar-sign-out:hover:not(.nav-link-active) {
+  color: #fff;
+  background: linear-gradient(135deg, #d66b78, #cf5a6a);
+  border-color: #cf5a6a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .38), inset 0 -1px 0 rgba(0, 0, 0, .12), 0 4px 10px rgba(166, 77, 87, .22);
+}
+
+.app-shell[data-theme='dark'] .sidebar-sign-out {
+  color: #ffb3bc;
+  background: linear-gradient(135deg, #492b30, #3c272c);
+  border-color: #563b40;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12), inset 0 -1px 0 rgba(0, 0, 0, .16);
+}
+
+.app-shell[data-theme='dark'] .sidebar-sign-out:hover:not(.nav-link-active) {
+  color: #fff;
+  background: linear-gradient(135deg, #d66b78, #cf5a6a);
+  border-color: #cf5a6a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .34), inset 0 -1px 0 rgba(0, 0, 0, .18), 0 4px 12px rgba(0, 0, 0, .22);
+}
+
+.sidebar-sign-out:focus-visible {
+  outline: 3px solid rgba(207, 90, 106, .28);
+  outline-offset: 2px;
 }
