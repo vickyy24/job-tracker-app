@@ -2343,6 +2343,16 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   padding: 8px 2px 0;
 }
 
+.recharts-wrapper:focus,
+.recharts-wrapper:focus-visible,
+.recharts-wrapper :focus,
+.recharts-wrapper :focus-visible,
+.recharts-surface:focus,
+.recharts-surface:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 .monthly-chart .recharts-bar-rectangle,
 .monthly-chart .recharts-bar-rectangle:focus,
 .monthly-chart .recharts-bar-rectangle:focus-visible,

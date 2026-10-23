@@ -35,7 +35,7 @@ function ChartTooltip({ active, payload, label }) {
 }
 
 export default function DashboardPage({ stats, loading, error, onRetry, applications, chartApplications, loadingChartApplications, chartApplicationsError, onRetryChartApplications, loadingApplications, applicationsError, onRetryApplications, onSelectApplication, onEditApplication, onDeleteApplication, search, onSearchChange, status, onStatusFilter, sortBy, onSortByChange, order, onOrderChange, onClearFilters, onOpenBoard, onAdd }) {
-    const [activityPeriod, setActivityPeriod] = useState('daily');
+    const [activityPeriod, setActivityPeriod] = useState('monthly');
     return <section className="page-content dashboard-page min-w-0">
         <div className="page-heading flex items-center justify-between -mt-[12px] mb-[18px] max-[480px]:items-start max-[480px]:gap-2"><div><h1 className="max-[480px]:text-[22px]">Dashboard</h1><p>Track your pipeline and keep the next step in view.</p></div><Button className="max-[390px]:px-2 max-[390px]:text-[10px] max-[480px]:min-h-[34px] max-[480px]:whitespace-nowrap" variant="secondary" onClick={onOpenBoard}>Open board</Button></div>
         <StatsGrid stats={stats} loading={loading} error={error} onRetry={onRetry} />
@@ -52,16 +52,16 @@ function StatsGrid({ stats, loading, error, onRetry }) {
 }
 
 const ACTIVITY_PERIODS = {
-    daily: { label: 'Last 30 days', buckets: 30, unit: 'day' },
-    weekly: { label: 'Last 8 weeks', buckets: 8, unit: 'week' },
-    monthly: { label: 'Last 6 months', buckets: 6, unit: 'month' },
+    weekly: { label: 'Weekly', buckets: 8, unit: 'week' },
+    monthly: { label: 'Monthly', buckets: 12, unit: 'month' },
+    yearly: { label: 'Yearly', buckets: 5, unit: 'year' },
 };
 function StatusFilterSelect({ status, onStatusFilter }) {
     return <select className="chart-period-select" value={status || ''} onChange={(event) => onStatusFilter(event.target.value)} aria-label="Filter applications by status"><option value="">All statuses</option>{STATUSES.map((item) => <option key={item} value={item}>{item === 'Interview' ? 'Interviewing' : item}</option>)}</select>;
 }
 
 function ActivityPeriodSelect({ period, onPeriodChange }) {
-    return <select className="chart-period-select" value={period} onChange={(event) => onPeriodChange(event.target.value)} aria-label="Group application activity by time period"><option value="daily">Last 30 days</option><option value="weekly">Last 8 weeks</option><option value="monthly">Last 6 months</option></select>;
+    return <select className="chart-period-select" value={period} onChange={(event) => onPeriodChange(event.target.value)} aria-label="Group application activity by time period"><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="yearly">Yearly</option></select>;
 }
 
 function getActivityBuckets(applications = [], period) {
@@ -84,9 +84,12 @@ function getActivityBuckets(applications = [], period) {
             start.setUTCDate(currentMonday.getUTCDate() + offset * 7);
             end = new Date(start);
             end.setUTCDate(start.getUTCDate() + 7);
-        } else {
+        } else if (config.unit === 'month') {
             start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + offset, 1));
             end = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 1));
+        } else {
+            start = new Date(Date.UTC(now.getUTCFullYear() + offset, 0, 1));
+            end = new Date(Date.UTC(start.getUTCFullYear() + 1, 0, 1));
         }
         const count = applications.filter((application) => {
             const date = new Date(application.applicationDate);
@@ -96,7 +99,9 @@ function getActivityBuckets(applications = [], period) {
             ? start.toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' })
             : config.unit === 'week'
                 ? `${start.toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' })}`
-                : start.toLocaleDateString(undefined, { month: 'short', timeZone: 'UTC' });
+                : config.unit === 'month'
+                    ? start.toLocaleDateString(undefined, { month: 'short', timeZone: 'UTC' })
+                    : String(start.getUTCFullYear());
         return { label, count };
     });
 }
@@ -130,7 +135,7 @@ function MonthlyChart({ applications, loading, error, onRetry, period, onPeriodC
     const config = ACTIVITY_PERIODS[period] || ACTIVITY_PERIODS.monthly;
     return <section className="chart-card flex min-w-0 h-full flex-col p-3 max-[1100px]:min-h-0 max-[760px]:min-h-[205px] max-[760px]:p-[15px] max-[480px]:p-[14px]" aria-label="Application activity over time">
         <header className="flex items-center justify-between gap-2 mb-[5px] max-[480px]:items-start max-[480px]:flex-wrap"><div><p className="eyebrow">ACTIVITY</p><h2>Applications over time</h2></div><div className="chart-header-actions flex items-center gap-[9px] max-[480px]:max-w-full max-[480px]:flex-wrap"><span className="chart-total">{total} in range</span><ActivityPeriodSelect period={period} onPeriodChange={onPeriodChange} /></div></header>
-        {loading ? <LoadingState message="Loading activity…" /> : error ? <div><p className="chart-message">Application history unavailable.</p><Button variant="secondary" onClick={onRetry}>Retry</Button></div> : total === 0 ? <p className="chart-message">No applications in this period yet. Add a job to see activity.</p> : <div className="monthly-chart" role="img" aria-label={`Applications grouped ${config.unit} for the selected period: ${buckets.map((bucket) => `${bucket.label} ${bucket.count}`).join(', ')}`}><ResponsiveContainer width="100%" height="100%"><BarChart data={buckets} margin={{ top: 20, right: 10, bottom: 0, left: -18 }}><CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="3 5" /><XAxis dataKey="label" interval={period === 'daily' ? 4 : period === 'weekly' ? 1 : 0} tick={{ fill: 'var(--muted)', fontSize: 11 }} axisLine={false} tickLine={false} /><YAxis allowDecimals={false} domain={[0, 'dataMax + 1']} width={34} tick={{ fill: 'var(--muted)', fontSize: 11 }} axisLine={false} tickLine={false} /><Tooltip shared={false} cursor={{ fill: 'var(--surface-muted)', opacity: .7 }} content={<ChartTooltip />} wrapperStyle={{ pointerEvents: 'none', zIndex: 5 }} /><Bar dataKey="count" name="Applications" fill="#e56f3d" radius={[7, 7, 2, 2]} activeBar={{ fill: '#e56f3d', stroke: 'none', strokeWidth: 0 }} maxBarSize={period === 'monthly' ? 38 : 28} isAnimationActive={false}><LabelList dataKey="count" position="top" fill="var(--text)" fontSize={11} fontWeight={600} /></Bar></BarChart></ResponsiveContainer></div>}
+        {loading ? <LoadingState message="Loading activity…" /> : error ? <div><p className="chart-message">Application history unavailable.</p><Button variant="secondary" onClick={onRetry}>Retry</Button></div> : total === 0 ? <p className="chart-message">No applications in this period yet. Add a job to see activity.</p> : <div className="monthly-chart" role="img" aria-label={`Applications grouped ${config.unit} for the selected period: ${buckets.map((bucket) => `${bucket.label} ${bucket.count}`).join(', ')}`}><ResponsiveContainer width="100%" height="100%"><BarChart data={buckets} margin={{ top: 20, right: 10, bottom: 0, left: -18 }}><CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="3 5" /><XAxis dataKey="label" interval={period === 'weekly' ? 1 : 0} tick={{ fill: 'var(--muted)', fontSize: 11 }} axisLine={false} tickLine={false} /><YAxis allowDecimals={false} domain={[0, 'dataMax + 1']} width={34} tick={{ fill: 'var(--muted)', fontSize: 11 }} axisLine={false} tickLine={false} /><Tooltip shared={false} cursor={{ fill: 'var(--surface-muted)', opacity: .7 }} content={<ChartTooltip />} wrapperStyle={{ pointerEvents: 'none', zIndex: 5 }} /><Bar dataKey="count" name="Applications" fill="#e56f3d" radius={[7, 7, 2, 2]} activeBar={{ fill: '#e56f3d', stroke: 'none', strokeWidth: 0 }} maxBarSize={period === 'monthly' || period === 'yearly' ? 38 : 28} isAnimationActive={false}><LabelList dataKey="count" position="top" fill="var(--text)" fontSize={11} fontWeight={600} /></Bar></BarChart></ResponsiveContainer></div>}
     </section>;
 }
 
