@@ -2203,7 +2203,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   padding: 0 10px;
   color: var(--text);
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid color-mix(in srgb, var(--border) 55%, var(--subtle) 45%);
   border-radius: 7px;
 }
 
@@ -2234,7 +2234,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .appearance-options button.chosen {
   color: var(--purple);
   background: var(--purple-soft);
-  border-color: #f1c4b4;
+  border-color: var(--border);
 }
 
 @media (max-width: 760px) {
