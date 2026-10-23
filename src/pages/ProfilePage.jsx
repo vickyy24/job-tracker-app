@@ -7,7 +7,7 @@ function profileDraftFromUser(user) {
     return {
         firstName: user?.firstName || '',
         lastName: user?.lastName || '',
-        gender: user?.gender || 'prefer-not-to-say',
+        gender: user?.gender || '',
         avatar: user?.avatar || '',
     };
 }
@@ -154,8 +154,8 @@ export default function ProfilePage({ user, onUserUpdated }) {
                         </label>
                         <label className="profile-page-field profile-page-field-full">
                             Gender
-                            <select value={draft.gender} onChange={(event) => { setDraft((current) => ({ ...current, gender: event.target.value })); setError(''); setSaved(false); }}>
-                                <option value="prefer-not-to-say">Prefer not to say</option>
+                            <select required value={draft.gender} onChange={(event) => { setDraft((current) => ({ ...current, gender: event.target.value })); setError(''); setSaved(false); }}>
+                                <option value="" disabled>Select gender</option>
                                 <option value="woman">Woman</option>
                                 <option value="man">Man</option>
                                 <option value="non-binary">Non-binary</option>
