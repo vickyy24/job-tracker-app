@@ -189,7 +189,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   gap: 8px;
   min-height: 35px;
   padding: 0 8px;
-  color: var(--text);
+  color: #e56f3d;
   font-size: 18px;
   font-weight: 700;
   text-decoration: none;
@@ -197,7 +197,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .brand > span:last-child > span {
-  color: var(--purple);
+  color: #e56f3d;
 }
 
 .brand-mark {
@@ -207,7 +207,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   height: 22px;
   border-radius: 6px 6px 6px 2px;
   color: white;
-  background: var(--purple);
+  background: #e56f3d;
   font-size: 14px;
 }
 
@@ -241,25 +241,25 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .nav-link-active {
-  color: var(--text);
-  background: #f0f1f3;
-  box-shadow: inset 3px 0 0 var(--purple);
+  color: #fff;
+  background: #e56f3d;
+  box-shadow: 0 3px 9px rgba(229, 111, 61, .2);
   font-weight: 650;
 }
 
 .nav-link-active:hover {
-  color: var(--text);
-  background: #e9eaed;
+  color: #fff;
+  background: #d96234;
 }
 
 .app-shell[data-theme='dark'] .nav-link-active {
-  color: var(--text);
-  background: #30313a;
-  box-shadow: inset 3px 0 0 var(--purple);
+  color: #fff;
+  background: #e56f3d;
+  box-shadow: 0 3px 9px rgba(229, 111, 61, .24);
 }
 
 .app-shell[data-theme='dark'] .nav-link-active:hover {
-  background: #373842;
+  background: #d96234;
 }
 
 .nav-link-active svg {
@@ -442,17 +442,21 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .theme-icon-sun {
-  color: #e9a72f;
-  stroke-width: 2.2;
+  color: #f1d443;
 }
 
 .theme-icon-moon {
-  color: #586475;
-  stroke-width: 2.2;
+  color: var(--purple);
 }
 
 .app-shell[data-theme='dark'] .theme-icon-moon {
-  color: #f0c96a;
+  color: #f1d443;
+}
+
+.theme-mode-icon {
+  display: block;
+  width: 22px;
+  height: 22px;
 }
 
 .daily-goal {
@@ -513,23 +517,23 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 .ui-button-primary,.add-job-button {
   color: #fff;
-  background: linear-gradient(135deg,#f18851,#df6435);
-  border-color: #6840df;
-  box-shadow: 0 3px 8px rgba(112,71,235,.22);
+  background: var(--purple);
+  border-color: var(--purple);
+  box-shadow: 0 3px 8px rgba(229, 111, 61, .2);
 }
 
 .ui-button-primary:hover:not(:disabled),.add-job-button:hover {
-  background: linear-gradient(135deg,#e56f3d,#cf542b);
-  border-color: #cf542b;
-  box-shadow: 0 5px 13px rgba(112,71,235,.3);
+  background: #d96234;
+  border-color: #d96234;
+  box-shadow: 0 5px 13px rgba(229, 111, 61, .24);
   transform: translateY(-1px);
 }
 
 .ui-button-secondary {
-  color: var(--purple-dark);
-  background: linear-gradient(145deg, #fff, #f3efff);
-  border-color: #e5dcff;
-  box-shadow: 0 2px 6px rgba(77, 55, 143, .08);
+  color: var(--purple);
+  background: linear-gradient(145deg, #fff, #fff5ef);
+  border-color: #f1d8c8;
+  box-shadow: 0 2px 6px rgba(115, 58, 35, .08);
 }
 
 .ui-button-secondary:hover:not(:disabled) {
@@ -1928,7 +1932,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .dashboard-page .application-table .table-action:hover {
-  background: #6240c4;
+  background: #d96234;
   transform: translateY(-1px);
 }
 
