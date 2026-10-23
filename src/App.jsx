@@ -288,7 +288,6 @@ function WorkspaceApp() {
                         <button className="topbar-profile-trigger" type="button" onClick={openProfile} aria-label={`Account menu for ${displayName}`} aria-expanded={profileMenuOpen} aria-haspopup="true">
                             {profile?.avatar ? <img className="profile-avatar profile-avatar-image" src={profile.avatar} alt="" /> : <span className="profile-avatar">{displayName[0]?.toUpperCase() || 'U'}</span>}
                             <span className="topbar-profile-copy max-[760px]:hidden"><strong title={displayName}>{displayName}</strong></span>
-                            <Icon name="down" size={14} />
                         </button>
                         {profileMenuOpen && <section className="profile-dropdown" aria-label="Account details">
                             <div className="profile-dropdown-heading"><strong>Account details</strong><span>Manage your personal information</span></div>

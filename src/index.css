@@ -299,14 +299,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
-  gap: 8px;
-  min-height: 38px;
+  gap: 7px;
+  min-height: 34px;
   margin-left: 0;
-  padding: 4px 10px;
+  padding: 3px 9px 3px 5px;
   color: var(--text);
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 999px;
   cursor: pointer;
   text-align: left;
   transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
@@ -347,15 +347,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 .profile-avatar-image {
   object-fit: cover;
-}
-
-.profile-menu > .topbar-profile-trigger > svg {
-  color: var(--muted);
-  transition: transform .16s ease;
-}
-
-.topbar-profile-trigger[aria-expanded='true'] > svg {
-  transform: rotate(180deg);
 }
 
 .profile-dropdown {
