@@ -232,7 +232,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   transition: color .16s ease, background-color .16s ease, box-shadow .16s ease;
 }
 
-.nav-link:hover:not(.nav-link-active),.nav-sublink:hover {
+.nav-link:hover:not(.nav-link-active):not(.sidebar-sign-out),.nav-sublink:hover {
   color: var(--text);
   background: var(--surface-muted);
   box-shadow: none;
@@ -3182,7 +3182,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   outline-offset: 2px;
 }
 
-.nav-link:hover:not(.nav-link-active),
+.nav-link:hover:not(.nav-link-active):not(.sidebar-sign-out),
 .nav-sublink:hover {
   color: #b95130;
   background: linear-gradient(135deg, #fff4ed 0%, #fbe7dc 100%);
@@ -3190,11 +3190,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   transform: translateX(1px);
 }
 
-.nav-link:hover:not(.nav-link-active) svg {
+.nav-link:hover:not(.nav-link-active):not(.sidebar-sign-out) svg {
   color: #e56f3d;
 }
 
-.app-shell[data-theme='dark'] .nav-link:hover:not(.nav-link-active),
+.app-shell[data-theme='dark'] .nav-link:hover:not(.nav-link-active):not(.sidebar-sign-out),
 .app-shell[data-theme='dark'] .nav-sublink:hover {
   color: #f3b89e;
   background: linear-gradient(135deg, #352a27 0%, #41302c 100%);
