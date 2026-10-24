@@ -27,7 +27,7 @@ function metricValue(stats, key) {
 function ChartTooltip({ active, payload, label }) {
     if (!active || !payload?.length) return null;
     const item = payload[0];
-    const title = item.payload?.status || label || 'Selected period';
+    const title = item.payload?.status || item.payload?.label || label || 'Selected period';
     const count = Number(item.value) || 0;
     if (item.payload?.status) return <div className="chart-tooltip"><strong>{title}</strong><span><b className="chart-tooltip-metric">{count} {count === 1 ? 'application' : 'applications'}</b> · <em className="chart-tooltip-percent">{item.payload.percent}%</em></span></div>;
     if (item.dataKey !== 'count') return null;
