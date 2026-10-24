@@ -706,7 +706,7 @@ button {
 .board-toolbar .sort-control {
   position: relative;
   justify-content: space-between;
-  min-width: 112px;
+  min-width: 100px;
   padding-right: 10px;
   cursor: pointer;
 }
