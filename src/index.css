@@ -2341,7 +2341,7 @@ button {
   padding: var(--application-table-cell-padding, 11px 13px);
   color: var(--muted);
   border-bottom: 1px solid var(--border);
-  font-size: var(--application-table-font-size, 10px);
+  font-size: var(--application-table-header-font-size, var(--application-table-font-size, 10px));
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: .04em;
