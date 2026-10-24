@@ -27,13 +27,13 @@ export default function BoardPage({
     const hasFilters = Boolean(search.trim() || status);
 
     return <>
-        <div className="board-toolbar flex min-h-[34px] items-center gap-2 mb-[10px] max-[900px]:min-[761px]:flex-wrap max-[760px]:grid max-[760px]:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_38px] max-[760px]:gap-[5px] max-[760px]:relative max-[760px]:mb-[9px] max-[760px]:min-w-0" aria-label="Search and board controls">
-            <label className="search-control max-[900px]:min-[761px]:flex-[1_1_250px] max-[760px]:h-[30px] max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:gap-1 max-[760px]:px-[5px]">
+        <div className="board-toolbar flex min-h-[34px] items-center gap-2 mb-[10px] max-[900px]:min-[761px]:flex-wrap max-[760px]:grid max-[760px]:grid-cols-[minmax(0,1fr)_84px] max-[760px]:gap-[6px] max-[760px]:relative max-[760px]:mb-[9px] max-[760px]:min-w-0" aria-label="Search and board controls">
+            <label className="search-control max-[900px]:min-[761px]:flex-[1_1_250px] max-[760px]:col-span-2 max-[760px]:h-[36px] max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:gap-1.5 max-[760px]:px-2">
                 <Icon className="max-[760px]:size-3 max-[760px]:min-w-3" name="search" size={16} />
                 <input className="max-[760px]:min-w-0 max-[760px]:text-[9px]" type="search" value={search} onChange={(event) => onSearchChange(event.target.value)} placeholder="Search company or job title…" aria-label="Search by company or job title" />
             </label>
             <div className="toolbar-spacer max-[900px]:min-[761px]:hidden max-[760px]:hidden" />
-            <label className="sort-control max-[900px]:min-[761px]:ml-auto max-[760px]:h-[30px] max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:gap-0 max-[760px]:px-[3px]">
+            <label className="sort-control max-[900px]:min-[761px]:ml-auto max-[760px]:h-[36px] max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:gap-0 max-[760px]:px-2">
                 <span className="max-[760px]:hidden">Sort by</span>
                 <select className="max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:max-w-none max-[760px]:overflow-hidden max-[760px]:text-ellipsis max-[760px]:text-[8px]" value={sortBy} onChange={(event) => onSortByChange(event.target.value)} aria-label="Sort applications by">
                     <option value="applicationDate">Application date</option>
@@ -42,9 +42,9 @@ export default function BoardPage({
                     <option value="jobTitle">Job title</option>
                 </select>
             </label>
-            <div className="view-toggle flex h-[34px] items-center p-[3px] max-[760px]:h-[30px] max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:justify-center max-[760px]:p-0.5" role="group" aria-label="View mode">
-                <button className={`${viewMode === 'board' ? 'active' : ''} max-[760px]:h-6 max-[760px]:w-[23px] max-[390px]:w-[27px]`} onClick={() => onViewModeChange('board')} aria-label="Board view"><Icon name="grid" size={16} /></button>
-                <button className={`${viewMode === 'list' ? 'active' : ''} max-[760px]:h-6 max-[760px]:w-[23px] max-[390px]:w-[27px]`} onClick={() => onViewModeChange('list')} aria-label="List view"><Icon name="list" size={16} /></button>
+            <div className="view-toggle flex h-[34px] items-center p-[3px] max-[760px]:h-[36px] max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:justify-center max-[760px]:p-1" role="group" aria-label="View mode">
+                <button className={`${viewMode === 'board' ? 'active' : ''} max-[760px]:h-[28px] max-[760px]:w-[34px]`} onClick={() => onViewModeChange('board')} aria-label="Board view"><Icon name="grid" size={16} /></button>
+                <button className={`${viewMode === 'list' ? 'active' : ''} max-[760px]:h-[28px] max-[760px]:w-[34px]`} onClick={() => onViewModeChange('list')} aria-label="List view"><Icon name="list" size={16} /></button>
             </div>
             {hasFilters && <button className="clear-filters-button max-[760px]:absolute max-[760px]:top-[calc(100%+1px)] max-[760px]:right-0 max-[760px]:px-1 max-[760px]:py-[2px] max-[760px]:text-[9px]" onClick={onClearFilters}>Clear</button>}
         </div>

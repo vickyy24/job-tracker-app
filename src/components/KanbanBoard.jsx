@@ -162,7 +162,7 @@ function KanbanBoard({ applications, loading, error, onRetry, noResults, onClear
     return (
         <section className="board-section" aria-label="Applications by status">
             {error && <ErrorMessage message={error} onRetry={onRetry} />}
-            <div className="kanban-scroll h-[calc(100vh-124px)] min-h-[390px] overflow-x-auto overflow-y-hidden max-[760px]:h-[calc(100vh-220px)] max-[760px]:min-h-[360px]">
+            <div className="kanban-scroll h-[calc(100vh-124px)] min-h-[390px] overflow-x-auto overflow-y-hidden max-[760px]:h-[calc(100dvh-155px)] max-[760px]:min-h-[320px]">
                 <div className="kanban-board grid grid-cols-[repeat(4,minmax(255px,1fr))] gap-[11px] w-full min-w-[1060px] h-full max-[1100px]:grid-cols-[repeat(4,270px)] max-[1100px]:w-max max-[1100px]:min-w-0 max-[760px]:grid-cols-[repeat(4,260px)]">
                     {columns.map((status) => {
                         const statusApplications = applications.filter((application) => application.status === status);

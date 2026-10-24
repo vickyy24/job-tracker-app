@@ -3443,6 +3443,48 @@ button {
   background: linear-gradient(135deg, #e4f4f2 0%, #c9e9e6 100%);
 }
 
+@media (max-width: 760px) {
+  .topbar-actions,
+  .topbar-profile-menu {
+    flex-shrink: 0;
+  }
+
+  .topbar-profile-trigger {
+    box-sizing: border-box;
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    min-height: 36px;
+    justify-content: center;
+    padding: 2px;
+    overflow: hidden;
+  }
+
+  .profile-avatar {
+    flex: 0 0 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .board-toolbar .view-toggle {
+    width: 84px;
+  }
+
+  .board-toolbar .view-toggle button {
+    width: 34px;
+    height: 28px;
+  }
+
+  .board-section {
+    min-height: 0;
+  }
+
+  .kanban-scroll {
+    height: calc(100dvh - 155px);
+    min-height: 320px;
+  }
+}
+
 @media (min-width: 761px) {
   .board-toolbar .search-control {
     width: min(400px, 42vw);

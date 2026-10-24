@@ -211,7 +211,7 @@ function WorkspaceApp() {
         <div className="main-area min-h-screen flex-1 ml-[var(--sidebar-width)] max-[760px]:ml-0 max-[760px]:w-full max-[760px]:min-w-0">
             <header className="topbar sticky top-0 z-[3] flex h-[58px] items-center justify-between border-b border-[var(--border)] bg-[var(--surface)] px-6 max-[1100px]:px-4 max-[760px]:h-[58px] max-[760px]:py-0 max-[760px]:pr-[10px] max-[760px]:pl-[54px]">
                 <div className="workspace-title max-[760px]:min-w-0 max-[760px]:flex-nowrap"><div className="max-[760px]:min-w-0 max-[760px]:flex-nowrap"><strong className="max-[760px]:flex-none max-[760px]:text-base max-[760px]:leading-none max-[760px]:whitespace-nowrap">{workspace}</strong><button className="icon-button max-[760px]:size-[21px] max-[760px]:flex-none" aria-label="Edit workspace title" onClick={() => { setWorkspaceDraft(workspace); setWorkspaceError(''); setWorkspaceEditOpen(true); }}><Icon name="pencil" size={15} /></button></div></div>
-                <div className="topbar-actions max-[760px]:gap-[6px] max-[390px]:ml-auto">
+                <div className="topbar-actions max-[760px]:flex-none max-[760px]:gap-[6px] max-[390px]:ml-auto">
                     <div className="daily-goal flex max-[760px]:h-9 max-[760px]:flex-none max-[760px]:gap-[5px] max-[760px]:whitespace-nowrap max-[760px]:px-2 max-[760px]:py-[6px] max-[760px]:text-[10px] max-[760px]:[&>span]:whitespace-nowrap max-[760px]:[&>span]:text-[11px] max-[760px]:[&>svg]:size-[13px] max-[760px]:[&>.goal-track]:w-10 max-[760px]:[&>.goal-track]:flex-none max-[480px]:hidden" aria-label={`Daily application goal: ${loadingStats ? 'loading' : stats?.applicationsToday ?? 0} of ${dailyGoal} applications created today (UTC)`}>
                         <Icon name="goal" size={16} />
                         <span>Daily Goal</span>
@@ -221,8 +221,8 @@ function WorkspaceApp() {
                     <button className="topbar-theme-toggle max-[760px]:size-8 max-[760px]:flex-none" type="button" onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`} aria-pressed={themeMode === 'dark'} title={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} theme`}>
                         <ThemeModeIcon mode={themeMode === 'dark' ? 'sun' : 'moon'} />
                     </button>
-                    <div className="topbar-profile-menu" ref={profileMenuRef}>
-                        <button className="topbar-profile-trigger max-[760px]:h-[34px] max-[760px]:min-h-[34px] max-[760px]:w-[34px] max-[760px]:justify-center max-[760px]:rounded-full max-[760px]:p-[2px]" type="button" onClick={() => setProfileMenuOpen((open) => !open)} aria-label={`Open account menu for ${displayName}`} aria-expanded={profileMenuOpen} aria-haspopup="menu">
+                    <div className="topbar-profile-menu max-[760px]:flex-none" ref={profileMenuRef}>
+                        <button className="topbar-profile-trigger max-[760px]:box-border max-[760px]:h-[34px] max-[760px]:min-h-[34px] max-[760px]:w-[34px] max-[760px]:min-w-[34px] max-[760px]:justify-center max-[760px]:rounded-full max-[760px]:p-[2px]" type="button" onClick={() => setProfileMenuOpen((open) => !open)} aria-label={`Open account menu for ${displayName}`} aria-expanded={profileMenuOpen} aria-haspopup="menu">
                             {profile?.avatar ? <img className="profile-avatar profile-avatar-image" src={profile.avatar} alt="" /> : <span className="profile-avatar"><Icon name="user" size={16} /></span>}
                             <span className="topbar-profile-copy max-[760px]:hidden"><strong title={displayName}>{displayName}</strong></span>
                         </button>
