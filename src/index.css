@@ -29,7 +29,6 @@
   border-color: #086d68;
   transform: none;
 }
-.ui-button-secondary:focus-visible { outline: 2px solid #1fb6ac; outline-offset: 2px; }
 .modal-close { color: #c93d55; background: #fff1f2; border-color: #f3cbd1; transform: none; }
 .modal-close:hover:not(:disabled),
 .modal-close:active:not(:disabled) {
@@ -53,7 +52,7 @@
   font-size: 13px;
 }
 .ui-field input:focus-visible,
-.ui-field select:focus-visible { border-color: #0f8883; outline: 3px solid #c9e9e6; outline-offset: 1px; }
+.ui-field select:focus-visible { border-color: #0f8883; }
 .ui-field input[aria-invalid='true'],
 .ui-field select[aria-invalid='true'] { border-color: #d55c6a; }
 .ui-field-error { color: #b73e4b; font-size: 11px; }
@@ -166,11 +165,6 @@ button,input,select,textarea {
 
 button {
   color: inherit;
-}
-
-button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible {
-  outline: 3px solid #69c6c0;
-  outline-offset: 2px;
 }
 
 .sidebar {
@@ -616,11 +610,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   background: linear-gradient(135deg, #18a39d, #086d68);
 }
 
-.ui-button-secondary:focus-visible {
-  outline: 2px solid #1fb6ac;
-  outline-offset: 2px;
-}
-
 .plus-icon {
   font-size: 18px;
   font-weight: 400;
@@ -1058,12 +1047,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   color: var(--purple-dark);
 }
 
-.job-card-open:focus-visible {
-  outline: 2px solid var(--purple);
-  outline-offset: -3px;
-  border-radius: 7px;
-}
-
 .job-company {
   margin: 0 0 3px;
   color: #666676;
@@ -1189,11 +1172,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 .job-delete-button:active:not(:disabled) {
   transform: translateY(0) scale(.97);
-}
-
-.job-delete-button:focus-visible {
-  outline: 2px solid #d94b60;
-  outline-offset: 2px;
 }
 
 .job-delete-button:disabled {
@@ -1445,11 +1423,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .modal-close:active:not(:disabled) {
   color: #fff;
   background: linear-gradient(135deg, #f07884, #d6445b);
-}
-
-.modal-close:focus-visible {
-  outline: 2px solid #d6445b;
-  outline-offset: 2px;
 }
 
 .modal-close:disabled {
@@ -2590,12 +2563,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   color: var(--text);
 }
 
-.status-legend-filter:focus-visible {
-  outline: 2px solid var(--purple);
-  outline-offset: 4px;
-  border-radius: 4px;
-}
-
 .status-legend-filter.is-muted {
   opacity: .42;
 }
@@ -2871,7 +2838,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 .auth-field input:focus-visible {
   border-color: #0f8883;
-  box-shadow: 0 0 0 3px rgba(15, 136, 131, .15);
 }
 
 .auth-field input:hover:not(:disabled):not([aria-invalid="true"]) {
@@ -2888,7 +2854,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .auth-field input[aria-invalid="true"] { border-color: #d94b5b; }
-.auth-field input[aria-invalid="true"]:focus-visible { box-shadow: 0 0 0 3px rgba(217, 75, 91, .13); }
 .auth-field-error { color: #b42335; font-size: 11px; font-weight: 500; line-height: 1.35; }
 
 .auth-remember {
@@ -2971,8 +2936,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 .auth-password-toggle:focus-visible {
   color: #075c59;
-  outline: 2px solid #1fb6ac;
-  outline-offset: 1px;
 }
 
 .auth-password-toggle:disabled { cursor: not-allowed; opacity: .55; }
@@ -3294,7 +3257,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .otp-digit-box:focus {
   border-color: #0f8883;
   background: #ffffff;
-  box-shadow: 0 0 0 4px rgba(15, 136, 131, .15), 0 2px 6px rgba(15, 136, 131, .08);
+  box-shadow: 0 2px 6px rgba(15, 136, 131, .08);
   transform: translateY(-1px);
 }
 
@@ -3480,11 +3443,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   background: linear-gradient(135deg, #c5445c 0%, #a52e47 100%);
   border-color: #ea7184;
   box-shadow: 0 5px 12px rgba(0, 0, 0, .26);
-}
-
-.sidebar-sign-out:focus-visible {
-  outline: 3px solid rgba(207, 90, 106, .28);
-  outline-offset: 2px;
 }
 
 .nav-link:hover:not(.nav-link-active):not(.sidebar-sign-out),

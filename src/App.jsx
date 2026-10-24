@@ -243,11 +243,8 @@ function WorkspaceApp() {
                     search={search}
                     onSearchChange={(value) => { requestNumber.current += 1; setSearch(value); }}
                     status={status}
-                    onStatusChange={(value) => { requestNumber.current += 1; setStatus(value); }}
                     sortBy={sortBy}
                     onSortByChange={setSortBy}
-                    order={order}
-                    onOrderChange={setOrder}
                     viewMode={viewMode}
                     onViewModeChange={setViewMode}
                     onClearFilters={clearFilters}
