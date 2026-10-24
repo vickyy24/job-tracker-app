@@ -2304,19 +2304,19 @@ button {
 }
 
 .application-table th {
-  padding: 11px 13px;
+  padding: var(--application-table-cell-padding, 11px 13px);
   color: var(--muted);
   border-bottom: 1px solid var(--border);
-  font-size: 10px;
+  font-size: var(--application-table-font-size, 10px);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: .04em;
 }
 
 .application-table td {
-  padding: 11px 13px;
+  padding: var(--application-table-cell-padding, 11px 13px);
   border-bottom: 1px solid var(--line);
-  font-size: 11px;
+  font-size: var(--application-table-font-size, 11px);
 }
 
 .application-table tbody tr:last-child td {
@@ -2350,9 +2350,9 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: var(--application-table-action-gap, 5px);
   margin-right: 6px;
-  padding: 5px 9px;
+  padding: var(--application-table-action-padding, 5px 9px);
   color: #fff;
   background: #0f8883;
   border-radius: 6px;
@@ -2398,7 +2398,7 @@ button {
 
 .application-table-status {
   color: var(--subtle);
-  font-size: 11px;
+  font-size: var(--application-table-status-font-size, 11px);
 }
 
 .table-empty {
