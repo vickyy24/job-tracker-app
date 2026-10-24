@@ -1849,7 +1849,7 @@ button {
 }
 
 .overview-recent,.settings-card,.feature-empty {
-  padding: 17px;
+  padding: var(--overview-card-padding, 17px);
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 9px;
@@ -1860,7 +1860,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: var(--overview-header-gap, 10px);
 }
 
 .overview-recent h2,.settings-card h2 {
@@ -2772,7 +2772,7 @@ button {
   display: var(--dashboard-filters-display, flex);
   align-items: center;
   gap: 9px;
-  margin: 0 0 12px;
+  margin: 0 0 var(--dashboard-filter-bottom-gap, 12px);
 }
 
 .dashboard-filters .search-control {
