@@ -3560,18 +3560,6 @@ button {
 }
 
 @media (min-width: 761px) {
-  .application-list .application-table th {
-    padding: 13px 16px;
-    color: var(--subtle);
-    background: var(--surface-muted);
-    font-size: 11px;
-  }
-
-  .application-list .application-table td {
-    padding: 15px 16px;
-    font-size: 13px;
-  }
-
   .application-list .application-table tbody tr {
     transition: background-color .15s ease;
   }
@@ -3580,14 +3568,6 @@ button {
     background: color-mix(in srgb, var(--purple-soft) 48%, var(--surface));
   }
 
-  .application-list .application-table .table-action:not(.danger) {
-    min-width: 88px;
-    min-height: 38px;
-    padding: 0 14px;
-    border-radius: 8px;
-    font-size: 12px;
-    box-shadow: 0 2px 6px rgba(15, 136, 131, .16);
-  }
 }
 
 .status-badge-applied { background: linear-gradient(135deg, #f1edfc 0%, #e8e2f8 100%); }
