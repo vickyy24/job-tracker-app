@@ -1,4 +1,4 @@
-export default function StatusBadge({ status }) {
+export default function StatusBadge({ status, className = '' }) {
     const statusClass = {
         Applied: 'applied',
         Interview: 'interview',
@@ -6,5 +6,5 @@ export default function StatusBadge({ status }) {
         Rejected: 'rejected',
     }[status] || 'default';
 
-    return <span className={`status-badge status-badge-${statusClass}`}>{status}</span>;
+    return <span className={`status-badge status-badge-${statusClass} ${className}`.trim()}>{status}</span>;
 }

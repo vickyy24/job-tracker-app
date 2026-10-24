@@ -59,11 +59,11 @@
 .status-badge {
   display: inline-flex;
   align-items: center;
-  min-height: 23px;
-  padding: 0 8px;
+  min-height: var(--status-badge-height, 23px);
+  padding: 0 var(--status-badge-padding, 8px);
   border: 1px solid transparent;
   border-radius: 6px;
-  font-size: 10px;
+  font-size: var(--status-badge-font-size, 10px);
   font-weight: 700;
   line-height: 1;
 }
@@ -2401,8 +2401,7 @@ button {
 }
 
 .application-table-status {
-  color: var(--subtle);
-  font-size: var(--application-table-status-font-size, 11px);
+  max-width: 100%;
 }
 
 .table-empty {
