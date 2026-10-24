@@ -2780,6 +2780,13 @@ button {
   width: var(--board-search-width, 260px);
 }
 
+@media (max-width: 480px) {
+  .dashboard-filters .search-control {
+    flex: initial;
+    width: 100%;
+  }
+}
+
 .dashboard-filters .status-filter,
 .dashboard-filters .direction-select {
   flex: 0 0 auto;
