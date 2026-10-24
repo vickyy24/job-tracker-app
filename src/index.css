@@ -3547,7 +3547,9 @@ button {
 
   .profile-avatar {
     box-sizing: border-box;
-    flex: 0 0 32px;`r`n    width: 32px;`r`n    height: 32px;
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
     overflow: hidden;
     line-height: 0;
   }
