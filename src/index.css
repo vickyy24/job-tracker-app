@@ -2347,6 +2347,10 @@ button {
 }
 
 .application-table .table-action:not(.danger) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
   margin-right: 6px;
   padding: 5px 9px;
   color: #fff;
@@ -2354,6 +2358,7 @@ button {
   border-radius: 6px;
   font-size: 10px;
   font-weight: 600;
+  white-space: nowrap;
   transition: background-color .16s ease, transform .16s ease;
 }
 
@@ -3544,31 +3549,27 @@ button {
 }
 
 @media (min-width: 761px) {
-  .board-application-list .application-table th {
+  .application-list .application-table th {
     padding: 13px 16px;
     color: var(--subtle);
     background: var(--surface-muted);
     font-size: 11px;
   }
 
-  .board-application-list .application-table td {
+  .application-list .application-table td {
     padding: 15px 16px;
     font-size: 13px;
   }
 
-  .board-application-list .application-table tbody tr {
+  .application-list .application-table tbody tr {
     transition: background-color .15s ease;
   }
 
-  .board-application-list .application-table tbody tr:hover {
+  .application-list .application-table tbody tr:hover {
     background: color-mix(in srgb, var(--purple-soft) 48%, var(--surface));
   }
 
-  .board-application-list .application-table .table-action:not(.danger) {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
+  .application-list .application-table .table-action:not(.danger) {
     min-width: 88px;
     min-height: 38px;
     padding: 0 14px;
