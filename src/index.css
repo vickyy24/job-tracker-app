@@ -3443,6 +3443,66 @@ button {
   background: linear-gradient(135deg, #e4f4f2 0%, #c9e9e6 100%);
 }
 
+@media (min-width: 761px) {
+  .board-toolbar .search-control {
+    width: min(400px, 42vw);
+    height: 40px;
+  }
+
+  .board-toolbar .sort-control {
+    min-height: 40px;
+  }
+
+  .board-toolbar .view-toggle {
+    height: 40px;
+    padding: 4px;
+  }
+
+  .board-toolbar .view-toggle button {
+    width: 38px;
+    height: 30px;
+  }
+
+  .board-toolbar .view-toggle button.active {
+    color: #fff;
+    background: var(--purple);
+    box-shadow: 0 2px 6px rgba(15, 136, 131, .2);
+  }
+
+  .board-application-list .application-table th {
+    padding: 13px 16px;
+    color: var(--subtle);
+    background: var(--surface-muted);
+    font-size: 11px;
+  }
+
+  .board-application-list .application-table td {
+    padding: 15px 16px;
+    font-size: 13px;
+  }
+
+  .board-application-list .application-table tbody tr {
+    transition: background-color .15s ease;
+  }
+
+  .board-application-list .application-table tbody tr:hover {
+    background: color-mix(in srgb, var(--purple-soft) 48%, var(--surface));
+  }
+
+  .board-application-list .application-table .table-action:not(.danger) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-width: 88px;
+    min-height: 38px;
+    padding: 0 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    box-shadow: 0 2px 6px rgba(15, 136, 131, .16);
+  }
+}
+
 .status-badge-applied { background: linear-gradient(135deg, #f1edfc 0%, #e8e2f8 100%); }
 .status-badge-interview { background: linear-gradient(135deg, #eaf7f3 0%, #dff0e9 100%); }
 .status-badge-offer { background: linear-gradient(135deg, #fff6df 0%, #f8eac9 100%); }

@@ -65,6 +65,7 @@ export default function BoardPage({
                 statusErrors={statusErrors}
             />
             : <ApplicationList
+                className="board-application-list"
                 applications={applications}
                 loading={loading}
                 error={error}
