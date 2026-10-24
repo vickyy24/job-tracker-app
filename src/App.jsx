@@ -222,7 +222,7 @@ function WorkspaceApp() {
                         <ThemeModeIcon mode={themeMode === 'dark' ? 'sun' : 'moon'} />
                     </button>
                     <div className="topbar-profile-menu max-[760px]:flex-none" ref={profileMenuRef}>
-                        <button className="topbar-profile-trigger max-[760px]:box-border max-[760px]:h-[34px] max-[760px]:min-h-[34px] max-[760px]:w-[34px] max-[760px]:min-w-[34px] max-[760px]:justify-center max-[760px]:rounded-full max-[760px]:p-[2px]" type="button" onClick={() => setProfileMenuOpen((open) => !open)} aria-label={`Open account menu for ${displayName}`} aria-expanded={profileMenuOpen} aria-haspopup="menu">
+                        <button className="topbar-profile-trigger max-[760px]:rounded-full" type="button" onClick={() => setProfileMenuOpen((open) => !open)} aria-label={`Open account menu for ${displayName}`} aria-expanded={profileMenuOpen} aria-haspopup="menu">
                             {profile?.avatar ? <img className="profile-avatar profile-avatar-image" src={profile.avatar} alt="" /> : <span className="profile-avatar"><Icon name="user" size={16} /></span>}
                             <span className="topbar-profile-copy max-[760px]:hidden"><strong title={displayName}>{displayName}</strong></span>
                         </button>
