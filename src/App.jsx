@@ -272,10 +272,9 @@ function WorkspaceApp() {
                 <span className="delete-confirmation-icon"><Icon name="trash" size={19} /></span>
                 <div><p className="eyebrow">DELETE APPLICATION</p><h2 id="delete-title">Delete this application?</h2></div>
             </div>
-            <p id="delete-description">This permanently removes the application and its saved details. You can’t undo this action.</p>
-            <div className="delete-confirmation-summary"><strong>{deleteTarget.companyName}</strong><span>{deleteTarget.jobTitle}</span></div>
+            <p id="delete-description">This can’t be undone.</p>
             {deleteError && <p className="form-error" role="alert">{deleteError}</p>}
-            <div className="form-actions"><Button variant="secondary" disabled={deleting} onClick={() => setDeleteTarget(null)}>Keep application</Button><Button className="confirm-delete-button" disabled={deleting} onClick={confirmDelete}>{deleting ? 'Deleting…' : 'Delete permanently'}</Button></div>
+            <div className="form-actions"><Button variant="secondary" disabled={deleting} onClick={() => setDeleteTarget(null)}>Cancel</Button><Button className="confirm-delete-button" disabled={deleting} onClick={confirmDelete}>{deleting ? 'Deleting…' : 'Delete'}</Button></div>
         </Modal>}
         {workspaceEditOpen && <Modal className="application-modal" labelledBy="workspace-edit-title" onClose={() => setWorkspaceEditOpen(false)}><div className="modal-heading"><div><p className="eyebrow">WORKSPACE</p><h2 id="workspace-edit-title">Edit workspace title</h2></div><button className="modal-close" type="button" aria-label="Close" onClick={() => setWorkspaceEditOpen(false)}>×</button></div><form className="application-form" onSubmit={(event) => { event.preventDefault(); if (!workspaceDraft.trim()) { setWorkspaceError('Enter a workspace title.'); return; } setWorkspace(workspaceDraft.trim()); setWorkspaceEditOpen(false); }}><label className="settings-field">Title<input autoFocus value={workspaceDraft} maxLength={50} onChange={(event) => { setWorkspaceDraft(event.target.value); setWorkspaceError(''); }} /></label>{workspaceError && <p className="form-error" role="alert">{workspaceError}</p>}<div className="form-actions"><Button variant="secondary" onClick={() => setWorkspaceEditOpen(false)}>Cancel</Button><Button type="submit">Save title</Button></div></form></Modal>}
     </div>;

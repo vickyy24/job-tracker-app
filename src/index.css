@@ -1269,6 +1269,13 @@ button {
   padding: 24px;
 }
 
+.application-form-modal .form-actions {
+  position: static;
+  margin-top: 8px;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--border);
+}
+
 .application-edit-modal {
   width: min(100%, 700px);
 }
@@ -1596,7 +1603,13 @@ button {
 
 .delete-confirmation>p:not(.eyebrow) {
   color: var(--subtle);
-  line-height: 1.55;
+  margin: 12px 0 0;
+  line-height: 1.45;
+}
+
+.delete-confirmation {
+  width: min(100%, 420px);
+  padding: 22px;
 }
 
 .delete-confirmation-heading {
@@ -1621,28 +1634,8 @@ button {
   margin: 2px 0 6px;
 }
 
-.delete-confirmation-summary {
-  display: grid;
-  gap: 4px;
-  margin: 16px 0;
-  padding: 12px 14px;
-  background: var(--surface-muted);
-  border: 1px solid var(--border);
-  border-radius: 9px;
-}
-
-.delete-confirmation-summary strong {
-  color: var(--text);
-  font-size: 13px;
-}
-
-.delete-confirmation-summary span {
-  color: var(--muted);
-  font-size: 12px;
-}
-
 .delete-confirmation .form-actions {
-  margin-top: 12px;
+  margin-top: 18px;
 }
 
 .ui-loading,.ui-empty,.ui-error {
@@ -2263,6 +2256,22 @@ button {
 .table-action {
   margin-right: 10px;
   font-weight: 500;
+}
+
+.application-table .table-action:not(.danger) {
+  margin-right: 6px;
+  padding: 5px 9px;
+  color: #fff;
+  background: #0f8883;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  transition: background-color .16s ease, transform .16s ease;
+}
+
+.application-table .table-action:not(.danger):hover {
+  background: #086d68;
+  transform: translateY(-1px);
 }
 
 .table-action.danger {
