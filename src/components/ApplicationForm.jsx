@@ -93,7 +93,7 @@ function ApplicationForm({ application, initialStatus = 'Applied', loading, savi
                 {fieldErrors.notes && <span className="ui-field-error" id="application-notes-error">{fieldErrors.notes}</span>}
                 </div>
                 <div className="form-actions">
-                    {application && <Button className="confirm-delete-button" onClick={() => onRequestDelete(application)} disabled={saving}>Delete</Button>}
+                    {application && <Button variant="secondary" className="delete-outline-button" onClick={() => onRequestDelete(application)} disabled={saving}>Delete</Button>}
                     {application && <span className="flex-1" />}
                     <Button variant="secondary" onClick={onClose} disabled={saving}>Cancel</Button>
                     <Button type="submit" disabled={saving}>{saving ? 'Saving…' : (application ? 'Save changes' : 'Save application')}</Button>
