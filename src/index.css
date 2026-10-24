@@ -378,12 +378,6 @@ button {
   font-weight: 700;
 }
 
-.topbar-profile-trigger .profile-avatar svg {
-  display: block;
-  width: 10px;
-  height: 10px;
-}
-
 .profile-avatar-image {
   object-fit: cover;
 }
@@ -3517,23 +3511,24 @@ button {
     height: 36px;
     min-height: 36px;
     justify-content: center;
-    padding: 2px;
-    overflow: hidden;
+    padding: 0;
+    border: 0;
+    background: transparent;
   }
 
   .profile-avatar {
     box-sizing: border-box;
-    flex: 0 0 28px;
-    width: 28px;
-    height: 28px;
+    flex: 0 0 36px;
+    width: 36px;
+    height: 36px;
     overflow: hidden;
     line-height: 0;
   }
 
   .profile-avatar svg {
     display: block;
-    width: 13px;
-    height: 13px;
+    width: 16px;
+    height: 16px;
     max-width: 100%;
     max-height: 100%;
   }
