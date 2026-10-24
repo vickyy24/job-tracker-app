@@ -165,7 +165,7 @@ export default function ProfilePage({ user, onUserUpdated }) {
                     {error && <p className="profile-page-error" role="alert">{error}</p>}
                     <div className="profile-information-actions">
                         {saved && <span className="profile-page-saved" role="status"><Icon name="check" size={14} /> Changes saved</span>}
-                        <Button type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save changes'}</Button>
+                        <Button type="submit" disabled={saving}>{saving ? 'Updating…' : 'Update profile'}</Button>
                     </div>
                 </form>
             </div>
