@@ -532,7 +532,7 @@ export default function LoginPage() {
                                 </span>
                             </div>
 
-                            <button className="auth-submit otp-submit-btn" type="submit" disabled={busy || verificationCode.length !== 6}>
+                            <button className="auth-submit mt-2" type="submit" disabled={busy || verificationCode.length !== 6}>
                                 {busy ? 'Verifying…' : 'Verify email and continue'}
                             </button>
 
@@ -649,7 +649,7 @@ export default function LoginPage() {
                                     </span>
                                 </div>
 
-                                <button className="auth-submit otp-submit-btn" type="submit" disabled={busy || resetCode.length !== 6}>
+                                <button className="auth-submit mt-2" type="submit" disabled={busy || resetCode.length !== 6}>
                                     {busy ? 'Verifying…' : 'Verify reset code'}
                                 </button>
 

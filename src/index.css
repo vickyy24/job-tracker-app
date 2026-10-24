@@ -3297,10 +3297,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   margin-top: 4px;
 }
 
-.otp-submit-btn {
-  margin-top: 8px;
-}
-
 .otp-resend-bar {
   display: flex;
   align-items: center;
