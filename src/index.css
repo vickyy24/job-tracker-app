@@ -1271,9 +1271,30 @@ button {
 
 .application-form-modal .form-actions {
   position: static;
-  margin-top: 8px;
+  flex: none;
+  margin-top: 0;
   padding: 12px 0 0;
   border-top: 1px solid var(--border);
+}
+
+.application-form-modal .application-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+}
+
+.application-form-fields {
+  display: grid;
+  flex: 1 1 auto;
+  gap: 13px;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0 10px 12px 0;
+  scrollbar-width: thin;
+  scrollbar-color: #c9c5d6 transparent;
+  scrollbar-gutter: stable;
 }
 
 .application-edit-modal {
@@ -1530,15 +1551,18 @@ button {
   scrollbar-gutter: stable;
 }
 
-.application-form::-webkit-scrollbar {
+.application-form::-webkit-scrollbar,
+.application-form-fields::-webkit-scrollbar {
   width: 7px;
 }
 
-.application-form::-webkit-scrollbar-track {
+.application-form::-webkit-scrollbar-track,
+.application-form-fields::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.application-form::-webkit-scrollbar-thumb {
+.application-form::-webkit-scrollbar-thumb,
+.application-form-fields::-webkit-scrollbar-thumb {
   background: #c9c5d6;
   border: 2px solid var(--surface);
   border-radius: 8px;

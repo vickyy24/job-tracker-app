@@ -78,6 +78,7 @@ function ApplicationForm({ application, initialStatus = 'Applied', loading, savi
                 <button className="modal-close" type="button" aria-label="Close form" title="Close" onClick={onDismiss} disabled={saving}><Icon name="close" size={16} /></button>
             </div>
             {loading ? <LoadingState message="Loading application…" /> : <form className="application-form max-[760px]:overflow-x-hidden" onSubmit={submit} noValidate>
+                <div className="application-form-fields">
                 {error && <p className="form-error" role="alert">{error}</p>}
                 <TextInput id="company-name" label="Company name" value={companyName} onChange={(event) => changeField('companyName', setCompanyName, event.target.value)} error={fieldErrors.companyName} maxLength={120} required aria-required="true" disabled={saving} />
                 <TextInput id="job-title" label="Job title" value={jobTitle} onChange={(event) => changeField('jobTitle', setJobTitle, event.target.value)} error={fieldErrors.jobTitle} maxLength={120} required aria-required="true" disabled={saving} />
@@ -90,6 +91,7 @@ function ApplicationForm({ application, initialStatus = 'Applied', loading, savi
                 <label className="notes-field" htmlFor="application-notes">Notes <span>Optional</span></label>
                 <textarea id="application-notes" value={notes} onChange={(event) => changeField('notes', setNotes, event.target.value)} maxLength={5000} rows="3" aria-invalid={Boolean(fieldErrors.notes)} aria-describedby={fieldErrors.notes ? 'application-notes-error' : undefined} disabled={saving} />
                 {fieldErrors.notes && <span className="ui-field-error" id="application-notes-error">{fieldErrors.notes}</span>}
+                </div>
                 <div className="form-actions">
                     {application && <Button className="confirm-delete-button" onClick={() => onRequestDelete(application)} disabled={saving}>Delete</Button>}
                     {application && <span className="flex-1" />}
