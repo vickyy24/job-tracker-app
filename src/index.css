@@ -371,10 +371,17 @@ button {
   place-items: center;
   width: 28px;
   height: 28px;
+  overflow: hidden;
   border-radius: 50%;
   color: var(--purple);
   background: var(--purple-soft);
   font-weight: 700;
+}
+
+.topbar-profile-trigger .profile-avatar svg {
+  display: block;
+  width: 10px;
+  height: 10px;
 }
 
 .profile-avatar-image {
