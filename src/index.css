@@ -3532,12 +3532,12 @@ button {
   }
 
   .board-toolbar .view-toggle {
-    width: 84px;
+    width: 60px;
     height: 30px;
   }
 
   .board-toolbar .view-toggle button {
-    width: 34px;
+    width: 28px;
     height: 24px;
   }
 
