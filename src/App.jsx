@@ -72,7 +72,7 @@ function WorkspaceApp() {
     const [search, setSearch] = useState('');
     const [status, setStatus] = useState('');
     const [sortBy, setSortBy] = useState('applicationDate');
-    const [order, setOrder] = useState('desc');
+    const order = 'desc';
     const [showForm, setShowForm] = useState(false);
     const [newStatus, setNewStatus] = useState('Applied');
     const [saving, setSaving] = useState(false);
@@ -258,7 +258,7 @@ function WorkspaceApp() {
                     pendingStatusIds={pendingIds}
                     statusErrors={statusErrors}
                 />}
-                {page === 'dashboard' && <DashboardPage stats={stats} loading={loadingStats} error={statsError} onRetry={refreshStats} applications={applications} chartApplications={chartApplications} loadingChartApplications={loadingChartApplications} chartApplicationsError={chartApplicationsError} onRetryChartApplications={refreshChartApplications} loadingApplications={loadingApplications} applicationsError={applicationsError} onRetryApplications={() => refreshApplications(currentFilters())} onSelectApplication={openDetails} onEditApplication={openEdit} search={search} onSearchChange={(value) => { requestNumber.current += 1; setSearch(value); }} status={status} onStatusFilter={(value) => { requestNumber.current += 1; setStatus(value); }} sortBy={sortBy} onSortByChange={setSortBy} order={order} onOrderChange={setOrder} onClearFilters={clearFilters} onOpenBoard={() => navigate('board')} onAdd={() => openCreate()} />}
+                {page === 'dashboard' && <DashboardPage stats={stats} loading={loadingStats} error={statsError} onRetry={refreshStats} applications={applications} chartApplications={chartApplications} loadingChartApplications={loadingChartApplications} chartApplicationsError={chartApplicationsError} onRetryChartApplications={refreshChartApplications} loadingApplications={loadingApplications} applicationsError={applicationsError} onRetryApplications={() => refreshApplications(currentFilters())} onSelectApplication={openDetails} onEditApplication={openEdit} search={search} onSearchChange={(value) => { requestNumber.current += 1; setSearch(value); }} status={status} onStatusFilter={(value) => { requestNumber.current += 1; setStatus(value); }} sortBy={sortBy} onSortByChange={setSortBy} onClearFilters={clearFilters} onOpenBoard={() => navigate('board')} onAdd={() => openCreate()} />}
                 {page === 'assets' && <AssetsPage onBoard={() => navigate('board')} />}
                 {page === 'settings' && <SettingsPage workspace={workspace} onWorkspaceChange={setWorkspace} dailyGoal={dailyGoal} onDailyGoalChange={setDailyGoal} themeMode={themeMode} onThemeChange={setThemeMode} />}
                 {page === 'profile' && <ProfilePage user={profile} onUserUpdated={setProfileUser} />}
