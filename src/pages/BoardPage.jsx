@@ -32,8 +32,8 @@ export default function BoardPage({
     const hasFilters = Boolean(search.trim() || status);
 
     return <>
-        <div className="board-toolbar flex min-h-[34px] items-center gap-2 mb-[10px] max-[900px]:min-[761px]:flex-wrap max-[760px]:grid max-[760px]:grid-cols-[minmax(0,1.4fr)_minmax(0,.95fr)_minmax(0,1.25fr)_minmax(0,.9fr)_minmax(54px,.85fr)] max-[760px]:gap-[5px] max-[760px]:relative max-[760px]:mb-[9px] max-[760px]:min-w-0" aria-label="Search and board controls">
-            <label className="search-control max-[900px]:min-[761px]:flex-[1_1_250px] max-[760px]:h-[30px] max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:gap-1 max-[760px]:px-1.5">
+        <div className="board-toolbar flex min-h-[34px] items-center gap-2 mb-[10px] max-[900px]:min-[761px]:flex-wrap max-[760px]:grid max-[760px]:grid-cols-2 max-[760px]:gap-[6px] max-[760px]:relative max-[760px]:mb-[9px] max-[760px]:min-w-0" aria-label="Search and board controls">
+            <label className="search-control max-[900px]:min-[761px]:flex-[1_1_250px] max-[760px]:col-span-full max-[760px]:h-[34px] max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:gap-1 max-[760px]:px-2">
                 <Icon className="max-[760px]:size-3 max-[760px]:min-w-3" name="search" size={16} />
                 <input className="max-[760px]:min-w-0 max-[760px]:text-[9px]" type="search" value={search} onChange={(event) => onSearchChange(event.target.value)} placeholder="Search company or job title…" aria-label="Search by company or job title" />
             </label>

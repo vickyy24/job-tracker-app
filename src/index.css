@@ -848,21 +848,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .kanban-scroll {
-  height: calc(100vh - 124px);
-  min-height: 390px;
-  overflow-x: auto;
-  overflow-y: hidden;
   scrollbar-color: #d4d2df transparent;
   scrollbar-width: thin;
-}
-
-.kanban-board {
-  display: grid;
-  grid-template-columns: repeat(4,minmax(255px,1fr));
-  gap: 11px;
-  width: 100%;
-  min-width: 1060px;
-  height: 100%;
 }
 
 .kanban-column {
@@ -1895,8 +1882,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .profile-page-layout {
-  display: grid;
-  grid-template-columns: minmax(220px, .72fr) minmax(0, 1.5fr);
   align-items: start;
   gap: 14px;
 }

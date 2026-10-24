@@ -116,7 +116,7 @@ export default function ProfilePage({ user, onUserUpdated }) {
                 </div>
             </div>
 
-            <div className="profile-page-layout max-[760px]:grid-cols-1">
+            <div className="profile-page-layout grid grid-cols-[minmax(220px,.72fr)_minmax(0,1.5fr)] max-[760px]:grid-cols-1">
                 <section className="profile-identity-card" aria-label="Profile overview">
                     {draft.avatar
                         ? <img className="profile-page-avatar" src={draft.avatar} alt={`${displayName} profile`} />
