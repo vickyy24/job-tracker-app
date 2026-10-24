@@ -2787,6 +2787,12 @@ button {
   }
 }
 
+@media (min-width: 481px) {
+  .dashboard-filters .status-filter {
+    margin-left: auto;
+  }
+}
+
 .dashboard-filters .status-filter,
 .dashboard-filters .direction-select {
   flex: 0 0 auto;
