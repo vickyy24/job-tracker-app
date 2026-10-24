@@ -3540,16 +3540,14 @@ button {
     height: 36px;
     min-height: 36px;
     justify-content: center;
-    padding: 2px;
+    padding: 1px;
     border: 1px solid var(--border);
     background: transparent;
   }
 
   .profile-avatar {
     box-sizing: border-box;
-    flex: 0 0 30px;
-    width: 30px;
-    height: 30px;
+    flex: 0 0 32px;`r`n    width: 32px;`r`n    height: 32px;
     overflow: hidden;
     line-height: 0;
   }
