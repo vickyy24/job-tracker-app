@@ -530,7 +530,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .daily-goal {
-  display: flex;
   align-items: center;
   gap: 7px;
   padding: 7px 10px;
@@ -2303,10 +2302,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   font-size: 12px;
 }
 
-.mobile-menu-button {
-  display: none;
-}
-
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -2394,10 +2389,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .sidebar-collapsed .nav-link {
   justify-content: center;
   padding: 0;
-}
-
-.mobile-overlay {
-  display: none;
 }
 
 .chart-card {
