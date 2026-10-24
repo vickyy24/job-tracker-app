@@ -182,7 +182,7 @@ function WorkspaceApp() {
     };
     const confirmDelete = async () => {
         setDeleting(true); setDeleteError('');
-        try { await deleteApplicationRequest(deleteTarget._id); setApplications((current) => current.filter((item) => item._id !== deleteTarget._id)); setDeleteTarget(null); refreshChartApplications(); refreshStats(); }
+        try { await deleteApplicationRequest(deleteTarget._id); setApplications((current) => current.filter((item) => item._id !== deleteTarget._id)); if (editing?._id === deleteTarget._id) setEditing(null); setDeleteTarget(null); refreshChartApplications(); refreshStats(); }
         catch (error) { setDeleteError(error.message); } finally { setDeleting(false); }
     };
     const openCreate = (selectedStatus = 'Applied') => { setNewStatus(selectedStatus); setFormError(''); setShowForm(true); };
@@ -261,16 +261,25 @@ function WorkspaceApp() {
                     pendingStatusIds={pendingIds}
                     statusErrors={statusErrors}
                 />}
-                {page === 'dashboard' && <DashboardPage stats={stats} loading={loadingStats} error={statsError} onRetry={refreshStats} applications={applications} chartApplications={chartApplications} loadingChartApplications={loadingChartApplications} chartApplicationsError={chartApplicationsError} onRetryChartApplications={refreshChartApplications} loadingApplications={loadingApplications} applicationsError={applicationsError} onRetryApplications={() => refreshApplications(currentFilters())} onSelectApplication={openDetails} onEditApplication={openEdit} onDeleteApplication={(item) => { setDeleteTarget(item); setDeleteError(''); }} search={search} onSearchChange={(value) => { requestNumber.current += 1; setSearch(value); }} status={status} onStatusFilter={(value) => { requestNumber.current += 1; setStatus(value); }} sortBy={sortBy} onSortByChange={setSortBy} order={order} onOrderChange={setOrder} onClearFilters={clearFilters} onOpenBoard={() => navigate('board')} onAdd={() => openCreate()} />}
+                {page === 'dashboard' && <DashboardPage stats={stats} loading={loadingStats} error={statsError} onRetry={refreshStats} applications={applications} chartApplications={chartApplications} loadingChartApplications={loadingChartApplications} chartApplicationsError={chartApplicationsError} onRetryChartApplications={refreshChartApplications} loadingApplications={loadingApplications} applicationsError={applicationsError} onRetryApplications={() => refreshApplications(currentFilters())} onSelectApplication={openDetails} onEditApplication={openEdit} search={search} onSearchChange={(value) => { requestNumber.current += 1; setSearch(value); }} status={status} onStatusFilter={(value) => { requestNumber.current += 1; setStatus(value); }} sortBy={sortBy} onSortByChange={setSortBy} order={order} onOrderChange={setOrder} onClearFilters={clearFilters} onOpenBoard={() => navigate('board')} onAdd={() => openCreate()} />}
                 {page === 'assets' && <AssetsPage onBoard={() => navigate('board')} />}
                 {page === 'settings' && <SettingsPage workspace={workspace} onWorkspaceChange={setWorkspace} dailyGoal={dailyGoal} onDailyGoalChange={setDailyGoal} themeMode={themeMode} onThemeChange={setThemeMode} />}
                 {page === 'profile' && <ProfilePage user={profile} onUserUpdated={setProfileUser} />}
             </main>
         </div>
         {showForm && <ApplicationForm saving={saving} error={formError} initialStatus={newStatus} onClose={() => setShowForm(false)} onSubmit={saveApplication} />}
-        {editing && <ApplicationForm key={editing._id} application={editing} saving={saving} error={editError} onClose={() => { const application = editing; setEditing(null); setViewing(application); }} onDismiss={() => { setEditing(null); setViewing(null); }} onSubmit={saveEdit} />}
+        {editing && <ApplicationForm key={editing._id} application={editing} saving={saving} error={editError} onClose={() => { const application = editing; setEditing(null); setViewing(application); }} onDismiss={() => { setEditing(null); setViewing(null); }} onRequestDelete={(application) => { setDeleteTarget(application); setDeleteError(''); }} onSubmit={saveEdit} />}
         {viewing && <ApplicationDetails application={viewing} onClose={() => setViewing(null)} onEdit={openEdit} />}
-        {deleteTarget && <Modal className="delete-confirmation" role="alertdialog" labelledBy="delete-title" describedBy="delete-description" onClose={() => !deleting && setDeleteTarget(null)} closeDisabled={deleting}><p className="eyebrow">DELETE APPLICATION</p><h2 id="delete-title">Delete {deleteTarget.companyName}?</h2><p id="delete-description">This will permanently delete the application for {deleteTarget.jobTitle}.</p>{deleteError && <p className="form-error" role="alert">{deleteError}</p>}<div className="form-actions"><Button variant="secondary" disabled={deleting} onClick={() => setDeleteTarget(null)}>Cancel</Button><Button className="confirm-delete-button" disabled={deleting} onClick={confirmDelete}>{deleting ? 'Deleting…' : 'Delete application'}</Button></div></Modal>}
+        {deleteTarget && <Modal className="delete-confirmation" role="alertdialog" labelledBy="delete-title" describedBy="delete-description" onClose={() => !deleting && setDeleteTarget(null)} closeDisabled={deleting}>
+            <div className="delete-confirmation-heading">
+                <span className="delete-confirmation-icon"><Icon name="trash" size={19} /></span>
+                <div><p className="eyebrow">DELETE APPLICATION</p><h2 id="delete-title">Delete this application?</h2></div>
+            </div>
+            <p id="delete-description">This permanently removes the application and its saved details. You can’t undo this action.</p>
+            <div className="delete-confirmation-summary"><strong>{deleteTarget.companyName}</strong><span>{deleteTarget.jobTitle}</span></div>
+            {deleteError && <p className="form-error" role="alert">{deleteError}</p>}
+            <div className="form-actions"><Button variant="secondary" disabled={deleting} onClick={() => setDeleteTarget(null)}>Keep application</Button><Button className="confirm-delete-button" disabled={deleting} onClick={confirmDelete}>{deleting ? 'Deleting…' : 'Delete permanently'}</Button></div>
+        </Modal>}
         {workspaceEditOpen && <Modal className="application-modal" labelledBy="workspace-edit-title" onClose={() => setWorkspaceEditOpen(false)}><div className="modal-heading"><div><p className="eyebrow">WORKSPACE</p><h2 id="workspace-edit-title">Edit workspace title</h2></div><button className="modal-close" type="button" aria-label="Close" onClick={() => setWorkspaceEditOpen(false)}>×</button></div><form className="application-form" onSubmit={(event) => { event.preventDefault(); if (!workspaceDraft.trim()) { setWorkspaceError('Enter a workspace title.'); return; } setWorkspace(workspaceDraft.trim()); setWorkspaceEditOpen(false); }}><label className="settings-field">Title<input autoFocus value={workspaceDraft} maxLength={50} onChange={(event) => { setWorkspaceDraft(event.target.value); setWorkspaceError(''); }} /></label>{workspaceError && <p className="form-error" role="alert">{workspaceError}</p>}<div className="form-actions"><Button variant="secondary" onClick={() => setWorkspaceEditOpen(false)}>Cancel</Button><Button type="submit">Save title</Button></div></form></Modal>}
     </div>;
 }

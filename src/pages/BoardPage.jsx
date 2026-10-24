@@ -84,7 +84,6 @@ export default function BoardPage({
                 onRetry={onRetry}
                 onSelect={onSelect}
                 onEdit={onEdit}
-                onDelete={onDelete}
             />}
     </>;
 }

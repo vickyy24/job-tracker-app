@@ -10,7 +10,7 @@ function localToday() {
     return date.toISOString().slice(0, 10);
 }
 
-function ApplicationForm({ application, initialStatus = 'Applied', loading, saving, error, onClose, onDismiss = onClose, onSubmit }) {
+function ApplicationForm({ application, initialStatus = 'Applied', loading, saving, error, onClose, onDismiss = onClose, onSubmit, onRequestDelete }) {
     const [companyName, setCompanyName] = useState(application?.companyName || '');
     const [jobTitle, setJobTitle] = useState(application?.jobTitle || '');
     const [salary, setSalary] = useState(application?.salary || '');
@@ -91,6 +91,8 @@ function ApplicationForm({ application, initialStatus = 'Applied', loading, savi
                 <textarea id="application-notes" value={notes} onChange={(event) => changeField('notes', setNotes, event.target.value)} maxLength={5000} rows="3" aria-invalid={Boolean(fieldErrors.notes)} aria-describedby={fieldErrors.notes ? 'application-notes-error' : undefined} disabled={saving} />
                 {fieldErrors.notes && <span className="ui-field-error" id="application-notes-error">{fieldErrors.notes}</span>}
                 <div className="form-actions">
+                    {application && <Button className="confirm-delete-button" onClick={() => onRequestDelete(application)} disabled={saving}>Delete</Button>}
+                    {application && <span className="flex-1" />}
                     <Button variant="secondary" onClick={onClose} disabled={saving}>Cancel</Button>
                     <Button type="submit" disabled={saving}>{saving ? 'Saving…' : (application ? 'Save changes' : 'Save application')}</Button>
                 </div>

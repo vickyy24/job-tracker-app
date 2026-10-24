@@ -24,6 +24,7 @@ import {
     Settings,
     Sun,
     Target,
+    Trash2,
     X,
 } from 'lucide-react';
 
@@ -54,6 +55,7 @@ const icons = {
     rejected: CircleX,
     applied: FileCheck2,
     user: UserRound,
+    trash: Trash2,
 };
 
 function Icon({ name, size = 18, className }) {
