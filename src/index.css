@@ -90,6 +90,7 @@
 
 html {
   background: #f7f7fb;
+  scrollbar-gutter: stable;
 }
 
 body {
