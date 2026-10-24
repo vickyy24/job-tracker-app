@@ -2556,7 +2556,7 @@ button {
 
 .chart-card h2 {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--chart-title-size, 16px);
   font-weight: 700;
   letter-spacing: -.02em;
 }
@@ -2568,13 +2568,13 @@ button {
 }
 
 .chart-period-select {
-  height: 32px;
-  padding: 0 27px 0 10px;
+  height: var(--chart-filter-height, 32px);
+  padding: var(--chart-filter-padding, 0 27px 0 10px);
   color: var(--text);
   background: var(--surface-muted);
   border: 1px solid var(--border);
   border-radius: 8px;
-  font-size: 11px;
+  font-size: var(--chart-filter-font-size, 11px);
   cursor: pointer;
 }
 
@@ -2587,12 +2587,12 @@ button {
 }
 
 .chart-total {
-  padding: 6px 10px;
+  padding: var(--chart-total-padding, 6px 10px);
   color: var(--purple);
   background: var(--purple-soft);
   border: 1px solid color-mix(in srgb, var(--purple) 12%, transparent);
   border-radius: 999px;
-  font-size: 11px;
+  font-size: var(--chart-total-font-size, 11px);
   font-weight: 650;
   white-space: nowrap;
 }
