@@ -711,6 +711,10 @@ button {
   cursor: pointer;
 }
 
+.board-toolbar .search-control {
+  width: var(--board-search-width, 260px);
+}
+
 .board-toolbar .sort-control select {
   position: absolute;
   inset: 0;
