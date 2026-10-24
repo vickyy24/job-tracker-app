@@ -680,7 +680,7 @@ button {
 }
 
 .status-filter {
-  min-width: 120px;
+  min-width: var(--status-filter-min-width, 120px);
 }
 
 .sort-control {
@@ -736,7 +736,7 @@ button {
 .dashboard-sort-control {
   position: relative;
   justify-content: space-between;
-  min-width: 100px;
+  min-width: var(--dashboard-sort-min-width, 100px);
   padding-right: 10px;
   cursor: pointer;
 }
@@ -2406,8 +2406,8 @@ button {
 }
 
 .dashboard-page .application-table .table-action {
-  margin-right: 6px;
-  padding: 5px 9px;
+  margin-right: var(--application-table-action-margin, 6px);
+  padding: var(--application-table-action-padding, 5px 9px);
   color: #fff;
   background: #0f8883;
   border-radius: 6px;
@@ -2769,7 +2769,7 @@ button {
 }
 
 .dashboard-filters {
-  display: flex;
+  display: var(--dashboard-filters-display, flex);
   align-items: center;
   gap: 9px;
   margin: 0 0 12px;
