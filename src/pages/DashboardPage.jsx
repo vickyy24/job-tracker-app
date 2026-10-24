@@ -48,7 +48,7 @@ export default function DashboardPage({ stats, loading, error, onRetry, applicat
 }
 
 function StatsGrid({ stats, loading, error, onRetry }) {
-    return <><div className="stats-grid grid grid-cols-4 gap-[10px] mb-3 max-[1100px]:grid-cols-3 max-[1100px]:gap-2 max-[760px]:grid-cols-2 max-[390px]:gap-[7px]">{STAT_CARDS.map((card) => <article className={`stat-card stat-card-${card.tone} max-[760px]:min-h-[68px] max-[760px]:p-[10px]`} key={card.key}><div className="stat-card-heading"><span className="stat-label max-[390px]:text-[11px]">{card.label}</span><span className="stat-icon"><Icon name={card.icon} size={21} /></span></div><p className="stat-value">{loading || error ? '—' : metricValue(stats, card.key)}</p></article>)}</div>{error && <ErrorMessage message={error} onRetry={onRetry} />}</>;
+    return <><div className="stats-grid mx-auto grid w-full grid-cols-4 gap-[10px] mb-3 max-[1100px]:grid-cols-3 max-[1100px]:gap-2 max-[760px]:grid-cols-2 max-[480px]:p-2 max-[390px]:gap-[7px]">{STAT_CARDS.map((card) => <article className={`stat-card stat-card-${card.tone} max-[760px]:min-h-[68px] max-[760px]:p-[10px]`} key={card.key}><div className="stat-card-heading"><span className="stat-label max-[390px]:text-[11px]">{card.label}</span><span className="stat-icon"><Icon name={card.icon} size={21} /></span></div><p className="stat-value">{loading || error ? '—' : metricValue(stats, card.key)}</p></article>)}</div>{error && <ErrorMessage message={error} onRetry={onRetry} />}</>;
 }
 
 const ACTIVITY_PERIODS = {
