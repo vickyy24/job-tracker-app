@@ -1707,8 +1707,19 @@ button {
   border-radius: 12px;
 }
 
-.delete-confirmation-heading .eyebrow {
-  margin: 2px 0 6px;
+.delete-confirmation .ui-button-secondary {
+  color: var(--text);
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+.delete-confirmation .ui-button-secondary:hover:not(:disabled) {
+  color: var(--text);
+  background: var(--surface-muted);
+  border-color: var(--border);
+  box-shadow: none;
+  transform: none;
 }
 
 .delete-confirmation .form-actions {

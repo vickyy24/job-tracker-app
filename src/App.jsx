@@ -270,9 +270,9 @@ function WorkspaceApp() {
         {deleteTarget && <Modal className="delete-confirmation" role="alertdialog" labelledBy="delete-title" describedBy="delete-description" onClose={() => !deleting && setDeleteTarget(null)} closeDisabled={deleting}>
             <div className="delete-confirmation-heading">
                 <span className="delete-confirmation-icon"><Icon name="trash" size={19} /></span>
-                <div><p className="eyebrow">DELETE APPLICATION</p><h2 id="delete-title">Delete this application?</h2></div>
+                <div><h2 id="delete-title">Delete application?</h2></div>
             </div>
-            <p id="delete-description">This can’t be undone.</p>
+            <p id="delete-description">This action can’t be undone.</p>
             {deleteError && <p className="form-error" role="alert">{deleteError}</p>}
             <div className="form-actions"><Button variant="secondary" disabled={deleting} onClick={() => setDeleteTarget(null)}>Cancel</Button><Button className="confirm-delete-button" disabled={deleting} onClick={confirmDelete}>{deleting ? 'Deleting…' : 'Delete'}</Button></div>
         </Modal>}
