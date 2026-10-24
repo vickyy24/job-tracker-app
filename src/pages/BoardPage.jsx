@@ -32,26 +32,26 @@ export default function BoardPage({
     const hasFilters = Boolean(search.trim() || status);
 
     return <>
-        <div className="board-toolbar flex min-h-[34px] items-center gap-2 mb-[10px] max-[900px]:min-[761px]:flex-wrap max-[760px]:grid max-[760px]:grid-cols-2 max-[760px]:gap-[6px] max-[760px]:relative max-[760px]:mb-[9px] max-[760px]:min-w-0" aria-label="Search and board controls">
-            <label className="search-control max-[900px]:min-[761px]:flex-[1_1_250px] max-[760px]:col-span-full max-[760px]:h-[34px] max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:gap-1 max-[760px]:px-2">
+        <div className="board-toolbar flex min-h-[34px] items-center gap-2 mb-[10px] max-[900px]:min-[761px]:flex-wrap max-[760px]:grid max-[760px]:grid-cols-[minmax(0,1.1fr)_minmax(0,.9fr)_minmax(0,1.1fr)_minmax(0,.85fr)_38px] max-[760px]:gap-[3px] max-[760px]:relative max-[760px]:mb-[9px] max-[760px]:min-w-0" aria-label="Search and board controls">
+            <label className="search-control max-[900px]:min-[761px]:flex-[1_1_250px] max-[760px]:h-[30px] max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:gap-1 max-[760px]:px-[5px]">
                 <Icon className="max-[760px]:size-3 max-[760px]:min-w-3" name="search" size={16} />
                 <input className="max-[760px]:min-w-0 max-[760px]:text-[9px]" type="search" value={search} onChange={(event) => onSearchChange(event.target.value)} placeholder="Search company or job title…" aria-label="Search by company or job title" />
             </label>
-            <select className="status-filter max-[760px]:h-[30px] max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:px-[5px] max-[760px]:text-[9px]" value={status} onChange={(event) => onStatusChange(event.target.value)} aria-label="Filter by status">
+            <select className="status-filter max-[760px]:h-[30px] max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:px-[3px] max-[760px]:text-[8px]" value={status} onChange={(event) => onStatusChange(event.target.value)} aria-label="Filter by status">
                 <option value="">All statuses</option>
                 {STATUSES.map((item) => <option key={item}>{item}</option>)}
             </select>
             <div className="toolbar-spacer max-[900px]:min-[761px]:hidden max-[760px]:hidden" />
-            <label className="sort-control max-[900px]:min-[761px]:ml-auto max-[760px]:h-[30px] max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:gap-0 max-[760px]:pr-1 max-[390px]:gap-1">
+            <label className="sort-control max-[900px]:min-[761px]:ml-auto max-[760px]:h-[30px] max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:gap-0 max-[760px]:px-[3px]">
                 <span className="max-[760px]:hidden">Sort by</span>
-                <select className="max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:max-w-none max-[760px]:overflow-hidden max-[760px]:text-ellipsis max-[760px]:text-[9px] max-[390px]:max-w-[75px]" value={sortBy} onChange={(event) => onSortByChange(event.target.value)} aria-label="Sort applications by">
+                <select className="max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:max-w-none max-[760px]:overflow-hidden max-[760px]:text-ellipsis max-[760px]:text-[8px]" value={sortBy} onChange={(event) => onSortByChange(event.target.value)} aria-label="Sort applications by">
                     <option value="applicationDate">Application date</option>
                     <option value="createdAt">Created date</option>
                     <option value="companyName">Company name</option>
                     <option value="jobTitle">Job title</option>
                 </select>
             </label>
-            <select className="direction-select max-[760px]:h-[30px] max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:px-[5px] max-[760px]:text-[9px] max-[390px]:max-w-[100px]" value={order} onChange={(event) => onOrderChange(event.target.value)} aria-label="Sort direction">
+            <select className="direction-select max-[760px]:h-[30px] max-[760px]:w-full max-[760px]:min-w-0 max-[760px]:max-w-none max-[760px]:px-[3px] max-[760px]:text-[8px]" value={order} onChange={(event) => onOrderChange(event.target.value)} aria-label="Sort direction">
                 <option value="desc">Descending</option>
                 <option value="asc">Ascending</option>
             </select>
