@@ -2776,7 +2776,8 @@ button {
 }
 
 .dashboard-filters .search-control {
-  flex: 1 1 280px;
+  flex: 0 0 var(--board-search-width, 260px);
+  width: var(--board-search-width, 260px);
 }
 
 .dashboard-filters .status-filter,
